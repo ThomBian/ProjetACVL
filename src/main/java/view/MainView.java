@@ -3,6 +3,7 @@ package view;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.UIManager;
 
 public class MainView {
 
@@ -12,16 +13,22 @@ public class MainView {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainView window = new MainView();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					try {
+						MainView window = new MainView();
+						window.frame.setVisible(true);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
-			}
-		});
+			});
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
 	}
 
 	/**
