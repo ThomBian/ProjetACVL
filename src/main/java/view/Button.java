@@ -3,8 +3,6 @@ package view;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.Action;
-import javax.swing.Icon;
 import javax.swing.JButton;
 
 import controller.command.Command;
@@ -26,6 +24,11 @@ public class Button extends JButton implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		command.execute();
+	}
+
+	public Button(String tooltip, Command command) {
+		this(tooltip);
+		this.command = command;
 	}
 	
 		

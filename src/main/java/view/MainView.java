@@ -1,17 +1,13 @@
 package view;
 
-import java.awt.EventQueue;
-import java.util.Hashtable;
-
 import javax.swing.JFrame;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import javax.swing.UIManager;
 
-import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
-import com.mxgraph.view.mxStylesheet;
+
+import controller.command.CreateCompositeState;
+import controller.command.CreateFinalState;
+import controller.command.CreateInitialState;
 
 public class MainView {
 
@@ -19,13 +15,13 @@ public class MainView {
 	private JMenuBar menuBar;
 	private GraphView graphView;
 	
-	private final Button createInitialStateButton = new Button("Create an initial state");
+	private final Button createInitialStateButton = new Button("Create an initial state", new CreateInitialState());
 	private final Button createStateButton = new Button("Create a state");
-	private final Button createCompositeStateButton = new Button("Create a composite state");
-	private final Button createFinalStateButton = new Button("Create a final state");
+	private final Button createCompositeStateButton = new Button("Create a composite state", new CreateCompositeState());
+	private final Button createFinalStateButton = new Button("Create a final state", new CreateFinalState());
 	private final Button flattenButton = new Button("Flatten diagram");
 	private final Button validateButton = new Button("Validate diagram");
-	private mxStylesheet styleSheet;
+
 
 
 	public JFrame getFrame() {
