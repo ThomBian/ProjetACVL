@@ -43,8 +43,6 @@ public class Diagram {
 	
 		initialState = new InitialState();
 		graph.insertVertex(graph.getDefaultParent(), null, "", 20, 20, 30,30,"initialState");
-
-		
 	}
 	
 	public void createState(String name){
@@ -62,6 +60,9 @@ public class Diagram {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	public void createFinalState() {
+		graph.insertVertex(graph.getDefaultParent(), null, "", 20, 20, 30,30,"finalState");
 	}
 		
 
