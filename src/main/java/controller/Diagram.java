@@ -6,6 +6,7 @@ import javax.swing.UIManager;
 
 import com.mxgraph.view.mxGraph;
 
+
 import view.MainView;
 
 public class Diagram {
@@ -23,7 +24,7 @@ public class Diagram {
 		graph = new mxGraph();
 	}
 	public void createInitialState(){
-		graph.insertVertex(graph.getDefaultParent(), null, "Je suis initial", 20, 20, 80,30);
+		graph.insertVertex(graph.getDefaultParent(), null, "Je suis initial", 20, 20, 80,30);	
 	}
 	
 	public void createState(String name){
@@ -36,14 +37,8 @@ public class Diagram {
 	public void launchApplication() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			EventQueue.invokeLater(new Runnable() {
-				
-				@Override
-				public void run() {
-					mainView = new MainView(graph);
-					mainView.getFrame().setVisible(true);
-				}
-			});
+			mainView = new MainView(graph);
+			mainView.getFrame().setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

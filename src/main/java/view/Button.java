@@ -22,11 +22,6 @@ public class Button extends JButton implements ActionListener{
 		this.setToolTipText(text);
 		addActionListener(this);
 	}
-	
-	public Button(String text, Command command) {
-		this(text);
-		this.command = command;
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {

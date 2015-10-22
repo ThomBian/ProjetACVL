@@ -10,8 +10,6 @@ import javax.swing.UIManager;
 
 import com.mxgraph.view.mxGraph;
 
-import controller.command.CreateState;
-
 public class MainView {
 
 	private JFrame frame;
@@ -19,7 +17,7 @@ public class MainView {
 	private GraphView graphView;
 	
 	private final Button createInitialStateButton = new Button("Create an initial state");
-	private final Button createStateButton = new Button("Create a state", new CreateState());
+	private final Button createStateButton = new Button("Create a state");
 	private final Button createCompositeStateButton = new Button("Create a composite state");
 	private final Button createFinalStateButton = new Button("Create a final state");
 	private final Button flattenButton = new Button("Flatten diagram");

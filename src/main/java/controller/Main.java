@@ -1,5 +1,9 @@
 package controller;
 
+import javax.swing.UIManager;
+
+import view.MainView;
+
 public class Main {
 
 	/**
