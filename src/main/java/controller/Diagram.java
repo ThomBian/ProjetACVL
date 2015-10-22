@@ -39,7 +39,8 @@ public class Diagram {
 	}
 
 	public void createCompositeState(String name) {
-		graph.insertVertex(graph.getDefaultParent(), null, name, 20, 20, 80, 30);
+		graph.insertVertex(graph.getDefaultParent(), null, name, 20, 20, 150, 180,"composite");
+		
 	}
 
 	public void launchApplication() {

@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
+import com.mxgraph.view.mxPerimeter;
 import com.mxgraph.view.mxStylesheet;
 
 public class GraphView extends JPanel {
@@ -25,12 +26,20 @@ public class GraphView extends JPanel {
         initializeAllStyle(graph.getStylesheet());
 	}
 	private void initializeAllStyle(mxStylesheet styleSheet) {
-		styleSheet.putCellStyle("initial", getStyle("initial.png"));
-		styleSheet.putCellStyle("final", getStyle("final.png"));
-
+		styleSheet.putCellStyle("initial", getPictureStyle("initial.png"));
+		styleSheet.putCellStyle("final", getPictureStyle("final.png"));
+		styleSheet.putCellStyle("composite", getCompositeStyle());
 	}
-
-	private Hashtable<String, Object> getStyle(String picName) {
+	private Hashtable<String, Object> getCompositeStyle() {
+		// define image style
+		Hashtable<String, Object> style = new Hashtable<String, Object>();
+		style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
+		//style.put(mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_TOP);
+		style.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_TOP);
+	
+		return style;
+	}
+	private Hashtable<String, Object> getPictureStyle(String picName) {
 		// define image style
 		Hashtable<String, Object> style = new Hashtable<String, Object>();
 		style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_IMAGE);
