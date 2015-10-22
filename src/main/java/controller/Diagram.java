@@ -12,44 +12,34 @@ import model.InitialState;
 import view.MainView;
 
 public class Diagram {
-	
+
 	private static final Diagram instance = new Diagram();
-	
-	public static Diagram getInstance(){
+
+	public static Diagram getInstance() {
 		return instance;
 	}
-	
+
 	private MainView mainView;
 	private mxGraph graph;
-	private InitialState initialState = null ;
-	private Diagram(){
+	private InitialState initialState = null;
+
+	private Diagram() {
 		graph = new mxGraph();
-		
-		
-		mxStylesheet stylesheet = graph.getStylesheet();
 
-	    // define initial state image style
-	    String myStyleName = "initialState";
-
-	    // define image style           
-	    Hashtable<String, Object> style = new Hashtable<String, Object>();
-	    style.put( mxConstants.STYLE_SHAPE, mxConstants.SHAPE_IMAGE);
-	    style.put( mxConstants.STYLE_IMAGE, "file:src/resources/initial.png");
-	    style.put( mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_BOTTOM);
-
-	    stylesheet.putCellStyle( myStyleName, style);
 	}
-	public void createInitialState(){
 	
+	public void createInitialState() {
+
 		initialState = new InitialState();
-		graph.insertVertex(graph.getDefaultParent(), null, "", 20, 20, 30,30,"initialState");
+		graph.insertVertex(graph.getDefaultParent(), null, "", 20, 20, 30, 30, "initial");
 	}
-	
-	public void createState(String name){
-		graph.insertVertex(graph.getDefaultParent(), null, name, 20, 20, 80,30);	
+
+	public void createState(String name) {
+		graph.insertVertex(graph.getDefaultParent(), null, name, 20, 20, 80, 30);
 	}
-	public void createCompositeState(String name){
-		graph.insertVertex(graph.getDefaultParent(), null, name, 20, 20, 80,30);	
+
+	public void createCompositeState(String name) {
+		graph.insertVertex(graph.getDefaultParent(), null, name, 20, 20, 80, 30);
 	}
 
 	public void launchApplication() {
@@ -61,9 +51,9 @@ public class Diagram {
 			e.printStackTrace();
 		}
 	}
+
 	public void createFinalState() {
-		graph.insertVertex(graph.getDefaultParent(), null, "", 20, 20, 30,30,"finalState");
+		graph.insertVertex(graph.getDefaultParent(), null, "", 20, 20, 30, 30, "final");
 	}
-		
 
 }
