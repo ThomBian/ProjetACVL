@@ -1,5 +1,5 @@
 package model;
 
-public class StandardTransition extends Transition {
+public class StandardTransition extends Transition<State> {
 
 }

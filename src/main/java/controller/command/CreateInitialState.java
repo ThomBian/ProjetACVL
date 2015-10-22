@@ -1,7 +1,6 @@
-package model;
+package controller.command;
 
 import controller.Diagram;
-import view.Command;
 
 public class CreateInitialState implements Command {
 

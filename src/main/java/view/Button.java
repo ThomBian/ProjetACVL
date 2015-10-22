@@ -7,7 +7,8 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
 
-import model.CreateInitialState;
+import controller.command.Command;
+import controller.command.CreateInitialState;
 
 public class Button extends JButton implements ActionListener{
 	

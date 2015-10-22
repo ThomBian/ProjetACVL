@@ -1,5 +1,5 @@
 package model;
 
-public abstract class InitialTransition extends Transition {
+public class InitialTransition extends Transition<InitialState> {
 
 }
