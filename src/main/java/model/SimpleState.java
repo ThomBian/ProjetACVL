@@ -1,5 +1,13 @@
 package model;
 
-public class SimpleState extends NamedState {
+/**
+ * 
+ *
+ */
+public final class SimpleState extends NamedState {
+
+	public SimpleState(String name) {
+		super(name);
+	}
 
 }
