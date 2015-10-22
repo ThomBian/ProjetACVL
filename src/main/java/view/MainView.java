@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.EventQueue;
+import java.util.Hashtable;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -8,7 +9,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
+import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
+import com.mxgraph.view.mxStylesheet;
 
 public class MainView {
 
@@ -22,6 +25,7 @@ public class MainView {
 	private final Button createFinalStateButton = new Button("Create a final state");
 	private final Button flattenButton = new Button("Flatten diagram");
 	private final Button validateButton = new Button("Validate diagram");
+	private mxStylesheet styleSheet;
 
 
 	public JFrame getFrame() {
@@ -61,9 +65,8 @@ public class MainView {
 	
 	private void initializeEmptyGraph(mxGraph graphData){
 		graphView = new GraphView(graphData);
-		JPanel panel = new JPanel();
-		//panel.add(graph);
 		frame.add(graphView);
 	}
+	
 
 }
