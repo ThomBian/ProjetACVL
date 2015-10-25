@@ -2,6 +2,7 @@ package view;
 
 import java.awt.BorderLayout;
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.swing.JPanel;
 
@@ -29,6 +30,12 @@ public class GraphView extends JPanel {
 		styleSheet.putCellStyle("initial", getPictureStyle("initial.png"));
 		styleSheet.putCellStyle("final", getPictureStyle("final.png"));
 		styleSheet.putCellStyle("composite", getCompositeStyle());
+		styleSheet.putCellStyle("normal", getNormalStyle());
+	}
+	private Map<String, Object> getNormalStyle() {
+		Hashtable<String, Object> style = new Hashtable<String, Object>();
+		style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_ELLIPSE);
+		return style;
 	}
 	private Hashtable<String, Object> getCompositeStyle() {
 		// define image style

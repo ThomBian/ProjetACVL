@@ -3,22 +3,24 @@ package view;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 import controller.command.Command;
 import controller.command.CreateInitialState;
 
-public class Button extends JButton implements ActionListener{
+public class Button extends JButton implements ActionListener {
 	
 	private Command command = new CreateInitialState();
 
-	private String tooltip;
+	private final String tooltip;
 
-	public Button(String text) {
+	public Button(String text, Command command) {
 		super(text);
 		tooltip = text;
-		this.setToolTipText(text);
+		this.setToolTipText(tooltip);
 		addActionListener(this);
+		this.command = command;
 	}
 
 	@Override
@@ -26,10 +28,9 @@ public class Button extends JButton implements ActionListener{
 		command.execute();
 	}
 
-	public Button(String tooltip, Command command) {
-		this(tooltip);
-		this.command = command;
+	public Button(String tooltip, String picture, Command command) {
+		this(tooltip, command);
+		this.setIcon(new ImageIcon("/acvlmnta/src/resources/"+picture));
 	}
-	
-		
+
 }

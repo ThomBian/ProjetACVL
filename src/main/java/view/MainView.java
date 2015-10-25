@@ -8,6 +8,9 @@ import com.mxgraph.view.mxGraph;
 import controller.command.CreateCompositeState;
 import controller.command.CreateFinalState;
 import controller.command.CreateInitialState;
+import controller.command.CreateState;
+import controller.command.FlattenDiagramm;
+import controller.command.ValidateDiagramm;
 
 public class MainView {
 
@@ -15,12 +18,12 @@ public class MainView {
 	private JMenuBar menuBar;
 	private GraphView graphView;
 	
-	private final Button createInitialStateButton = new Button("Create an initial state", new CreateInitialState());
-	private final Button createStateButton = new Button("Create a state");
+	private final Button createInitialStateButton = new Button("Create an initial state", "initial.png", new CreateInitialState());
+	private final Button createStateButton = new Button("Create a state", "final.png", new CreateState());
 	private final Button createCompositeStateButton = new Button("Create a composite state", new CreateCompositeState());
 	private final Button createFinalStateButton = new Button("Create a final state", new CreateFinalState());
-	private final Button flattenButton = new Button("Flatten diagram");
-	private final Button validateButton = new Button("Validate diagram");
+	private final Button flattenButton = new Button("Flatten diagram", new FlattenDiagramm());
+	private final Button validateButton = new Button("Validate diagram", new ValidateDiagramm());
 
 
 

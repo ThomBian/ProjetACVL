@@ -1,15 +1,11 @@
 package controller;
 
-import java.util.Hashtable;
-
 import javax.swing.UIManager;
-
-import com.mxgraph.util.mxConstants;
-import com.mxgraph.view.mxGraph;
-import com.mxgraph.view.mxStylesheet;
 
 import model.InitialState;
 import view.MainView;
+
+import com.mxgraph.view.mxGraph;
 
 public class Diagram {
 
@@ -35,7 +31,7 @@ public class Diagram {
 	}
 
 	public void createState(String name) {
-		graph.insertVertex(graph.getDefaultParent(), null, name, 20, 20, 80, 30);
+		graph.insertVertex(graph.getDefaultParent(), null, name, 20, 20, 80, 30, "normal");
 	}
 
 	public void createCompositeState(String name) {
