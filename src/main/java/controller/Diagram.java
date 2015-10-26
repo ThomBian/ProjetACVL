@@ -26,9 +26,10 @@ public class Diagram {
 			  public boolean isCellMovable(Object cell)
 			  {
 			    return !getModel().isEdge(cell);
-			  }
+			  }	
 		};
-		
+		graph.setAllowDanglingEdges(false);
+		graph.setConnectableEdges(false);
 	}
 	
 	public void createInitialState() {
