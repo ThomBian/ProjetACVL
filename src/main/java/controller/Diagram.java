@@ -5,6 +5,7 @@ import javax.swing.UIManager;
 import model.InitialState;
 import view.MainView;
 
+import com.mxgraph.swing.handler.mxKeyboardHandler;
 import com.mxgraph.view.mxGraph;
 
 public class Diagram {
@@ -20,12 +21,18 @@ public class Diagram {
 	private InitialState initialState = null;
 
 	private Diagram() {
-		graph = new mxGraph();
-
+		graph = new mxGraph(){
+			  // Make all edges unmovable
+			  public boolean isCellMovable(Object cell)
+			  {
+			    return !getModel().isEdge(cell);
+			  }
+		};
+		
 	}
 	
 	public void createInitialState() {
-
+		System.out.println(graph.getSelectionCell());
 		initialState = new InitialState();
 		graph.insertVertex(graph.getDefaultParent(), null, "", 20, 20, 30, 30, "initial");
 	}

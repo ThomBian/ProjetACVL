@@ -17,15 +17,16 @@ public class MainView {
 	private JFrame frame;
 	private JMenuBar menuBar;
 	private GraphView graphView;
-	
-	private final Button createInitialStateButton = new Button("Create an initial state", "initial.png", new CreateInitialState());
+
+	private final Button createInitialStateButton = new Button("Create an initial state", "initial.png",
+			new CreateInitialState());
 	private final Button createStateButton = new Button("Create a state", new CreateState());
-	private final Button createCompositeStateButton = new Button("Create a composite state", new CreateCompositeState());
-	private final Button createFinalStateButton = new Button("Create a final state","final.png", new CreateFinalState());
+	private final Button createCompositeStateButton = new Button("Create a composite state",
+			new CreateCompositeState());
+	private final Button createFinalStateButton = new Button("Create a final state", "final.png",
+			new CreateFinalState());
 	private final Button flattenButton = new Button("Flatten diagram", new FlattenDiagramm());
 	private final Button validateButton = new Button("Validate diagram", new ValidateDiagramm());
-
-
 
 	public JFrame getFrame() {
 		return frame;
@@ -50,7 +51,7 @@ public class MainView {
 		frame = new JFrame("Diagram editor");
 		frame.setBounds(100, 100, 950, 450);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		menuBar = new JMenuBar();
 		menuBar.add(createInitialStateButton);
 		menuBar.add(createStateButton);
@@ -59,13 +60,12 @@ public class MainView {
 		menuBar.add(flattenButton);
 		menuBar.add(validateButton);
 		frame.setJMenuBar(menuBar);
-		
+
 	}
-	
-	private void initializeEmptyGraph(mxGraph graphData){
+
+	private void initializeEmptyGraph(mxGraph graphData) {
 		graphView = new GraphView(graphData);
 		frame.add(graphView);
 	}
-	
 
 }
