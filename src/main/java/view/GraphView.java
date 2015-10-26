@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -60,8 +61,23 @@ public class GraphView extends JPanel {
 		styleSheet.putCellStyle("final", getPictureStyle("final.png"));
 		styleSheet.putCellStyle("composite", getCompositeStyle());
 		styleSheet.putCellStyle("normal", getNormalStyle());
+		applyEdgeDefaults(styleSheet);
 	}
+	private void applyEdgeDefaults(mxStylesheet styleSheet) {
+	    // Settings for edges
+	    Map<String, Object> edge = new HashMap<String, Object>();
+	    edge.put(mxConstants.STYLE_ROUNDED, true);
+	    edge.put(mxConstants.STYLE_ORTHOGONAL, false);
+	    edge.put(mxConstants.STYLE_EDGE, "elbowEdgeStyle");
+	    edge.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_CONNECTOR);
+	    edge.put(mxConstants.STYLE_ENDARROW, mxConstants.ARROW_CLASSIC);
+	    edge.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_MIDDLE);
+	    edge.put(mxConstants.STYLE_ALIGN, mxConstants.ALIGN_CENTER);
+	    edge.put(mxConstants.STYLE_STROKECOLOR, "#000000"); // default is #6482B9
+	    edge.put(mxConstants.STYLE_FONTCOLOR, "#446299");
 
+	    styleSheet.setDefaultEdgeStyle(edge);
+	}
 	private Map<String, Object> getNormalStyle() {
 		Hashtable<String, Object> style = new Hashtable<String, Object>();
 		style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_ELLIPSE);
