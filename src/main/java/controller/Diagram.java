@@ -2,11 +2,12 @@ package controller;
 
 import javax.swing.UIManager;
 
+import com.mxgraph.model.mxCell;
+import com.mxgraph.view.mxGraph;
+
 import model.InitialState;
 import view.MainView;
-
-import com.mxgraph.swing.handler.mxKeyboardHandler;
-import com.mxgraph.view.mxGraph;
+import view.Style;
 
 public class Diagram {
 
@@ -21,29 +22,38 @@ public class Diagram {
 	private InitialState initialState = null;
 
 	private Diagram() {
+		mxCell cell;
 		graph = new mxGraph(){
 			  // Make all edges unmovable
 			  public boolean isCellMovable(Object cell)
 			  {
 			    return !getModel().isEdge(cell);
 			  }	
+			  public boolean isValidDropTarget(Object cell, Object[] cells){
+				  if (((mxCell)cell).isVertex() && ((mxCell)cell).getStyle().equals(Style.COMPOSITE))
+				  {	  
+					  return true;
+				  }
+				  return false;
+			  }
 		};
 		graph.setAllowDanglingEdges(false);
 		graph.setConnectableEdges(false);
+		graph.setDropEnabled(true);
 	}
 	
 	public void createInitialState() {
 		System.out.println(graph.getSelectionCell());
 		initialState = new InitialState();
-		graph.insertVertex(graph.getDefaultParent(), null, "", 20, 20, 30, 30, "initial");
+		graph.insertVertex(graph.getDefaultParent(), null, "", 20, 20, 30, 30, Style.INITIAL);
 	}
 
 	public void createState(String name) {
-		graph.insertVertex(graph.getDefaultParent(), null, name, 20, 20, 80, 30, "normal");
+		graph.insertVertex(graph.getDefaultParent(), null, name, 20, 20, 80, 30, Style.STATE);
 	}
 
 	public void createCompositeState(String name) {
-		graph.insertVertex(graph.getDefaultParent(), null, name, 20, 20, 150, 180,"composite");
+		graph.insertVertex(graph.getDefaultParent(), null, name, 20, 20, 150, 180,Style.COMPOSITE);
 		
 	}
 
@@ -58,7 +68,7 @@ public class Diagram {
 	}
 
 	public void createFinalState() {
-		graph.insertVertex(graph.getDefaultParent(), null, "", 20, 20, 30, 30, "final");
+		graph.insertVertex(graph.getDefaultParent(), null, "", 20, 20, 30, 30, Style.FINAL);
 	}
 
 }

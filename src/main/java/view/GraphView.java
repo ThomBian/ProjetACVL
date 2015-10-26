@@ -57,10 +57,10 @@ public class GraphView extends JPanel {
 	}
 
 	private void initializeAllStyle(mxStylesheet styleSheet) {
-		styleSheet.putCellStyle("initial", getPictureStyle("initial.png"));
-		styleSheet.putCellStyle("final", getPictureStyle("final.png"));
-		styleSheet.putCellStyle("composite", getCompositeStyle());
-		styleSheet.putCellStyle("normal", getNormalStyle());
+		styleSheet.putCellStyle(Style.INITIAL, getPictureStyle("initial.png"));
+		styleSheet.putCellStyle(Style.FINAL, getPictureStyle("final.png"));
+		styleSheet.putCellStyle(Style.COMPOSITE, getCompositeStyle());
+		styleSheet.putCellStyle(Style.STATE, getNormalStyle());
 		applyEdgeDefaults(styleSheet);
 	}
 	private void applyEdgeDefaults(mxStylesheet styleSheet) {
