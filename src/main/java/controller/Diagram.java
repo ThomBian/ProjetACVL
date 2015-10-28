@@ -9,6 +9,9 @@ import model.InitialState;
 import view.MainView;
 import view.Style;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Diagram {
 
 	private static final Diagram instance = new Diagram();
@@ -20,6 +23,7 @@ public class Diagram {
 	private MainView mainView;
 	private mxGraph graph;
 	private InitialState initialState = null;
+    private List<DiagrammError> errors;
 
 	private Diagram() {
 		mxCell cell;
@@ -40,12 +44,14 @@ public class Diagram {
 		graph.setAllowDanglingEdges(false);
 		graph.setConnectableEdges(false);
 		graph.setDropEnabled(true);
+        errors = new ArrayList<>();
 	}
 	
 	public void createInitialState() {
 		System.out.println(graph.getSelectionCell());
 		initialState = new InitialState();
-		graph.insertVertex(graph.getDefaultParent(), null, "", 20, 20, 30, 30, Style.INITIAL);
+		graph.insertVertex(graph.getDefaultParent(), null, "", 20, 20, 30, 30,
+						   Style.INITIAL);
 	}
 
 	public void createState(String name) {
@@ -71,4 +77,11 @@ public class Diagram {
 		graph.insertVertex(graph.getDefaultParent(), null, "", 20, 20, 30, 30, Style.FINAL);
 	}
 
+	public void validate() {
+        mainView.displayValidationWindow(errors);
+	}
+
+    public void addError(DiagrammError e){
+        errors.add(e);
+    }
 }
