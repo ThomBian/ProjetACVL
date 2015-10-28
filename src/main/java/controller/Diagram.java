@@ -122,6 +122,8 @@ public class Diagram {
 
 	public void removeState(State s) {
 		// TODO remove transitions linked to this state
+		// TODO : recursive remove on link (hashmap) object
+		link.remove(s);
 		CompositeState parent = findParentState(s);
 		System.out.println(parent);
 		if(parent == null){
