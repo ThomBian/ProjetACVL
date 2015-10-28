@@ -4,7 +4,7 @@ import javax.swing.*;
 
 import com.mxgraph.view.mxGraph;
 
-import controller.DiagrammError;
+import controller.DiagramError;
 import controller.command.CreateCompositeState;
 import controller.command.CreateFinalState;
 import controller.command.CreateInitialState;
@@ -31,13 +31,13 @@ public class MainView {
 	private final Button validateButton = new Button("Validate diagram", new ValidateDiagramm());
 
 
-	public void displayValidationWindow(List<DiagrammError> errors) {
+	public void displayValidationWindow(List<DiagramError> errors) {
         if (errors.size() == 0){
             //display ok
             System.out.print("OK !");
         } else {
             //display all errors
-            for (DiagrammError error : errors){
+            for (DiagramError error : errors){
                 System.out.print(error.toString());
             }
 

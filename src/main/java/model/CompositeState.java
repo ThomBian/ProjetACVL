@@ -47,5 +47,32 @@ public final class CompositeState extends NamedState {
 	public void setTransitions(Set<Transition<State>> transitions) {
 		this.transitions = transitions;
 	}
-
+	
+	@Override
+	public boolean isCompositeState(){
+		return true;
+	}
+	
+	public CompositeState findParentState(State s){
+    	CompositeState result = null;
+		for(State cur : states){
+    		if(cur.equals(s)) return this;
+    		if(cur.isCompositeState()){
+    			result = ((CompositeState)cur).findParentState(s);
+    			if(result != null) return result;
+    		}
+    	}
+		return result;
+    }
+	
+	public String toString(){
+		String result = new String();
+		result +="CompositeState : " + this.getName()+"\n";
+		
+		for(State s : states){
+			result += "\t"+s.toString() + "\n";
+		}
+		result +="CompositeState END\n" ;
+		return result;
+	}
 }

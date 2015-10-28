@@ -1,12 +1,16 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.JPanel;
 
+import com.mxgraph.model.mxCell;
+import com.mxgraph.model.mxGraphModel.mxChildChange;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.swing.handler.mxKeyboardHandler;
 import com.mxgraph.util.mxConstants;
@@ -17,6 +21,9 @@ import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxPerimeter;
 import com.mxgraph.view.mxStylesheet;
+
+import controller.Diagram;
+import model.CompositeState;
 
 public class GraphView extends JPanel {
 
@@ -52,6 +59,37 @@ public class GraphView extends JPanel {
 				System.out.println("transition removed =" + evt.getProperty("includeEdges"));
 			}
 		});
+		
+			graph.getModel().addListener(mxEvent.CHANGE, new mxEventSource.mxIEventListener() {
+				public void invoke(Object sender, mxEventObject evt) {
+					
+					// lets detect DROP events
+					ArrayList changes = (ArrayList)evt.getProperty("changes");
+					for(Object o : changes){
+					 if (o instanceof mxChildChange)
+					    {
+					    	mxChildChange childChange = (mxChildChange) o;
+					    	mxCell dropped = (mxCell) childChange.getChild();
+					        mxCell previousParent = (mxCell) childChange.getPrevious();
+					        mxCell parent = (mxCell) childChange.getParent();
+					        // previousParent == null = insertion / parent == null = deletion
+					        if(previousParent != null && parent != null){
+					        	// we are sure its a drop
+					        	Diagram d = Diagram.getInstance();
+								d.dropStateIntoCompositeState(d.getStateFromMxCell(dropped), (CompositeState) d.getStateFromMxCell(parent));
+					        }
+					    }
+					}
+					
+					/*
+					if (change instanceof mxChildChange)
+					{
+					    mxChildChange childChange = (mxChildChange) change
+					    mxCell previousParent = (mxCell) childChange.getPrevious();
+					}
+					*/
+				}
+			});
 
 
 	}
