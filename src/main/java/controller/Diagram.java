@@ -102,14 +102,14 @@ public class Diagram {
 	// old == null => was a first level state
 	public void dropStateIntoCompositeState(State s, CompositeState c) {
 		// removing possible existing link to parent
-		CompositeState old = findParentState(s);
-		System.out.println("Drop cell "+s+" from "+old+ " into "+c);
-		if (old != null && c != null) {
-			old.getStates().remove(s);
+		CompositeState parent = findParentState(s);
+		System.out.println("Drop cell "+s+" from "+parent+ " into "+c);
+		if (parent != null && c != null) {
+			parent.getStates().remove(s);
 			// add new link
 			c.getStates().add(s);
-		}else if(old != null && c == null){
-			old.getStates().remove(s);
+		}else if(parent != null && c == null){
+			parent.getStates().remove(s);
 			// add new link
 			directSons.add(s);
 		}else{
@@ -121,11 +121,14 @@ public class Diagram {
 	}
 
 	public void removeState(State s) {
-
-		// TODO search state
-
-		// TODO remove all link to this state ie. parent state & transitions
-
+		// TODO remove transitions linked to this state
+		CompositeState parent = findParentState(s);
+		System.out.println(parent);
+		if(parent == null){
+			directSons.remove(s);
+		}else{
+			parent.getStates().remove(s);
+		}
 	}
 
 	public void launchApplication() {

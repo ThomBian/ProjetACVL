@@ -54,9 +54,14 @@ public class GraphView extends JPanel {
 
 		graph.addListener(mxEvent.REMOVE_CELLS, new mxEventSource.mxIEventListener() {
 			public void invoke(Object sender, mxEventObject evt) {
+				Object [] cells = (Object[]) evt.getProperty("cells");
+				Diagram d = Diagram.getInstance();
+				for(Object cell : cells){
+					d.removeState(d.getStateFromMxCell((mxCell)cell));
+				}
+				//System.out.println("cells removed =" + evt.getProperty("cells"));
+				//System.out.println("transition removed =" + evt.getProperty("includeEdges"));
 				
-				System.out.println("cells removed =" + evt.getProperty("cells"));
-				System.out.println("transition removed =" + evt.getProperty("includeEdges"));
 			}
 		});
 		
@@ -64,7 +69,7 @@ public class GraphView extends JPanel {
 				public void invoke(Object sender, mxEventObject evt) {
 					
 					// lets detect DROP events
-					ArrayList changes = (ArrayList)evt.getProperty("changes");
+					ArrayList<?> changes = (ArrayList)evt.getProperty("changes");
 					for(Object o : changes){
 					 if (o instanceof mxChildChange)
 					    {
