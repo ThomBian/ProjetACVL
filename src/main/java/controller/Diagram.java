@@ -176,7 +176,6 @@ public class Diagram {
 		for(State s :directSons){
 			result += s.toString() + "\n";
 		}
-		System.out.println(linkedTransitions.size());
 		return result;
 	}
 
@@ -196,7 +195,22 @@ public class Diagram {
 		linkedTransitions.put(t, transition);
 	}
 	
-	public void removeTransitionFromModel(){
+	public void removeTransitionFromModel(Transition transition){
+		linkedTransitions.remove(transition);
+		// Remove all occurence of this transition in all possible outgoingTransitions !
+		for(State s : directSons){
+			if(s.removeTransitionInSons(transition))
+				break;
+		}
 		
+	}
+
+	public Transition getTransitionFromMxCell(mxCell cell) {
+		for (Transition o : linkedTransitions.keySet()) {
+		    if (linkedTransitions.get(o).equals(cell)) {
+		      return o;
+		    }
+		}
+		return null;
 	}
 }

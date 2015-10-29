@@ -9,7 +9,11 @@ public class CustomMxGraph extends mxGraph {
 	public boolean isCellMovable(Object cell) {
 		return !getModel().isEdge(cell);
 	}
-
+	// Disallow transition to be moved to another state 
+	@Override 
+	public boolean isCellDisconnectable(Object cell, Object terminal, boolean source){
+		return false;
+	}
 	@Override
 	public boolean isValidDropTarget(Object cell, Object[] cells) {
 		// TODO : if cell = null

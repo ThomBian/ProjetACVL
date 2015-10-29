@@ -85,4 +85,11 @@ public final class CompositeState extends NamedState {
 		}
 		return sons;
 	}
+	public boolean removeTransitionInSons(Transition t){
+		if(getOutgoingTransitions().remove(t)) return true;
+		for(State s : states){
+			if(getOutgoingTransitions().remove(t)) return true;
+		}
+		return false;
+	}
 }
