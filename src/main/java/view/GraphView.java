@@ -56,7 +56,6 @@ public class GraphView extends JPanel {
 				State sourceState = d.getStateFromMxCell(source);
 				State targetState = d.getStateFromMxCell(target);
 				d.addTransitionToModel(sourceState,targetState,newTransition);
-				// System.out.println("edge created =" + evt.getProperty("cell"));
 			}
 		});
 		
@@ -69,9 +68,10 @@ public class GraphView extends JPanel {
 					if(((mxCell) cell).isVertex()){
 						d.removeState(d.getStateFromMxCell((mxCell)cell));
 					}else{
-						// will be removing transitions!
+						d.removeTransitionFromModel(d.getTransitionFromMxCell((mxCell)cell));
 					}
 				}
+				// TODO remove transitions from evt.getProperty("includeEdges") !! 
 				//System.out.println("cells removed =" + evt.getProperty("cells"));
 				//System.out.println("transition removed =" + evt.getProperty("includeEdges"));
 				
