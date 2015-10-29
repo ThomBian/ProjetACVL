@@ -10,6 +10,7 @@ import model.FinalState;
 import model.InitialState;
 import model.SimpleState;
 import model.State;
+import view.CustomMxGraph;
 import view.MainView;
 import view.Style;
 
@@ -44,26 +45,11 @@ public class Diagram {
     }
 
 	private Diagram() {
-		// todo move anonym class to a true class 
-		graph = new mxGraph(){
-			  // Make all edges unmovable
-			  public boolean isCellMovable(Object cell)
-			  {
-			    return !getModel().isEdge(cell);
-			  }	
-			  public boolean isValidDropTarget(Object cell, Object[] cells){
-				  // TODO : if cell  = null OK
-				  if (cells.length == 1 && ((mxCell)cell).isVertex() && ((mxCell)cell).getStyle().equals(Style.COMPOSITE))
-				  {	  
-					  return true;
-				  }
-				  return false;
-			  }
-		};
+		// todo move the custom mx graph to a view class (graphview)
+		graph = new CustomMxGraph();
 		graph.setAllowDanglingEdges(false);
 		graph.setConnectableEdges(false);
 		graph.setDropEnabled(true);
-		
         errors = new ArrayList<>();
 	}
 
@@ -122,8 +108,13 @@ public class Diagram {
 
 	public void removeState(State s) {
 		// TODO remove transitions linked to this state
-		// TODO : recursive remove on link (hashmap) object
 		link.remove(s);
+		if(s.isCompositeState()){
+			List<State> sons = ((CompositeState)s).getAllStates();
+			for(State son : sons){
+				link.remove(son);
+			}
+		}
 		CompositeState parent = findParentState(s);
 		System.out.println(parent);
 		if(parent == null){

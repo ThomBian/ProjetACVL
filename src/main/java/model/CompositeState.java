@@ -1,6 +1,8 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public final class CompositeState extends NamedState {
@@ -74,5 +76,13 @@ public final class CompositeState extends NamedState {
 		}
 		result +="CompositeState END\n" ;
 		return result;
+	}
+
+	public List<State> getAllStates() {
+		List<State> sons = new ArrayList<State>();
+		for(State s: states){
+			sons.addAll(s.getAllStates());
+		}
+		return sons;
 	}
 }
