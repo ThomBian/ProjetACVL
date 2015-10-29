@@ -9,7 +9,9 @@ import model.CompositeState;
 import model.FinalState;
 import model.InitialState;
 import model.SimpleState;
+import model.StandardTransition;
 import model.State;
+import model.Transition;
 import view.CustomMxGraph;
 import view.MainView;
 import view.Style;
@@ -33,11 +35,12 @@ public class Diagram {
 	private mxGraph graph;
 	private Set<State> directSons = new HashSet<State>();
 	private List<DiagramError> errors;
-	private Map<State, mxCell> link = new HashMap<State, mxCell>();
-
+	private Map<State, mxCell> linkedStates = new HashMap<State, mxCell>();
+	private Map<Transition, mxCell> linkedTransitions = new HashMap<Transition, mxCell>();
+	
 	public State getStateFromMxCell(Object cell){
-		for (State o : link.keySet()) {
-		    if (link.get(o).equals(cell)) {
+		for (State o : linkedStates.keySet()) {
+		    if (linkedStates.get(o).equals(cell)) {
 		      return o;
 		    }
 		}
@@ -60,7 +63,7 @@ public class Diagram {
 		// TODO : call to graphview instead of direct class mxgraph object
 		mxCell vertex = (mxCell) graph.createVertex(graph.getDefaultParent(), null, "", 20, 20, 30, 30, Style.INITIAL);
 		graph.addCell(vertex);
-		link.put(s, vertex);
+		linkedStates.put(s, vertex);
 	}
 
 	public void createState(String name) {
@@ -70,7 +73,7 @@ public class Diagram {
 		// TODO : call to graphview instead of direct class mxgraph object
 		mxCell vertex = (mxCell) graph.createVertex(graph.getDefaultParent(), null, name, 20, 20, 80, 30, Style.STATE);
 		graph.addCell(vertex);
-		link.put(s, vertex);
+		linkedStates.put(s, vertex);
 	}
 
 	public void createCompositeState(String name) {
@@ -81,7 +84,7 @@ public class Diagram {
 		mxCell vertex = (mxCell) graph.createVertex(graph.getDefaultParent(), null, name, 20, 20, 150, 180,
 				Style.COMPOSITE);
 		graph.addCell(vertex);
-		link.put(s, vertex);
+		linkedStates.put(s, vertex);
 	}
 	
 	// c == null => first level state
@@ -108,11 +111,11 @@ public class Diagram {
 
 	public void removeState(State s) {
 		// TODO remove transitions linked to this state
-		link.remove(s);
+		linkedStates.remove(s);
 		if(s.isCompositeState()){
 			List<State> sons = ((CompositeState)s).getAllStates();
 			for(State son : sons){
-				link.remove(son);
+				linkedStates.remove(son);
 			}
 		}
 		CompositeState parent = findParentState(s);
@@ -140,7 +143,7 @@ public class Diagram {
 		// TODO : call to graphview instead of direct class mxgraph object
 		mxCell vertex = (mxCell) graph.createVertex(graph.getDefaultParent(), null, "", 20, 20, 30, 30, Style.FINAL);
 		graph.addCell(vertex);
-		link.put(s, vertex);
+		linkedStates.put(s, vertex);
 	}
 
 	public void validate() {
@@ -174,5 +177,21 @@ public class Diagram {
 			result += s.toString() + "\n";
 		}
 		return result;
+	}
+
+	
+	// TODO Do not pass mxCell object as parameter in this method
+	public void addTransitionToModel(State sourceState, State targetState, mxCell transition) {
+		Transition t;
+		if(sourceState.isInitialState()){
+			t = new Transition<InitialState>();
+		}else{
+			t = new StandardTransition();
+		}
+		sourceState.getOutgoingTransitions().add(t);
+		t.setDestination(targetState);
+		t.setSource(sourceState);
+		// TODO add transitions to linked transitions
+		//linkedTransitions.
 	}
 }

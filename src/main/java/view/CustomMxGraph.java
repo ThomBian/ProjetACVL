@@ -11,7 +11,7 @@ public class CustomMxGraph extends mxGraph{
 	    return !getModel().isEdge(cell);
 	  }	
 	  public boolean isValidDropTarget(Object cell, Object[] cells){
-		  // TODO : if cell  = null OK
+		  // TODO : if cell  = null 
 		  if (cells.length == 1 && ((mxCell)cell).isVertex() && ((mxCell)cell).getStyle().equals(Style.COMPOSITE))
 		  {	  
 			  return true;
