@@ -28,4 +28,16 @@ public abstract class State {
 	public boolean isInitialState() {
 		return false;
 	}
+	public List<Transition> removeTransitionInSonsFromTarget(State target) {
+		List<Transition> toBeRemoved = new ArrayList<Transition>();
+		for(Transition  t : outgoingTransitions){
+			if(t.getDestination().equals(target)){
+				toBeRemoved.add(t);
+			}
+		}
+		for(Transition t : toBeRemoved){
+			outgoingTransitions.remove(t);
+		}
+		return toBeRemoved;
+	}
 }

@@ -92,7 +92,6 @@ public class Diagram {
 	public void dropStateIntoCompositeState(State s, CompositeState c) {
 		// removing possible existing link to parent
 		CompositeState parent = findParentState(s);
-		System.out.println("Drop cell "+s+" from "+parent+ " into "+c);
 		if (parent != null && c != null) {
 			parent.getStates().remove(s);
 			// add new link
@@ -108,9 +107,18 @@ public class Diagram {
 		}
 
 	}
-
+	private void removeTransitionFromTarget(State target){
+		List<Transition> removed;
+		for(State s : directSons){
+			removed = s.removeTransitionInSonsFromTarget(target);
+			for(Transition tr : removed){
+				linkedTransitions.remove(tr);
+			}
+		}
+	}
 	public void removeState(State s) {
-		// TODO remove transitions linked to this state
+		// remove transitions linked to this state
+		removeTransitionFromTarget(s);
 		linkedStates.remove(s);
 		if(s.isCompositeState()){
 			List<State> sons = ((CompositeState)s).getAllStates();
@@ -119,7 +127,6 @@ public class Diagram {
 			}
 		}
 		CompositeState parent = findParentState(s);
-		System.out.println(parent);
 		if(parent == null){
 			directSons.remove(s);
 		}else{
@@ -180,7 +187,7 @@ public class Diagram {
 	}
 
 	
-	// TODO Do not pass mxCell object as parameter in this method
+	// TODO Do not pass mxCell object as parameter in this method, this IS NOT MODULAR
 	public void addTransitionToModel(State sourceState, State targetState, mxCell transition) {
 		Transition t;
 		if(sourceState.isInitialState()){
