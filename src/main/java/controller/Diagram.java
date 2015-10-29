@@ -8,6 +8,7 @@ import com.mxgraph.view.mxGraph;
 import model.CompositeState;
 import model.FinalState;
 import model.InitialState;
+import model.NamedState;
 import model.SimpleState;
 import model.StandardTransition;
 import model.State;
@@ -67,7 +68,10 @@ public class Diagram {
 	}
 
 	public void createState(String name) {
-		// TODO verify unicity of name
+		if (!verifyName(name)) {
+			name = changeName(name);
+			System.out.println("verified : " + name);
+		}
 		State s = new SimpleState(name);
 		directSons.add(s);
 		// TODO : call to graphview instead of direct class mxgraph object
@@ -77,7 +81,10 @@ public class Diagram {
 	}
 
 	public void createCompositeState(String name) {
-		// TODO verify unicity of name
+		if (!verifyName(name)) {
+			name = changeName(name);
+			System.out.println("verified : " + name);
+		}
 		State s = new CompositeState(name);
 		directSons.add(s);
 		// TODO : call to graphview instead of direct class mxgraph object
@@ -178,8 +185,28 @@ public class Diagram {
 		}
 		return result;
 	}
+	
+	public boolean verifyName(String name) {
+		for (Map.Entry<State, mxCell> entry : linkedStates.entrySet()) {
+			if (entry.getKey().getClass().equals(SimpleState.class) || entry.getKey().getClass().equals(CompositeState.class)) {
+				if (name.equals(((NamedState) entry.getKey()).getName()))
+					return false;
+			}
+		}
+		return true;
+	}
 
 	
+	public String changeName(String name) {
+		int number = 2;
+		while (true) {
+			if (verifyName(name + " " + String.valueOf(number))) {
+				return name + " " + String.valueOf(number);
+			}
+			number++;
+		}
+	}
+
 	// TODO Do not pass mxCell object as parameter in this method
 	public void addTransitionToModel(State sourceState, State targetState, mxCell transition) {
 		Transition t;

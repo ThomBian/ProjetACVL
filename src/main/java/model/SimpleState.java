@@ -13,4 +13,5 @@ public final class SimpleState extends NamedState {
 	public String toString(){
 		return "State : " + this.getName();
 	}
+	
 }
