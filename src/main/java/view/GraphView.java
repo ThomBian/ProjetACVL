@@ -53,8 +53,13 @@ public class GraphView extends JPanel {
 				mxICell target = newTransition.getTarget();
 				mxICell source = newTransition.getSource();
 				Diagram d = Diagram.getInstance();
+				System.out.println(source);
+				System.out.println(target);
 				State sourceState = d.getStateFromMxCell(source);
+				System.out.println(sourceState);
 				State targetState = d.getStateFromMxCell(target);
+				System.out.println(targetState);
+				System.out.println(newTransition);
 				d.addTransitionToModel(sourceState,targetState,newTransition);
 				// System.out.println("edge created =" + evt.getProperty("cell"));
 			}

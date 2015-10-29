@@ -176,6 +176,7 @@ public class Diagram {
 		for(State s :directSons){
 			result += s.toString() + "\n";
 		}
+		System.out.println(linkedTransitions.size());
 		return result;
 	}
 
@@ -191,7 +192,11 @@ public class Diagram {
 		sourceState.getOutgoingTransitions().add(t);
 		t.setDestination(targetState);
 		t.setSource(sourceState);
-		// TODO add transitions to linked transitions
-		//linkedTransitions.
+
+		linkedTransitions.put(t, transition);
+	}
+	
+	public void removeTransitionFromModel(){
+		
 	}
 }
