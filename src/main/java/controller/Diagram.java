@@ -83,7 +83,6 @@ public class Diagram {
 	public void createCompositeState(String name) {
 		if (!verifyName(name)) {
 			name = changeName(name);
-			System.out.println("verified : " + name);
 		}
 		State s = new CompositeState(name);
 		directSons.add(s);
