@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class State {
+    //boolean switches to true during validation step
+    //must be false at initialisation
+    protected boolean reach = false;
+
 	private Set<Transition<State>> outgoingTransitions = new HashSet<Transition<State>>();
 	
 	// TODO This is  not the place for transitions because it allows final transition to have transitions !!!
@@ -25,6 +29,8 @@ public abstract class State {
 		return sons;
 	}
 
+    //abstract boolean isValid();
+
 	public boolean isInitialState() {
 		return false;
 	}
@@ -40,4 +46,20 @@ public abstract class State {
 		}
 		return toBeRemoved;
 	}
+
+    public boolean isReach() {
+        return reach;
+    }
+
+    public void setReach(boolean reach) {
+        this.reach = reach;
+        for(Transition<State> t: outgoingTransitions){
+            State s = t.getDestination();
+            if(s instanceof FinalState){
+                s.setReach(true);
+            } else {
+                s.setReach(true);
+            }
+        }
+    }
 }

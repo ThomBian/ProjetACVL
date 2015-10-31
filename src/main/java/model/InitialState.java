@@ -6,7 +6,7 @@ public class InitialState extends State {
 	
 
 	public String toString(){
-		return "initialState";
+		return "[Initial State]";
 	}
 	public boolean isInitialState() {
 		return true;

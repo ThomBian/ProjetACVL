@@ -38,7 +38,7 @@ public class MainView {
         } else {
             //display all errors
             for (DiagramError error : errors){
-                System.out.print(error.toString());
+                System.out.println(error.toString());
             }
 
         }

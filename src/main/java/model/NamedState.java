@@ -18,6 +18,9 @@ public abstract class NamedState extends State {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 
+	@Override
+	public String toString() {
+		return "[State "+name+ " ]";
+	}
 }

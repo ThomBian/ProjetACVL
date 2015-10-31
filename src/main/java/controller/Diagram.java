@@ -160,9 +160,33 @@ public class Diagram {
 	}
 
 	public void validate() {
+        int nbInitialState = 0;
+        InitialState input = null;
+        for(State s: directSons){
+            if (s instanceof InitialState) {
+                nbInitialState++;
+                input = (InitialState) s;
+            }
+        }
+        if (nbInitialState == 0 || nbInitialState > 1){
+            this.addError(new DiagramError("Erreur avec les états initiaux"));
+            return;
+        }
+        if(input != null){
+            input.setReach(true);
+        }
+        for(State s : linkedStates.keySet()){
+            if (!s.isReach()){
+                this.addError(new DiagramError("State unreachable : "+s.toString()));
+            }
+        }
 		mainView.displayValidationWindow(errors);
 		System.out.println();
 		System.out.println(this.toString());
+        for(State s: directSons){
+            s.setReach(false);
+        }
+        errors.clear();
 	}
 
 	public void addError(DiagramError e) {

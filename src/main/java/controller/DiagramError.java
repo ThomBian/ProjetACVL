@@ -8,4 +8,9 @@ public class DiagramError {
     public DiagramError(String message) {
         this.message = message;
     }
+
+    @Override
+    public String toString() {
+        return message;
+    }
 }
