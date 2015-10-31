@@ -34,6 +34,7 @@ public class GraphView extends JPanel {
 
 	public GraphView(mxGraph graph) {
 		super();
+        com.mxgraph.swing.util.mxGraphTransferable.enableImageSupport = false;
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 		setLayout(new BorderLayout());
 		add(graphComponent, BorderLayout.CENTER);
