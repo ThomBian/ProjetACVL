@@ -99,14 +99,6 @@ public class GraphView extends JPanel {
 					        }
 					    }
 					}
-					
-					/*
-					if (change instanceof mxChildChange)
-					{
-					    mxChildChange childChange = (mxChildChange) change
-					    mxCell previousParent = (mxCell) childChange.getPrevious();
-					}
-					*/
 				}
 			});
 

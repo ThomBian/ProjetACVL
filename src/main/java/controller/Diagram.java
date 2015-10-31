@@ -216,7 +216,7 @@ public class Diagram {
 		return result;
 	}
 	
-	public boolean verifyName(String name) {
+	private boolean verifyName(String name) {
 		for (Map.Entry<State, mxCell> entry : linkedStates.entrySet()) {
 			if (entry.getKey().getClass().equals(SimpleState.class) || entry.getKey().getClass().equals(CompositeState.class)) {
 				if (name.equals(((NamedState) entry.getKey()).getName()))
@@ -227,7 +227,7 @@ public class Diagram {
 	}
 
 
-	public String changeName(String name) {
+	private String changeName(String name) {
 		int number = 2;
 		while (true) {
 			if (verifyName(name + " " + String.valueOf(number))) {
