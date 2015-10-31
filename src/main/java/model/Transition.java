@@ -7,7 +7,7 @@ package model;
  *
  * @param <T>
  */
-public abstract class Transition<T extends State> {
+public class Transition<T extends State> {
 
 	protected State destination;
 	protected T source;

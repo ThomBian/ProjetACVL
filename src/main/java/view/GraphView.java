@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGraphModel.mxChildChange;
+import com.mxgraph.model.mxICell;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.swing.handler.mxKeyboardHandler;
 import com.mxgraph.util.mxConstants;
@@ -24,6 +25,7 @@ import com.mxgraph.view.mxStylesheet;
 
 import controller.Diagram;
 import model.CompositeState;
+import model.State;
 
 public class GraphView extends JPanel {
 
@@ -44,22 +46,33 @@ public class GraphView extends JPanel {
 		new CustomKeyboardHandler(graphComponent);
 		
 		// Example of possible listeners
-		/*
+		
 		// Detects edge connection
 		graphComponent.getConnectionHandler().addListener(mxEvent.CONNECT, new mxIEventListener() {
 			public void invoke(Object sender, mxEventObject evt) {
-				System.out.println("edge created =" + evt.getProperty("cell"));
+				mxCell newTransition = (mxCell) evt.getProperty("cell");
+				mxICell target = newTransition.getTarget();
+				mxICell source = newTransition.getSource();
+				Diagram d = Diagram.getInstance();
+				State sourceState = d.getStateFromMxCell(source);
+				State targetState = d.getStateFromMxCell(target);
+				d.addTransitionToModel(sourceState,targetState,newTransition);
 			}
 		});
-		*/
+		
 
 		graph.addListener(mxEvent.REMOVE_CELLS, new mxEventSource.mxIEventListener() {
 			public void invoke(Object sender, mxEventObject evt) {
 				Object [] cells = (Object[]) evt.getProperty("cells");
 				Diagram d = Diagram.getInstance();
 				for(Object cell : cells){
-					d.removeState(d.getStateFromMxCell((mxCell)cell));
+					if(((mxCell) cell).isVertex()){
+						d.removeState(d.getStateFromMxCell((mxCell)cell));
+					}else{
+						d.removeTransitionFromModel(d.getTransitionFromMxCell((mxCell)cell));
+					}
 				}
+				// TODO remove transitions from evt.getProperty("includeEdges") !! 
 				//System.out.println("cells removed =" + evt.getProperty("cells"));
 				//System.out.println("transition removed =" + evt.getProperty("includeEdges"));
 				

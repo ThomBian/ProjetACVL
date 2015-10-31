@@ -1,6 +1,8 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public final class CompositeState extends NamedState {
@@ -74,5 +76,36 @@ public final class CompositeState extends NamedState {
 		}
 		result +="CompositeState END\n" ;
 		return result;
+	}
+
+	public List<State> getAllStates() {
+		List<State> sons = new ArrayList<State>();
+		for(State s: states){
+			sons.addAll(s.getAllStates());
+		}
+		return sons;
+	}
+	public boolean removeTransitionInSons(Transition t){
+		if(getOutgoingTransitions().remove(t)) return true;
+		for(State s : states){
+			if(getOutgoingTransitions().remove(t)) return true;
+		}
+		return false;
+	}
+	
+	public List<Transition> removeTransitionInSonsFromTarget(State target) {
+		List<Transition> toBeRemoved = new ArrayList<Transition>();
+		for(Transition  t : getOutgoingTransitions()){
+			if(t.getDestination().equals(target)){
+				toBeRemoved.add(t);
+			}
+		}
+		for(Transition t : toBeRemoved){
+			getOutgoingTransitions().remove(t);
+		}
+		for(State s : states){
+			toBeRemoved.addAll(s.removeTransitionInSonsFromTarget(target));
+		}
+		return toBeRemoved;
 	}
 }
