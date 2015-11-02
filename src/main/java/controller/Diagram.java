@@ -3,11 +3,13 @@ package controller;
 import javax.swing.UIManager;
 
 import com.mxgraph.model.mxCell;
+import com.mxgraph.model.mxICell;
 import com.mxgraph.view.mxGraph;
 
 import model.CompositeState;
 import model.FinalState;
 import model.InitialState;
+import model.InitialTransition;
 import model.NamedState;
 import model.SimpleState;
 import model.StandardTransition;
@@ -122,16 +124,28 @@ public class Diagram {
 			}
 		}
 	}
+	/*
+	 * Remove a state and the transitions leading to it
+	 * If its a composite one, the sons are deleted and the transitions too
+	 */
 	public void removeState(State s) {
 		// remove transitions linked to this state
 		removeTransitionFromTarget(s);
+		for(Transition t : s.getOutgoingTransitions()){
+			removeTransitionFromModel(t);
+		}
 		linkedStates.remove(s);
 		if(s.isCompositeState()){
-			List<State> sons = ((CompositeState)s).getAllStates();
+			List<State> sons = s.getAllStates();
 			for(State son : sons){
+				removeTransitionFromTarget(son);
+				for(Transition t : son.getOutgoingTransitions()){
+					removeTransitionFromModel(t);
+				}
 				linkedStates.remove(son);
 			}
 		}
+		
 		CompositeState parent = findParentState(s);
 		if(parent == null){
 			directSons.remove(s);
@@ -241,13 +255,12 @@ public class Diagram {
 	public void addTransitionToModel(State sourceState, State targetState, mxCell transition) {
 		Transition t;
 		if(sourceState.isInitialState()){
-			t = new Transition<InitialState>();
+			t = new Transition<InitialState>((InitialState)sourceState,targetState);
 		}else{
-			t = new StandardTransition();
+			t = new StandardTransition(sourceState,targetState);
 		}
 		sourceState.getOutgoingTransitions().add(t);
-		t.setDestination(targetState);
-		t.setSource(sourceState);
+
 
 		linkedTransitions.put(t, transition);
 	}
@@ -270,4 +283,142 @@ public class Diagram {
 		}
 		return null;
 	}
+	
+	/*
+	 * Flatten a VALID graph
+	 */
+	public void flatten() {
+		// TODO Verify that the graph is Valid
+		boolean isGraphValid = false;
+		if(isGraphValid){
+
+			
+			Set<Transition> transitions = getAllTransitions();
+			Set<Transition> trashOfTransitions = new HashSet<Transition>();
+			Set<Transition> newTransitions = new HashSet<Transition>();
+			State source, dest;
+			Transition newTransition;
+			// Search for transition that needs to be upgraded
+			for(Transition t : transitions){
+				
+				source = t.getSource();
+				dest = t.getDestination();
+				if(t.getSource().isCompositeState() && ! t.getDestination().isCompositeState()  ){
+	
+					for(State s : ((CompositeState)source).getStates()){
+						// We dont want to create transition from initial/final state here
+						if( !s.isInitialState() && !s.isFinalState()){
+							// Generate transitions and add it to the current source
+							newTransition = new StandardTransition(s, dest);
+							newTransitions.add(newTransition);
+							s.getOutgoingTransitions().add(newTransition);
+						}	
+					}
+					// Remove current transition 
+					trashOfTransitions.add(t);
+				}else if(t.getSource().isCompositeState() && t.getDestination().isCompositeState() ){
+					
+					for(State s : ((CompositeState)source).getStates()){
+						// We dont want to create transition from initial/final state here
+						if( !s.isInitialState() && !s.isFinalState()){
+							InitialState init = ((CompositeState)t.getDestination()).getInitState();
+							// Generate transitions and add it to the source
+							for(Transition tInit : init.getOutgoingTransitions()){
+								newTransition = new StandardTransition(s, tInit.getDestination());
+								s.getOutgoingTransitions().add(newTransition);
+								newTransitions.add(newTransition);
+							}
+						}
+						
+					}
+					// Remove current transition 
+					trashOfTransitions.add(t);
+					
+				}else if(!t.getSource().isCompositeState() && t.getDestination().isCompositeState()){
+					
+					InitialState init = ((CompositeState)t.getDestination()).getInitState();
+					// Generate transitions and add it to the source
+					for(Transition tInit : init.getOutgoingTransitions()){
+						if(source.isInitialState()){
+							newTransition = new InitialTransition((InitialState)source, tInit.getDestination());
+						}else{
+							newTransition = new StandardTransition(source, tInit.getDestination());
+						}
+						source.getOutgoingTransitions().add(newTransition);
+						newTransitions.add(newTransition);
+					}
+					// Remove current transition 
+					trashOfTransitions.add(t);
+				}
+			}
+			mxCell[] edges = new mxCell[1];
+			// handle trashOfTransitions
+			for(Transition t : trashOfTransitions){
+				edges[0] =  linkedTransitions.get(t);
+				graph.removeCells(edges);
+				removeTransitionFromModel(t);
+			}
+			
+			
+			// Attach new transition to mxcell in linkedmap & make them appear
+			for(Transition t : newTransitions){
+				mxCell sourceCell = linkedStates.get(t.getSource()), destCell = linkedStates.get(t.getDestination()) ;
+				mxCell edge = (mxCell) graph.createEdge(graph.getDefaultParent(), null, "", sourceCell, destCell, Style.EDGE);
+				edge = (mxCell) graph.addEdge(edge, graph.getDefaultParent(), sourceCell, destCell, null);
+				linkedTransitions.put(t, edge);
+				
+			}
+			// get List of states to place in directSons & move them both graphically and in the directSosn set
+			mxCell[] vertex = new mxCell[1];
+			Set<State> misplacedStates = new HashSet<State>();
+			for(State s : directSons){
+				if(s.isCompositeState()){
+					// get simple & final states recursively
+					misplacedStates.addAll(s.getSimpleFinalStateInSons());
+					// remove him from graph & model
+					//TODO remove useless vertex
+					vertex[0] = linkedStates.get(s);
+					graph.ungroupCells(vertex);
+					//graph.removeCells(vertex);
+					/*
+					removeState(s);
+					*/
+					
+				}	
+			}
+			// add everything to the first level 
+			directSons.addAll(misplacedStates);
+			// Graphically place them at the first level (not in composite state anymore)
+			mxCell[] cells = new mxCell[1];
+			for(State s : misplacedStates){
+				mxCell cell = linkedStates.get(s);
+				// TODO MOVE vertex // si trop dur ajouter remplacer vertex par nouveau puis relier transitions..
+				//cell.setParent((mxICell) graph.getDefaultParent());
+				cells[0] = cell;
+				graph.removeCellsFromParent(cells);
+				graph.ungroupCells(cells);
+			}
+			mainView.getGraph().informUser("Operation performed !");
+		}
+		else{
+			mainView.getGraph().informUser("The graph must be valid in order to perform this operation");
+		}
+	}
+	
+	private List<State> getAllStates(){
+		List<State> states = new ArrayList<State>();
+		for(State s : directSons){
+			states.addAll(s.getAllStates());
+		}
+		return states;
+	}
+	
+	private Set<Transition> getAllTransitions(){
+		Set<Transition> transitions = new HashSet<Transition>();
+		for(State s : directSons){
+			transitions.addAll(s.getAllTransitions());
+		}
+		return transitions;
+	}
+	
 }

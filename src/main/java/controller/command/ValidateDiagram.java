@@ -1,7 +1,7 @@
 package controller.command;
 
 import controller.Diagram;
-public class ValidateDiagramm implements Command {
+public class ValidateDiagram implements Command {
 
 	@Override
 	public void execute() {
