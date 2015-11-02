@@ -74,6 +74,7 @@ public final class CompositeState extends NamedState {
 
     public List<State> getAllStates() {
         List<State> sons = new ArrayList<State>();
+        sons.add(this);
         for (State s : states) {
             sons.addAll(s.getAllStates());
         }
@@ -124,10 +125,10 @@ public final class CompositeState extends NamedState {
 
 	@Override
 	public Collection<? extends State> getSimpleFinalStateInSons() {
-		Set<State> states = new HashSet<State>();
+		Set<State> finalSimple = new HashSet<State>();
 		for(State s : states){
-			states.addAll(s.getSimpleFinalStateInSons());
+			finalSimple.addAll(s.getSimpleFinalStateInSons());
 		}
-		return states;
+		return finalSimple;
 	}
 }

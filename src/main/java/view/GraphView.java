@@ -98,7 +98,7 @@ public class GraphView extends JPanel {
 					        mxCell previousParent = (mxCell) childChange.getPrevious();
 					        mxCell parent = (mxCell) childChange.getParent();
 					        // previousParent == null = insertion / parent == null = deletion
-					        if(previousParent != null && parent != null && ! dropped.isEdge()){
+					        if(previousParent != null && parent != null && !dropped.isEdge()){
 					        	// we are sure its a drop
 					        	Diagram d = Diagram.getInstance();
 								d.dropStateIntoCompositeState(d.getStateFromMxCell(dropped), (CompositeState) d.getStateFromMxCell(parent));
