@@ -101,6 +101,8 @@ public class Diagram {
 		if (parent != null && c != null) {
 			parent.getStates().remove(s);
 			// add new link
+            if (s instanceof InitialState)
+                c.setInitState((InitialState) s);
 			c.getStates().add(s);
 		}else if(parent != null && c == null){
 			parent.getStates().remove(s);
@@ -109,6 +111,9 @@ public class Diagram {
 		}else{
 			this.directSons.remove(s);
 			// add new link
+            if (s instanceof InitialState) {
+                c.setInitState((InitialState) s);
+            }
 			c.getStates().add(s);
 		}
 
@@ -159,7 +164,17 @@ public class Diagram {
 		linkedStates.put(s, vertex);
 	}
 
-	public void validate() {
+	public boolean validate() {
+        boolean isValid = true;
+        isValid = areAllStatesReachable();
+		mainView.displayValidationWindow(errors);
+
+        errors.clear();
+        return isValid;
+	}
+
+    private boolean areAllStatesReachable() {
+        boolean isValid = true;
         int nbInitialState = 0;
         InitialState input = null;
         for(State s: directSons){
@@ -170,7 +185,7 @@ public class Diagram {
         }
         if (nbInitialState == 0 || nbInitialState > 1){
             this.addError(new DiagramError("Erreur avec les états initiaux"));
-            return;
+            isValid = false;
         }
         if(input != null){
             input.setReach(true);
@@ -178,18 +193,16 @@ public class Diagram {
         for(State s : linkedStates.keySet()){
             if (!s.isReach()){
                 this.addError(new DiagramError("State unreachable : "+s.toString()));
+				isValid = false;
             }
         }
-		mainView.displayValidationWindow(errors);
-		System.out.println();
-		System.out.println(this.toString());
         for(State s: directSons){
             s.setReach(false);
         }
-        errors.clear();
-	}
+        return isValid;
+    }
 
-	public void addError(DiagramError e) {
+    public void addError(DiagramError e) {
 		errors.add(e);
 	}
 

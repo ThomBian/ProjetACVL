@@ -55,11 +55,7 @@ public abstract class State {
         this.reach = reach;
         for(Transition<State> t: outgoingTransitions){
             State s = t.getDestination();
-            if(s instanceof FinalState){
-                s.setReach(true);
-            } else {
-                s.setReach(true);
-            }
+           	s.setReach(true);
         }
     }
 }

@@ -95,4 +95,14 @@ public final class CompositeState extends NamedState {
         }
         return toBeRemoved;
     }
+
+    @Override
+    public void setReach(boolean reach) {
+        this.reach = reach;
+        initState.setReach(true);
+        for (Transition<State> t : getOutgoingTransitions()){
+            State s = t.getDestination();
+            s.setReach(true);
+        }
+    }
 }
