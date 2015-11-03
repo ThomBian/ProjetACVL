@@ -13,8 +13,8 @@ public class FinalState extends State {
 	}
 
     @Override
-    public void setReach(boolean reach) {
-        this.reach = reach;
+    public void reach() {
+        this.reach = true;
     }
     @Override
     public boolean isFinalState(){

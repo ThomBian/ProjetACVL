@@ -133,12 +133,13 @@ public final class CompositeState extends NamedState {
 	}
 
     @Override
-    public void setReach(boolean reach) {
-        this.reach = reach;
-        initState.setReach(true);
+    public void reach() {
+        this.reach = true;
+        InitialState initState = getInitState();
+        initState.reach();
         for (Transition<State> t : getOutgoingTransitions()){
             State s = t.getDestination();
-            s.setReach(true);
+            s.reach();
         }
     }
 }

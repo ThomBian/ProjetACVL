@@ -3,8 +3,6 @@ package controller;
 import javax.swing.UIManager;
 
 import com.mxgraph.model.mxCell;
-import com.mxgraph.model.mxICell;
-import com.mxgraph.view.mxGraph;
 
 import model.CompositeState;
 import model.FinalState;
@@ -15,7 +13,6 @@ import model.SimpleState;
 import model.StandardTransition;
 import model.State;
 import model.Transition;
-import view.CustomMxGraph;
 import view.MainView;
 import view.Style;
 
@@ -97,8 +94,6 @@ public class Diagram {
 		if (parent != null && c != null) {
 			parent.getStates().remove(s);
 			// add new link
-            if (s instanceof InitialState)
-                c.setInitState((InitialState) s);
 			c.getStates().add(s);
 		}else if(parent != null && c == null){
 			parent.getStates().remove(s);
@@ -107,9 +102,6 @@ public class Diagram {
 		}else if (parent == null && c != null){
 			directSons.remove(s);
 			// add new link
-            if (s instanceof InitialState) {
-                c.setInitState((InitialState) s);
-            }
 			c.getStates().add(s);
 		}
 
@@ -172,7 +164,6 @@ public class Diagram {
         boolean isValid = true;
         isValid = areAllStatesReachable();
 		mainView.displayValidationWindow(errors);
-
         errors.clear();
         return isValid;
 	}
@@ -192,15 +183,15 @@ public class Diagram {
             isValid = false;
         }
         if(input != null){
-            input.setReach(true);
+            input.reach();
         }
-        for(State s : linkedStates.keySet()){
+        for(State s : getAllStates()){
             if (!s.isReach()){
                 this.addError(new DiagramError("State unreachable : "+s.toString()));
 				isValid = false;
             }
         }
-        for(State s: directSons){
+        for(State s: getAllStates()){
             s.setReach(false);
         }
         return isValid;

@@ -61,15 +61,11 @@ public abstract class State {
 		return toBeRemoved;
 	}
 
-    public boolean isReach() {
-        return reach;
-    }
-
-    public void setReach(boolean reach) {
-        this.reach = reach;
+    public void reach() {
+        this.reach = true;
         for(Transition<State> t: outgoingTransitions){
             State s = t.getDestination();
-           	s.setReach(true);
+           	s.reach();
         }
     }
 
@@ -78,4 +74,12 @@ public abstract class State {
 	}
 
 	public abstract Collection<? extends State> getSimpleFinalStateInSons();
+
+	public boolean isReach() {
+		return reach;
+	}
+
+	public void setReach(boolean reach) {
+		this.reach = reach;
+	}
 }

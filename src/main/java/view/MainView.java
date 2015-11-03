@@ -34,7 +34,7 @@ public class MainView {
 	public void displayValidationWindow(List<DiagramError> errors) {
         if (errors.size() == 0){
             //display ok
-            System.out.print("OK !");
+            System.out.println("OK !");
         } else {
             //display all errors
             for (DiagramError error : errors){
