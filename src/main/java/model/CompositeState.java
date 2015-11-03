@@ -14,7 +14,7 @@ public final class CompositeState extends NamedState {
         super(name);
         states = new HashSet<State>();
     }
-    
+
     /*
      * Return the initial state of a composite one
      * Precondition The composite state must have only one initial state !!!
@@ -28,7 +28,7 @@ public final class CompositeState extends NamedState {
         		init = (InitialState) s;
         	}
         }
-        
+
         return init;
     }
 
@@ -112,7 +112,7 @@ public final class CompositeState extends NamedState {
         }
         return toBeRemoved;
     }
-    
+
     @Override
     public Collection<? extends Transition> getAllTransitions() {
 		Set<Transition> transitions = new HashSet<Transition>();
@@ -131,4 +131,15 @@ public final class CompositeState extends NamedState {
 		}
 		return finalSimple;
 	}
+
+    @Override
+    public void reach() {
+        this.reach = true;
+        InitialState initState = getInitState();
+        initState.reach();
+        for (Transition<State> t : getOutgoingTransitions()){
+            State s = t.getDestination();
+            s.reach();
+        }
+    }
 }

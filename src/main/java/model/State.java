@@ -61,25 +61,25 @@ public abstract class State {
 		return toBeRemoved;
 	}
 
-    public boolean isReach() {
-        return reach;
-    }
-
-    public void setReach(boolean reach) {
-        this.reach = reach;
+    public void reach() {
+        this.reach = true;
         for(Transition<State> t: outgoingTransitions){
             State s = t.getDestination();
-            if(s.isFinalState()){
-                s.setReach(true);
-            } else {
-                s.setReach(true);
-            }
+           	s.reach();
         }
     }
 
 	public Collection<? extends Transition> getAllTransitions() {
 		return getOutgoingTransitions();
 	}
-	
+
 	public abstract Collection<? extends State> getSimpleFinalStateInSons();
+
+	public boolean isReach() {
+		return reach;
+	}
+
+	public void setReach(boolean reach) {
+		this.reach = reach;
+	}
 }
