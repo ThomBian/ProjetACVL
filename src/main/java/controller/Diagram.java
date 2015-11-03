@@ -38,6 +38,7 @@ public class Diagram {
 	
 	private Set<State> directSons = new HashSet<State>();
 	private List<DiagramError> errors;
+	// Will be placed in graph view soon
 	private Map<State, mxCell> linkedStates = new HashMap<State, mxCell>();
 	private Map<Transition, mxCell> linkedTransitions = new HashMap<Transition, mxCell>();
 	
@@ -107,7 +108,6 @@ public class Diagram {
 			// add new link
 			c.getStates().add(s);
 		}
-
 	}
 	private void removeTransitionFromTarget(State target){
 		List<Transition> removed;
@@ -124,7 +124,6 @@ public class Diagram {
 	 */
 	public void removeState(State s) {
 		// remove transitions linked to this state
-		
 		List<State> sonsAndFather = s.getAllStates();
 		for(State son : sonsAndFather){
 			removeTransitionFromTarget(son);
@@ -133,7 +132,6 @@ public class Diagram {
 			}
 			linkedStates.remove(son);
 		}
-		
 		CompositeState parent = findParentState(s);
 		if(parent == null){
 			directSons.remove(s);
@@ -142,8 +140,6 @@ public class Diagram {
 		}
 	}
 
-	
-	
 	public void launchApplication() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -255,6 +251,9 @@ public class Diagram {
 		linkedTransitions.put(t, transition);
 	}
 	
+	/*
+	 * Remove this transition from everywhere (incl. states)
+	 */
 	public void removeTransitionFromModel(Transition transition){
 		linkedTransitions.remove(transition);
 		// Remove all occurence of this transition in all possible outgoingTransitions !
@@ -262,7 +261,6 @@ public class Diagram {
 			if(s.removeTransitionInSons(transition))
 				break;
 		}
-		
 	}
 
 	public Transition getTransitionFromMxCell(mxCell cell) {

@@ -85,7 +85,7 @@ public final class CompositeState extends NamedState {
         if (getOutgoingTransitions().remove(t))
             return true;
         for (State s : states) {
-            if (getOutgoingTransitions().remove(t))
+            if (s.removeTransitionInSons(t))
                 return true;
         }
         return false;

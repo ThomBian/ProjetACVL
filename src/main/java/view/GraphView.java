@@ -79,6 +79,7 @@ public class GraphView extends JPanel {
 						if(((mxCell) cell).isVertex()){
 							d.removeState(d.getStateFromMxCell((mxCell)cell));
 						}else{
+							System.out.println("removing edge");
 							d.removeTransitionFromModel(d.getTransitionFromMxCell((mxCell)cell));
 						}
 					}

@@ -16,7 +16,6 @@ public class CustomMxGraph extends mxGraph {
 	}
 	@Override
 	public boolean isValidDropTarget(Object cell, Object[] cells) {
-		// TODO : if cell = null
 		try{
 			if (cells.length == 1 && ((mxCell) cell).isVertex() && ((mxCell) cell).getStyle().equals(Style.COMPOSITE)) {
 				return true;
