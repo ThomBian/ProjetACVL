@@ -7,6 +7,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import com.mxgraph.model.mxCell;
@@ -63,18 +64,23 @@ public class GraphView extends JPanel {
 
 		graph.addListener(mxEvent.REMOVE_CELLS, new mxEventSource.mxIEventListener() {
 			public void invoke(Object sender, mxEventObject evt) {
-				Object [] cells = (Object[]) evt.getProperty("cells");
-				Diagram d = Diagram.getInstance();
-				for(Object cell : cells){
-					if(((mxCell) cell).isVertex()){
-						d.removeState(d.getStateFromMxCell((mxCell)cell));
-					}else{
-						d.removeTransitionFromModel(d.getTransitionFromMxCell((mxCell)cell));
+				try{
+					Object [] cells = (Object[]) evt.getProperty("cells");
+					Diagram d = Diagram.getInstance();
+					for(Object cell : cells){
+						if(((mxCell) cell).isVertex()){
+							d.removeState(d.getStateFromMxCell((mxCell)cell));
+						}else{
+							d.removeTransitionFromModel(d.getTransitionFromMxCell((mxCell)cell));
+						}
 					}
+					// TODO remove transitions from evt.getProperty("includeEdges") !! ??? not sure  
+					//System.out.println("cells removed =" + evt.getProperty("cells"));
+					//System.out.println("transition removed =" + evt.getProperty("includeEdges"));
+				}catch(Exception e){
+					
 				}
-				// TODO remove transitions from evt.getProperty("includeEdges") !! 
-				//System.out.println("cells removed =" + evt.getProperty("cells"));
-				//System.out.println("transition removed =" + evt.getProperty("includeEdges"));
+				
 				
 			}
 		});
@@ -92,7 +98,7 @@ public class GraphView extends JPanel {
 					        mxCell previousParent = (mxCell) childChange.getPrevious();
 					        mxCell parent = (mxCell) childChange.getParent();
 					        // previousParent == null = insertion / parent == null = deletion
-					        if(previousParent != null && parent != null){
+					        if(previousParent != null && parent != null && ! dropped.isEdge()){
 					        	// we are sure its a drop
 					        	Diagram d = Diagram.getInstance();
 								d.dropStateIntoCompositeState(d.getStateFromMxCell(dropped), (CompositeState) d.getStateFromMxCell(parent));
@@ -124,7 +130,7 @@ public class GraphView extends JPanel {
 	    edge.put(mxConstants.STYLE_ALIGN, mxConstants.ALIGN_CENTER);
 	    edge.put(mxConstants.STYLE_STROKECOLOR, "#000000"); // default is #6482B9
 	    edge.put(mxConstants.STYLE_FONTCOLOR, "#446299");
-
+	    styleSheet.putCellStyle(Style.EDGE, edge);
 	    styleSheet.setDefaultEdgeStyle(edge);
 	}
 	private Map<String, Object> getNormalStyle() {
@@ -151,6 +157,10 @@ public class GraphView extends JPanel {
 		style.put(mxConstants.STYLE_IMAGE, "file:src/resources/" + picName);
 		style.put(mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_BOTTOM);
 		return style;
+	}
+
+	public void informUser(String message) {
+		JOptionPane.showMessageDialog(null, message);
 	}
 
 }

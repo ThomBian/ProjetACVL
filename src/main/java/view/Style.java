@@ -10,4 +10,6 @@ public class Style {
 	
 	public static final String FINAL = "final";
 	
+	public static final String EDGE = "edge";
+	
 }

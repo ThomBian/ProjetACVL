@@ -1,5 +1,9 @@
 package model;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import controller.Diagram;
 import controller.DiagramError;
 public class FinalState extends State {
@@ -12,6 +16,16 @@ public class FinalState extends State {
     public void setReach(boolean reach) {
         this.reach = reach;
     }
+    @Override
+    public boolean isFinalState(){
+		return true;
+	}
 
+	@Override
+	public Collection<? extends State> getSimpleFinalStateInSons() {
+		Set<State> states = new HashSet<State>();
+		states.add(this);
+		return states;
+	}
 
 }

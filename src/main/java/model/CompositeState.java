@@ -1,13 +1,13 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public final class CompositeState extends NamedState {
 
-    private InitialState           initState;
     private Set<State>             states;
 
     public CompositeState(String name) {
@@ -15,13 +15,23 @@ public final class CompositeState extends NamedState {
         states = new HashSet<State>();
     }
 
+    /*
+     * Return the initial state of a composite one
+     * Precondition The composite state must have only one initial state !!!
+     */
     public InitialState getInitState() {
-        return initState;
+    	int nbInitState = 0;
+    	InitialState init = null;
+        for(State s: states){
+        	if(s.isInitialState()){
+        		nbInitState ++;
+        		init = (InitialState) s;
+        	}
+        }
+
+        return init;
     }
 
-    public void setInitState(InitialState initState) {
-        this.initState = initState;
-    }
 
     public Set<State> getStates() {
         return states;
@@ -80,6 +90,12 @@ public final class CompositeState extends NamedState {
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see model.State#removeTransitionInSonsFromTarget(model.State)
+     * Get & remove transition that leads to the target state
+     * Return the transitions to be removed
+     */
     public List<Transition> removeTransitionInSonsFromTarget(State target) {
         List<Transition> toBeRemoved = new ArrayList<Transition>();
         for (Transition t : getOutgoingTransitions()) {
@@ -95,6 +111,25 @@ public final class CompositeState extends NamedState {
         }
         return toBeRemoved;
     }
+
+    @Override
+    public Collection<? extends Transition> getAllTransitions() {
+		Set<Transition> transitions = new HashSet<Transition>();
+		transitions.addAll(getOutgoingTransitions());
+		for(State s : states){
+			transitions.addAll(s.getAllTransitions());
+		}
+    	return transitions;
+	}
+
+	@Override
+	public Collection<? extends State> getSimpleFinalStateInSons() {
+		Set<State> states = new HashSet<State>();
+		for(State s : states){
+			states.addAll(s.getSimpleFinalStateInSons());
+		}
+		return states;
+	}
 
     @Override
     public void setReach(boolean reach) {

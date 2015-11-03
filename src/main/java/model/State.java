@@ -20,6 +20,9 @@ public abstract class State {
 	public boolean isCompositeState(){
 		return false;
 	}
+	public boolean isFinalState(){
+		return false;
+	}
 	public boolean removeTransitionInSons(Transition t){
 		return outgoingTransitions.remove(t);
 	}
@@ -34,6 +37,10 @@ public abstract class State {
 	public boolean isInitialState() {
 		return false;
 	}
+	/*
+	 * Get & remove transition that leads to the target state
+     * Return the transitions to be removed
+	 */
 	public List<Transition> removeTransitionInSonsFromTarget(State target) {
 		List<Transition> toBeRemoved = new ArrayList<Transition>();
 		for(Transition  t : outgoingTransitions){
@@ -58,4 +65,10 @@ public abstract class State {
            	s.setReach(true);
         }
     }
+
+	public Collection<? extends Transition> getAllTransitions() {
+		return getOutgoingTransitions();
+	}
+
+	public abstract Collection<? extends State> getSimpleFinalStateInSons();
 }
