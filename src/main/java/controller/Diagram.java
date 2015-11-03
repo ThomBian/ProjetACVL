@@ -46,7 +46,7 @@ public class Diagram {
 		    if (linkedStates.get(o).equals(cell)) {
 		      return o;
 		    }
-		}
+		} 
 		return null;
     }
 
@@ -92,7 +92,6 @@ public class Diagram {
 	// c == null => first level state
 	// old == null => was a first level state
 	public void dropStateIntoCompositeState(State s, CompositeState c) {
-		if(s == null ) return;
 		// removing possible existing link to parent
 		CompositeState parent = findParentState(s);
 		if (parent != null && c != null) {
@@ -222,9 +221,9 @@ public class Diagram {
 	}
 	
 	private boolean verifyName(String name) {
-		for (Map.Entry<State, mxCell> entry : linkedStates.entrySet()) {
-			if (entry.getKey().getClass().equals(SimpleState.class) || entry.getKey().getClass().equals(CompositeState.class)) {
-				if (name.equals(((NamedState) entry.getKey()).getName()))
+		for (State s : getAllStates()) {
+			if (s.isNamedState()) {
+				if (name.equals(((NamedState) s).getName()))
 					return false;
 			}
 		}

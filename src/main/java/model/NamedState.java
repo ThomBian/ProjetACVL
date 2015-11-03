@@ -14,7 +14,10 @@ public abstract class NamedState extends State {
 	public String getName() {
 		return name;
 	}
-
+	@Override
+	public boolean isNamedState() {
+		return true;
+	}
 	public void setName(String name) {
 		this.name = name;
 	}

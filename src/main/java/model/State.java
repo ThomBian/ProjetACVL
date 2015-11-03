@@ -40,6 +40,10 @@ public abstract class State {
 	public boolean isInitialState() {
 		return false;
 	}
+	
+	public boolean isNamedState() {
+		return false;
+	}
 	/*
 	 * Get & remove transition that leads to the target state
      * Return the transitions to be removed

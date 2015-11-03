@@ -27,6 +27,7 @@ import com.mxgraph.view.mxStylesheet;
 import controller.Diagram;
 import model.CompositeState;
 import model.State;
+import model.Transition;
 
 public class GraphView extends JPanel {
 
@@ -35,6 +36,9 @@ public class GraphView extends JPanel {
 	 */
 	private static final long serialVersionUID = -6717176422645301601L;
 	private mxGraph graph;
+	// TODO use those attributes instead of the one in diagram !
+	// private Map<State, mxCell> linkedStates = new HashMap<State, mxCell>();
+	// private Map<Transition, mxCell> linkedTransitions = new HashMap<Transition, mxCell>();
 	public GraphView() {
 		super();
 		graph = new CustomMxGraph();
@@ -105,7 +109,11 @@ public class GraphView extends JPanel {
 					        if(previousParent != null && parent != null && !dropped.isEdge()){
 					        	// we are sure its a drop
 					        	Diagram d = Diagram.getInstance();
-								d.dropStateIntoCompositeState(d.getStateFromMxCell(dropped), (CompositeState) d.getStateFromMxCell(parent));
+					        	State s = d.getStateFromMxCell(dropped);
+					        	if(s != null){
+					        		d.dropStateIntoCompositeState(d.getStateFromMxCell(dropped), (CompositeState) d.getStateFromMxCell(parent));
+					        	}
+								
 					        }
 					    }
 					}
