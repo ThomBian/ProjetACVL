@@ -35,7 +35,7 @@ public class Diagram {
 	}
 
 	private MainView mainView;
-	private mxGraph graph;
+	
 	private Set<State> directSons = new HashSet<State>();
 	private List<DiagramError> errors;
 	private Map<State, mxCell> linkedStates = new HashMap<State, mxCell>();
@@ -46,26 +46,20 @@ public class Diagram {
 		    if (linkedStates.get(o).equals(cell)) {
 		      return o;
 		    }
-		}
+		} 
 		return null;
     }
 
 	private Diagram() {
-		// todo move the custom mx graph to a view class (graphview)
-		graph = new CustomMxGraph();
-		graph.setAllowDanglingEdges(false);
-		graph.setConnectableEdges(false);
-		graph.setDropEnabled(true);
         errors = new ArrayList<>();
 	}
 
 	public void createInitialState() {
-		// System.out.println(graph.getSelectionCell());
 		State s = new InitialState();
 		directSons.add(s);
 		// TODO : call to graphview instead of direct class mxgraph object
-		mxCell vertex = (mxCell) graph.createVertex(graph.getDefaultParent(), null, "", 20, 20, 30, 30, Style.INITIAL);
-		graph.addCell(vertex);
+		mxCell vertex = (mxCell) mainView.getGraph().getGraph().createVertex(mainView.getGraph().getGraph().getDefaultParent(), null, "", 20, 20, 30, 30, Style.INITIAL);
+		mainView.getGraph().getGraph().addCell(vertex);
 		linkedStates.put(s, vertex);
 	}
 
@@ -77,8 +71,8 @@ public class Diagram {
 		State s = new SimpleState(name);
 		directSons.add(s);
 		// TODO : call to graphview instead of direct class mxgraph object
-		mxCell vertex = (mxCell) graph.createVertex(graph.getDefaultParent(), null, name, 20, 20, 80, 30, Style.STATE);
-		graph.addCell(vertex);
+		mxCell vertex = (mxCell) mainView.getGraph().getGraph().createVertex(mainView.getGraph().getGraph().getDefaultParent(), null, name, 20, 20, 80, 30, Style.STATE);
+		mainView.getGraph().getGraph().addCell(vertex);
 		linkedStates.put(s, vertex);
 	}
 
@@ -89,9 +83,9 @@ public class Diagram {
 		State s = new CompositeState(name);
 		directSons.add(s);
 		// TODO : call to graphview instead of direct class mxgraph object
-		mxCell vertex = (mxCell) graph.createVertex(graph.getDefaultParent(), null, name, 20, 20, 150, 180,
+		mxCell vertex = (mxCell) mainView.getGraph().getGraph().createVertex(mainView.getGraph().getGraph().getDefaultParent(), null, name, 20, 20, 150, 180,
 				Style.COMPOSITE);
-		graph.addCell(vertex);
+		mainView.getGraph().getGraph().addCell(vertex);
 		linkedStates.put(s, vertex);
 	}
 	
@@ -110,8 +104,8 @@ public class Diagram {
 			parent.getStates().remove(s);
 			// add new link
 			directSons.add(s);
-		}else{
-			this.directSons.remove(s);
+		}else if (parent == null && c != null){
+			directSons.remove(s);
 			// add new link
             if (s instanceof InitialState) {
                 c.setInitState((InitialState) s);
@@ -135,20 +129,14 @@ public class Diagram {
 	 */
 	public void removeState(State s) {
 		// remove transitions linked to this state
-		removeTransitionFromTarget(s);
-		for(Transition t : s.getOutgoingTransitions()){
-			removeTransitionFromModel(t);
-		}
-		linkedStates.remove(s);
-		if(s.isCompositeState()){
-			List<State> sons = s.getAllStates();
-			for(State son : sons){
-				removeTransitionFromTarget(son);
-				for(Transition t : son.getOutgoingTransitions()){
-					removeTransitionFromModel(t);
-				}
-				linkedStates.remove(son);
+		
+		List<State> sonsAndFather = s.getAllStates();
+		for(State son : sonsAndFather){
+			removeTransitionFromTarget(son);
+			for(Transition t : son.getOutgoingTransitions()){
+				removeTransitionFromModel(t);
 			}
+			linkedStates.remove(son);
 		}
 		
 		CompositeState parent = findParentState(s);
@@ -159,10 +147,12 @@ public class Diagram {
 		}
 	}
 
+	
+	
 	public void launchApplication() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			mainView = new MainView(graph);
+			mainView = new MainView();
 			mainView.getFrame().setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -173,8 +163,8 @@ public class Diagram {
 		State s = new FinalState();
 		directSons.add(s);
 		// TODO : call to graphview instead of direct class mxgraph object
-		mxCell vertex = (mxCell) graph.createVertex(graph.getDefaultParent(), null, "", 20, 20, 30, 30, Style.FINAL);
-		graph.addCell(vertex);
+		mxCell vertex = (mxCell) mainView.getGraph().getGraph().createVertex(mainView.getGraph().getGraph().getDefaultParent(), null, "", 20, 20, 30, 30, Style.FINAL);
+		mainView.getGraph().getGraph().addCell(vertex);
 		linkedStates.put(s, vertex);
 	}
 
@@ -244,9 +234,9 @@ public class Diagram {
 	}
 	
 	private boolean verifyName(String name) {
-		for (Map.Entry<State, mxCell> entry : linkedStates.entrySet()) {
-			if (entry.getKey().getClass().equals(SimpleState.class) || entry.getKey().getClass().equals(CompositeState.class)) {
-				if (name.equals(((NamedState) entry.getKey()).getName()))
+		for (State s : getAllStates()) {
+			if (s.isNamedState()) {
+				if (name.equals(((NamedState) s).getName()))
 					return false;
 			}
 		}
@@ -302,16 +292,16 @@ public class Diagram {
 	 */
 	public void flatten() {
 		// TODO Verify that the graph is Valid
-		boolean isGraphValid = false;
+		boolean isGraphValid = true;
 		if(isGraphValid){
 
 			
 			Set<Transition> transitions = getAllTransitions();
 			Set<Transition> trashOfTransitions = new HashSet<Transition>();
 			Set<Transition> newTransitions = new HashSet<Transition>();
-			State source, dest;
+			State source, dest, newDest;
 			Transition newTransition;
-			// Search for transition that needs to be upgraded
+			// Search for transition that needs to be upgraded or created
 			for(Transition t : transitions){
 				
 				source = t.getSource();
@@ -352,6 +342,12 @@ public class Diagram {
 					InitialState init = ((CompositeState)t.getDestination()).getInitState();
 					// Generate transitions and add it to the source
 					for(Transition tInit : init.getOutgoingTransitions()){
+						// TODO is transition destination is also composite state do something !!
+						/* newDest = tInit.getDestination();
+						while(newDest.isCompositeState()){
+							newDest = ((CompositeState)t.getDestination()).getInitState();
+						} 
+						*/
 						if(source.isInitialState()){
 							newTransition = new InitialTransition((InitialState)source, tInit.getDestination());
 						}else{
@@ -365,52 +361,65 @@ public class Diagram {
 				}
 			}
 			mxCell[] edges = new mxCell[1];
-			// handle trashOfTransitions
+			// handle trashOfTransitions ie. remove transitions
 			for(Transition t : trashOfTransitions){
 				edges[0] =  linkedTransitions.get(t);
-				graph.removeCells(edges);
+				mainView.getGraph().getGraph().removeCells(edges);
 				removeTransitionFromModel(t);
 			}
-			
-			
 			// Attach new transition to mxcell in linkedmap & make them appear
 			for(Transition t : newTransitions){
 				mxCell sourceCell = linkedStates.get(t.getSource()), destCell = linkedStates.get(t.getDestination()) ;
-				mxCell edge = (mxCell) graph.createEdge(graph.getDefaultParent(), null, "", sourceCell, destCell, Style.EDGE);
-				edge = (mxCell) graph.addEdge(edge, graph.getDefaultParent(), sourceCell, destCell, null);
+				mxCell edge = (mxCell) mainView.getGraph().getGraph().createEdge(mainView.getGraph().getGraph().getDefaultParent(), null, "", sourceCell, destCell, Style.EDGE);
+				edge = (mxCell) mainView.getGraph().getGraph().addEdge(edge, mainView.getGraph().getGraph().getDefaultParent(), sourceCell, destCell, null);
 				linkedTransitions.put(t, edge);
-				
 			}
 			// get List of states to place in directSons & move them both graphically and in the directSosn set
 			mxCell[] vertex = new mxCell[1];
 			Set<State> misplacedStates = new HashSet<State>();
+			
+			// Retrieve all state that require to be moved 
 			for(State s : directSons){
 				if(s.isCompositeState()){
 					// get simple & final states recursively
 					misplacedStates.addAll(s.getSimpleFinalStateInSons());
-					// remove him from graph & model
-					//TODO remove useless vertex
-					vertex[0] = linkedStates.get(s);
-					graph.ungroupCells(vertex);
-					//graph.removeCells(vertex);
-					/*
-					removeState(s);
-					*/
-					
 				}	
 			}
-			// add everything to the first level 
+			// remove their reference in their parent
+			for(State s : misplacedStates){
+				CompositeState parent = findParentState(s);
+				parent.getStates().remove(s);
+			}
+			// add them to the first level 
 			directSons.addAll(misplacedStates);
 			// Graphically place them at the first level (not in composite state anymore)
-			mxCell[] cells = new mxCell[1];
-			for(State s : misplacedStates){
-				mxCell cell = linkedStates.get(s);
-				// TODO MOVE vertex // si trop dur ajouter remplacer vertex par nouveau puis relier transitions..
-				//cell.setParent((mxICell) graph.getDefaultParent());
-				cells[0] = cell;
-				graph.removeCellsFromParent(cells);
-				graph.ungroupCells(cells);
+			// removing composite states ! 
+			Set<CompositeState> toBeRemoved = new HashSet<CompositeState>();
+			Object[] cells = new Object[1];
+			Object[] sons = new Object[1];
+			for(State s : getAllStates()){
+				
+				if(s.isCompositeState()){
+					cells[0] = linkedStates.get(s);
+					// graphically explode composite state
+					for(State son : ((CompositeState)s).getStates()){
+						if(son.isInitialState()){
+							sons[0] = linkedStates.get(son);
+							mainView.getGraph().getGraph().removeCells(sons);
+							removeState(son);
+						}
+					}
+					mainView.getGraph().getGraph().ungroupCells(cells);
+					toBeRemoved.add((CompositeState) s);
+					// removeState(s); // children will go away too with this ones
+				}	
 			}
+			
+			for(State s : toBeRemoved){
+				removeState(s);
+			}
+			System.out.println();
+			System.out.println(this.toString());
 			mainView.getGraph().informUser("Operation performed !");
 		}
 		else{
@@ -418,6 +427,9 @@ public class Diagram {
 		}
 	}
 	
+	/*
+	 * Retrieve all states
+	 */
 	private List<State> getAllStates(){
 		List<State> states = new ArrayList<State>();
 		for(State s : directSons){

@@ -26,6 +26,9 @@ public abstract class State {
 	public boolean removeTransitionInSons(Transition t){
 		return outgoingTransitions.remove(t);
 	}
+	/*
+	 * Retrieve all states including itself and the children
+	 */
 	public List<State> getAllStates() {
 		List<State> sons = new ArrayList<State>();
 		sons.add(this);
@@ -35,6 +38,10 @@ public abstract class State {
     //abstract boolean isValid();
 
 	public boolean isInitialState() {
+		return false;
+	}
+	
+	public boolean isNamedState() {
 		return false;
 	}
 	/*

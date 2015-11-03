@@ -27,6 +27,7 @@ import com.mxgraph.view.mxStylesheet;
 import controller.Diagram;
 import model.CompositeState;
 import model.State;
+import model.Transition;
 
 public class GraphView extends JPanel {
 
@@ -34,9 +35,16 @@ public class GraphView extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = -6717176422645301601L;
-
-	public GraphView(mxGraph graph) {
+	private mxGraph graph;
+	// TODO use those attributes instead of the one in diagram !
+	// private Map<State, mxCell> linkedStates = new HashMap<State, mxCell>();
+	// private Map<Transition, mxCell> linkedTransitions = new HashMap<Transition, mxCell>();
+	public GraphView() {
 		super();
+		graph = new CustomMxGraph();
+		graph.setAllowDanglingEdges(false);
+		graph.setConnectableEdges(false);
+		graph.setDropEnabled(true);
         com.mxgraph.swing.util.mxGraphTransferable.enableImageSupport = false;
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 		setLayout(new BorderLayout());
@@ -98,10 +106,14 @@ public class GraphView extends JPanel {
 					        mxCell previousParent = (mxCell) childChange.getPrevious();
 					        mxCell parent = (mxCell) childChange.getParent();
 					        // previousParent == null = insertion / parent == null = deletion
-					        if(previousParent != null && parent != null && ! dropped.isEdge()){
+					        if(previousParent != null && parent != null && !dropped.isEdge()){
 					        	// we are sure its a drop
 					        	Diagram d = Diagram.getInstance();
-								d.dropStateIntoCompositeState(d.getStateFromMxCell(dropped), (CompositeState) d.getStateFromMxCell(parent));
+					        	State s = d.getStateFromMxCell(dropped);
+					        	if(s != null){
+					        		d.dropStateIntoCompositeState(d.getStateFromMxCell(dropped), (CompositeState) d.getStateFromMxCell(parent));
+					        	}
+								
 					        }
 					    }
 					}
@@ -109,6 +121,10 @@ public class GraphView extends JPanel {
 			});
 
 
+	}
+
+	public mxGraph getGraph() {
+		return graph;
 	}
 
 	private void initializeAllStyle(mxStylesheet styleSheet) {
