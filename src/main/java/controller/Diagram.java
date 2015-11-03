@@ -250,8 +250,6 @@ public class Diagram {
 			t = new StandardTransition(sourceState,targetState);
 		}
 		sourceState.getOutgoingTransitions().add(t);
-
-
 		linkedTransitions.put(t, transition);
 	}
 	
@@ -281,81 +279,84 @@ public class Diagram {
 	 */
 	public void flatten() {
 		// TODO Verify that the graph is Valid
-		boolean isGraphValid = true;
-		if(isGraphValid){
 
-			
-			Set<Transition> transitions = getAllTransitions();
+		//if(validate()){
+		if(true){
+
+			Set<Transition> transitions;
 			Set<Transition> trashOfTransitions = new HashSet<Transition>();
 			Set<Transition> newTransitions = new HashSet<Transition>();
 			State source, dest, newDest;
 			Transition newTransition;
 			// Search for transition that needs to be upgraded or created
-			for(Transition t : transitions){
-				
-				source = t.getSource();
-				dest = t.getDestination();
-				if(t.getSource().isCompositeState() && ! t.getDestination().isCompositeState()  ){
-	
-					for(State s : ((CompositeState)source).getStates()){
-						// We dont want to create transition from initial/final state here
-						if( !s.isInitialState() && !s.isFinalState()){
-							// Generate transitions and add it to the current source
-							newTransition = new StandardTransition(s, dest);
-							newTransitions.add(newTransition);
-							s.getOutgoingTransitions().add(newTransition);
-						}	
-					}
-					// Remove current transition 
-					trashOfTransitions.add(t);
-				}else if(t.getSource().isCompositeState() && t.getDestination().isCompositeState() ){
+			boolean transLinkedToCompoState = true;
+
+			while(areSomeTransitionsLinkedToCompositeState()){
+
+				transitions = getAllTransitions();
+				for(Transition t : transitions){
 					
-					for(State s : ((CompositeState)source).getStates()){
-						// We dont want to create transition from initial/final state here
-						if( !s.isInitialState() && !s.isFinalState()){
-							InitialState init = ((CompositeState)t.getDestination()).getInitState();
-							// Generate transitions and add it to the source
-							for(Transition tInit : init.getOutgoingTransitions()){
-								newTransition = new StandardTransition(s, tInit.getDestination());
-								s.getOutgoingTransitions().add(newTransition);
+					source = t.getSource();
+					dest = t.getDestination();
+					if(t.getSource().isCompositeState() && ! t.getDestination().isCompositeState()  ){
+		
+						for(State s : ((CompositeState)source).getStates()){
+							// We dont want to create transition from initial/final state here
+							if( !s.isInitialState() && !s.isFinalState()){
+								// Generate transitions and add it to the current source
+								newTransition = new StandardTransition(s, dest);
 								newTransitions.add(newTransition);
-							}
+								s.getOutgoingTransitions().add(newTransition);
+							}	
 						}
+						// Remove current transition 
+						trashOfTransitions.add(t);
+					}else if(t.getSource().isCompositeState() && t.getDestination().isCompositeState() ){
 						
-					}
-					// Remove current transition 
-					trashOfTransitions.add(t);
-					
-				}else if(!t.getSource().isCompositeState() && t.getDestination().isCompositeState()){
-					
-					InitialState init = ((CompositeState)t.getDestination()).getInitState();
-					// Generate transitions and add it to the source
-					for(Transition tInit : init.getOutgoingTransitions()){
-						// TODO is transition destination is also composite state do something !!
-						/* newDest = tInit.getDestination();
-						while(newDest.isCompositeState()){
-							newDest = ((CompositeState)t.getDestination()).getInitState();
-						} 
-						*/
-						if(source.isInitialState()){
-							newTransition = new InitialTransition((InitialState)source, tInit.getDestination());
-						}else{
-							newTransition = new StandardTransition(source, tInit.getDestination());
+						for(State s : ((CompositeState)source).getStates()){
+							// We dont want to create transition from initial/final state here
+							if( !s.isInitialState() && !s.isFinalState()){
+								InitialState init = ((CompositeState)t.getDestination()).getInitState();
+								// Generate transitions and add it to the source
+								for(Transition tInit : init.getOutgoingTransitions()){
+									newTransition = new StandardTransition(s, tInit.getDestination());
+									s.getOutgoingTransitions().add(newTransition);
+									newTransitions.add(newTransition);
+								}
+							}
+							
 						}
-						source.getOutgoingTransitions().add(newTransition);
-						newTransitions.add(newTransition);
+						// Remove current transition 
+						trashOfTransitions.add(t);
+						
+					}else if(!t.getSource().isCompositeState() && t.getDestination().isCompositeState()){
+						
+						InitialState init = ((CompositeState)t.getDestination()).getInitState();
+						// Generate transitions and add it to the source
+						for(Transition tInit : init.getOutgoingTransitions()){
+							
+							if(source.isInitialState()){
+								newTransition = new InitialTransition((InitialState)source, tInit.getDestination());
+							}else{
+								newTransition = new StandardTransition(source, tInit.getDestination());
+							}
+							source.getOutgoingTransitions().add(newTransition);
+							newTransitions.add(newTransition);
+						}
+						// Remove current transition 
+						trashOfTransitions.add(t);
 					}
-					// Remove current transition 
-					trashOfTransitions.add(t);
+				}
+				mxCell[] edges = new mxCell[1];
+				// handle trashOfTransitions ie. remove transitions
+				for(Transition t : trashOfTransitions){
+					edges[0] =  linkedTransitions.get(t);
+					mainView.getGraph().getGraph().removeCells(edges);
+					removeTransitionFromModel(t);
 				}
 			}
-			mxCell[] edges = new mxCell[1];
-			// handle trashOfTransitions ie. remove transitions
-			for(Transition t : trashOfTransitions){
-				edges[0] =  linkedTransitions.get(t);
-				mainView.getGraph().getGraph().removeCells(edges);
-				removeTransitionFromModel(t);
-			}
+			
+			
 			// Attach new transition to mxcell in linkedmap & make them appear
 			for(Transition t : newTransitions){
 				mxCell sourceCell = linkedStates.get(t.getSource()), destCell = linkedStates.get(t.getDestination()) ;
@@ -382,8 +383,8 @@ public class Diagram {
 			// add them to the first level 
 			directSons.addAll(misplacedStates);
 			// Graphically place them at the first level (not in composite state anymore)
-			// removing composite states ! 
-			Set<CompositeState> toBeRemoved = new HashSet<CompositeState>();
+			// removing composite states & initial one ! 
+			Set<State> toBeRemoved = new HashSet<State>();
 			Object[] cells = new Object[1];
 			Object[] sons = new Object[1];
 			for(State s : getAllStates()){
@@ -395,11 +396,12 @@ public class Diagram {
 						if(son.isInitialState()){
 							sons[0] = linkedStates.get(son);
 							mainView.getGraph().getGraph().removeCells(sons);
-							removeState(son);
+							toBeRemoved.add(son);
+							//removeState(son);
 						}
 					}
 					mainView.getGraph().getGraph().ungroupCells(cells);
-					toBeRemoved.add((CompositeState) s);
+					toBeRemoved.add(s);
 					// removeState(s); // children will go away too with this ones
 				}	
 			}
@@ -416,6 +418,16 @@ public class Diagram {
 		}
 	}
 	
+	private boolean areSomeTransitionsLinkedToCompositeState() {
+		for(Transition t: getAllTransitions()){
+			if (t.getDestination().isCompositeState() || t.getSource().isCompositeState()){
+				System.out.println(t);
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/*
 	 * Retrieve all states
 	 */

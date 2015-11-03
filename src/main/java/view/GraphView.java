@@ -79,12 +79,9 @@ public class GraphView extends JPanel {
 						if(((mxCell) cell).isVertex()){
 							d.removeState(d.getStateFromMxCell((mxCell)cell));
 						}else{
-							System.out.println("removing edge");
 							d.removeTransitionFromModel(d.getTransitionFromMxCell((mxCell)cell));
 						}
 					}
-					// TODO remove transitions from evt.getProperty("includeEdges") !! ??? not sure  
-					//System.out.println("cells removed =" + evt.getProperty("cells"));
 					//System.out.println("transition removed =" + evt.getProperty("includeEdges"));
 				}catch(Exception e){
 					
