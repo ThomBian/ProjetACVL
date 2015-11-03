@@ -34,9 +34,13 @@ public class GraphView extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = -6717176422645301601L;
-
-	public GraphView(mxGraph graph) {
+	private mxGraph graph;
+	public GraphView() {
 		super();
+		graph = new CustomMxGraph();
+		graph.setAllowDanglingEdges(false);
+		graph.setConnectableEdges(false);
+		graph.setDropEnabled(true);
         com.mxgraph.swing.util.mxGraphTransferable.enableImageSupport = false;
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 		setLayout(new BorderLayout());
@@ -109,6 +113,10 @@ public class GraphView extends JPanel {
 			});
 
 
+	}
+
+	public mxGraph getGraph() {
+		return graph;
 	}
 
 	private void initializeAllStyle(mxStylesheet styleSheet) {

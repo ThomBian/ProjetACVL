@@ -55,9 +55,9 @@ public class MainView {
 	/**
 	 * Create the application.
 	 */
-	public MainView(mxGraph graph) {
+	public MainView() {
 		initialize();
-		initializeEmptyGraph(graph);
+		initializeEmptyGraph();
 	}
 
 	/**
@@ -79,8 +79,8 @@ public class MainView {
 
 	}
 
-	private void initializeEmptyGraph(mxGraph graphData) {
-		graphView = new GraphView(graphData);
+	private void initializeEmptyGraph() {
+		graphView = new GraphView();
 		frame.add(graphView);
 	}
 

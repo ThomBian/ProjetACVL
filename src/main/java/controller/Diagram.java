@@ -35,7 +35,7 @@ public class Diagram {
 	}
 
 	private MainView mainView;
-	private mxGraph graph;
+	
 	private Set<State> directSons = new HashSet<State>();
 	private List<DiagramError> errors;
 	private Map<State, mxCell> linkedStates = new HashMap<State, mxCell>();
@@ -51,21 +51,15 @@ public class Diagram {
     }
 
 	private Diagram() {
-		// todo move the custom mx graph to a view class (graphview)
-		graph = new CustomMxGraph();
-		graph.setAllowDanglingEdges(false);
-		graph.setConnectableEdges(false);
-		graph.setDropEnabled(true);
         errors = new ArrayList<>();
 	}
 
 	public void createInitialState() {
-		// System.out.println(graph.getSelectionCell());
 		State s = new InitialState();
 		directSons.add(s);
 		// TODO : call to graphview instead of direct class mxgraph object
-		mxCell vertex = (mxCell) graph.createVertex(graph.getDefaultParent(), null, "", 20, 20, 30, 30, Style.INITIAL);
-		graph.addCell(vertex);
+		mxCell vertex = (mxCell) mainView.getGraph().getGraph().createVertex(mainView.getGraph().getGraph().getDefaultParent(), null, "", 20, 20, 30, 30, Style.INITIAL);
+		mainView.getGraph().getGraph().addCell(vertex);
 		linkedStates.put(s, vertex);
 	}
 
@@ -77,8 +71,8 @@ public class Diagram {
 		State s = new SimpleState(name);
 		directSons.add(s);
 		// TODO : call to graphview instead of direct class mxgraph object
-		mxCell vertex = (mxCell) graph.createVertex(graph.getDefaultParent(), null, name, 20, 20, 80, 30, Style.STATE);
-		graph.addCell(vertex);
+		mxCell vertex = (mxCell) mainView.getGraph().getGraph().createVertex(mainView.getGraph().getGraph().getDefaultParent(), null, name, 20, 20, 80, 30, Style.STATE);
+		mainView.getGraph().getGraph().addCell(vertex);
 		linkedStates.put(s, vertex);
 	}
 
@@ -89,9 +83,9 @@ public class Diagram {
 		State s = new CompositeState(name);
 		directSons.add(s);
 		// TODO : call to graphview instead of direct class mxgraph object
-		mxCell vertex = (mxCell) graph.createVertex(graph.getDefaultParent(), null, name, 20, 20, 150, 180,
+		mxCell vertex = (mxCell) mainView.getGraph().getGraph().createVertex(mainView.getGraph().getGraph().getDefaultParent(), null, name, 20, 20, 150, 180,
 				Style.COMPOSITE);
-		graph.addCell(vertex);
+		mainView.getGraph().getGraph().addCell(vertex);
 		linkedStates.put(s, vertex);
 	}
 	
@@ -154,7 +148,7 @@ public class Diagram {
 	public void launchApplication() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			mainView = new MainView(graph);
+			mainView = new MainView();
 			mainView.getFrame().setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -165,8 +159,8 @@ public class Diagram {
 		State s = new FinalState();
 		directSons.add(s);
 		// TODO : call to graphview instead of direct class mxgraph object
-		mxCell vertex = (mxCell) graph.createVertex(graph.getDefaultParent(), null, "", 20, 20, 30, 30, Style.FINAL);
-		graph.addCell(vertex);
+		mxCell vertex = (mxCell) mainView.getGraph().getGraph().createVertex(mainView.getGraph().getGraph().getDefaultParent(), null, "", 20, 20, 30, 30, Style.FINAL);
+		mainView.getGraph().getGraph().addCell(vertex);
 		linkedStates.put(s, vertex);
 	}
 
@@ -358,14 +352,14 @@ public class Diagram {
 			// handle trashOfTransitions ie. remove transitions
 			for(Transition t : trashOfTransitions){
 				edges[0] =  linkedTransitions.get(t);
-				graph.removeCells(edges);
+				mainView.getGraph().getGraph().removeCells(edges);
 				removeTransitionFromModel(t);
 			}
 			// Attach new transition to mxcell in linkedmap & make them appear
 			for(Transition t : newTransitions){
 				mxCell sourceCell = linkedStates.get(t.getSource()), destCell = linkedStates.get(t.getDestination()) ;
-				mxCell edge = (mxCell) graph.createEdge(graph.getDefaultParent(), null, "", sourceCell, destCell, Style.EDGE);
-				edge = (mxCell) graph.addEdge(edge, graph.getDefaultParent(), sourceCell, destCell, null);
+				mxCell edge = (mxCell) mainView.getGraph().getGraph().createEdge(mainView.getGraph().getGraph().getDefaultParent(), null, "", sourceCell, destCell, Style.EDGE);
+				edge = (mxCell) mainView.getGraph().getGraph().addEdge(edge, mainView.getGraph().getGraph().getDefaultParent(), sourceCell, destCell, null);
 				linkedTransitions.put(t, edge);
 			}
 			// get List of states to place in directSons & move them both graphically and in the directSosn set
@@ -399,11 +393,11 @@ public class Diagram {
 					for(State son : ((CompositeState)s).getStates()){
 						if(son.isInitialState()){
 							sons[0] = linkedStates.get(son);
-							graph.removeCells(sons);
+							mainView.getGraph().getGraph().removeCells(sons);
 							removeState(son);
 						}
 					}
-					graph.ungroupCells(cells);
+					mainView.getGraph().getGraph().ungroupCells(cells);
 					toBeRemoved.add((CompositeState) s);
 					// removeState(s); // children will go away too with this ones
 				}	
