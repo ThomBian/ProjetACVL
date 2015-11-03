@@ -1,5 +1,13 @@
 package controller;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import javax.swing.UIManager;
 
 import com.mxgraph.model.mxCell;
@@ -16,13 +24,6 @@ import model.Transition;
 import view.MainView;
 import view.Style;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public class Diagram {
 
 	private static final Diagram instance = new Diagram();
@@ -37,7 +38,7 @@ public class Diagram {
 	private List<DiagramError> errors;
 	// Will be placed in graph view soon
 	private Map<State, mxCell> linkedStates = new HashMap<State, mxCell>();
-	private Map<Transition, mxCell> linkedTransitions = new HashMap<Transition, mxCell>();
+	private Map<Transition<State>, mxCell> linkedTransitions = new HashMap<Transition<State>, mxCell>();
 	
 	public State getStateFromMxCell(Object cell){
 		for (State o : linkedStates.keySet()) {
@@ -107,10 +108,10 @@ public class Diagram {
 		}
 	}
 	private void removeTransitionFromTarget(State target){
-		List<Transition> removed;
+		List<Transition<State>> removed;
 		for(State s : directSons){
 			removed = s.removeTransitionInSonsFromTarget(target);
-			for(Transition tr : removed){
+			for(Transition<State> tr : removed){
 				linkedTransitions.remove(tr);
 			}
 		}
@@ -124,7 +125,7 @@ public class Diagram {
 		List<State> sonsAndFather = s.getAllStates();
 		for(State son : sonsAndFather){
 			removeTransitionFromTarget(son);
-			for(Transition t : son.getOutgoingTransitions()){
+			for(Transition<State> t : son.getOutgoingTransitions()){
 				removeTransitionFromModel(t);
 			}
 			linkedStates.remove(son);
@@ -242,23 +243,24 @@ public class Diagram {
 	}
 
 	// TODO Do not pass mxCell object as parameter in this method, this IS NOT MODULAR
+	@SuppressWarnings("unchecked")
 	public void addTransitionToModel(State sourceState, State targetState, mxCell transition) {
-		Transition t;
+		Transition<?> t;
 		if(sourceState.isInitialState()){
 			t = new Transition<InitialState>((InitialState)sourceState,targetState);
 		}else{
 			t = new StandardTransition(sourceState,targetState);
 		}
-		sourceState.getOutgoingTransitions().add(t);
+		sourceState.getOutgoingTransitions().add((Transition<State>) t);
 
 
-		linkedTransitions.put(t, transition);
+		linkedTransitions.put((Transition<State>) t, transition);
 	}
 	
 	/*
 	 * Remove this transition from everywhere (incl. states)
 	 */
-	public void removeTransitionFromModel(Transition transition){
+	public void removeTransitionFromModel(Transition<State> transition){
 		linkedTransitions.remove(transition);
 		// Remove all occurence of this transition in all possible outgoingTransitions !
 		for(State s : directSons){
@@ -267,8 +269,8 @@ public class Diagram {
 		}
 	}
 
-	public Transition getTransitionFromMxCell(mxCell cell) {
-		for (Transition o : linkedTransitions.keySet()) {
+	public Transition<State> getTransitionFromMxCell(mxCell cell) {
+		for (Transition<State> o : linkedTransitions.keySet()) {
 		    if (linkedTransitions.get(o).equals(cell)) {
 		      return o;
 		    }
@@ -279,19 +281,20 @@ public class Diagram {
 	/*
 	 * Flatten a VALID graph
 	 */
+	@SuppressWarnings("unchecked")
 	public void flatten() {
 		// TODO Verify that the graph is Valid
 		boolean isGraphValid = true;
 		if(isGraphValid){
 
 			
-			Set<Transition> transitions = getAllTransitions();
-			Set<Transition> trashOfTransitions = new HashSet<Transition>();
-			Set<Transition> newTransitions = new HashSet<Transition>();
+			Set<Transition<State>> transitions = getAllTransitions();
+			Set<Transition<State>> trashOfTransitions = new HashSet<Transition<State>>();
+			Set<Transition<State>> newTransitions = new HashSet<Transition<State>>();
 			State source, dest, newDest;
-			Transition newTransition;
+			Transition<? extends State> newTransition;
 			// Search for transition that needs to be upgraded or created
-			for(Transition t : transitions){
+			for(Transition<State> t : transitions){
 				
 				source = t.getSource();
 				dest = t.getDestination();
@@ -302,8 +305,8 @@ public class Diagram {
 						if( !s.isInitialState() && !s.isFinalState()){
 							// Generate transitions and add it to the current source
 							newTransition = new StandardTransition(s, dest);
-							newTransitions.add(newTransition);
-							s.getOutgoingTransitions().add(newTransition);
+							newTransitions.add((Transition<State>) newTransition);
+							s.getOutgoingTransitions().add((Transition<State>) newTransition);
 						}	
 					}
 					// Remove current transition 
@@ -315,10 +318,10 @@ public class Diagram {
 						if( !s.isInitialState() && !s.isFinalState()){
 							InitialState init = ((CompositeState)t.getDestination()).getInitState();
 							// Generate transitions and add it to the source
-							for(Transition tInit : init.getOutgoingTransitions()){
+							for(Transition<State> tInit : init.getOutgoingTransitions()){
 								newTransition = new StandardTransition(s, tInit.getDestination());
-								s.getOutgoingTransitions().add(newTransition);
-								newTransitions.add(newTransition);
+								s.getOutgoingTransitions().add((Transition<State>) newTransition);
+								newTransitions.add((Transition<State>) newTransition);
 							}
 						}
 						
@@ -330,7 +333,7 @@ public class Diagram {
 					
 					InitialState init = ((CompositeState)t.getDestination()).getInitState();
 					// Generate transitions and add it to the source
-					for(Transition tInit : init.getOutgoingTransitions()){
+					for(Transition<State> tInit : init.getOutgoingTransitions()){
 						// TODO is transition destination is also composite state do something !!
 						/* newDest = tInit.getDestination();
 						while(newDest.isCompositeState()){
@@ -342,8 +345,8 @@ public class Diagram {
 						}else{
 							newTransition = new StandardTransition(source, tInit.getDestination());
 						}
-						source.getOutgoingTransitions().add(newTransition);
-						newTransitions.add(newTransition);
+						source.getOutgoingTransitions().add((Transition<State>) newTransition);
+						newTransitions.add((Transition<State>) newTransition);
 					}
 					// Remove current transition 
 					trashOfTransitions.add(t);
@@ -351,13 +354,13 @@ public class Diagram {
 			}
 			mxCell[] edges = new mxCell[1];
 			// handle trashOfTransitions ie. remove transitions
-			for(Transition t : trashOfTransitions){
+			for(Transition<State> t : trashOfTransitions){
 				edges[0] =  linkedTransitions.get(t);
 				mainView.getGraph().getGraph().removeCells(edges);
 				removeTransitionFromModel(t);
 			}
 			// Attach new transition to mxcell in linkedmap & make them appear
-			for(Transition t : newTransitions){
+			for(Transition<State> t : newTransitions){
 				mxCell sourceCell = linkedStates.get(t.getSource()), destCell = linkedStates.get(t.getDestination()) ;
 				mxCell edge = (mxCell) mainView.getGraph().getGraph().createEdge(mainView.getGraph().getGraph().getDefaultParent(), null, "", sourceCell, destCell, Style.EDGE);
 				edge = (mxCell) mainView.getGraph().getGraph().addEdge(edge, mainView.getGraph().getGraph().getDefaultParent(), sourceCell, destCell, null);
@@ -427,10 +430,10 @@ public class Diagram {
 		return states;
 	}
 	
-	private Set<Transition> getAllTransitions(){
-		Set<Transition> transitions = new HashSet<Transition>();
+	private Set<Transition<State>> getAllTransitions(){
+		Set<Transition<State>> transitions = new HashSet<Transition<State>>();
 		for(State s : directSons){
-			transitions.addAll(s.getAllTransitions());
+			transitions.addAll((Collection<? extends Transition<State>>) s.getAllTransitions());
 		}
 		return transitions;
 	}

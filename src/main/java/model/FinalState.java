@@ -3,9 +3,6 @@ package model;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
-import controller.Diagram;
-import controller.DiagramError;
 public class FinalState extends State {
 
 	public String toString(){
