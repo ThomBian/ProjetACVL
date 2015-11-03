@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -14,20 +13,17 @@ import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGraphModel.mxChildChange;
 import com.mxgraph.model.mxICell;
 import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.swing.handler.mxKeyboardHandler;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.view.mxGraph;
-import com.mxgraph.view.mxPerimeter;
 import com.mxgraph.view.mxStylesheet;
 
 import controller.Diagram;
 import model.CompositeState;
 import model.State;
-import model.Transition;
 
 public class GraphView extends JPanel {
 
@@ -95,7 +91,7 @@ public class GraphView extends JPanel {
 				public void invoke(Object sender, mxEventObject evt) {
 					
 					// lets detect DROP events
-					ArrayList<?> changes = (ArrayList)evt.getProperty("changes");
+					ArrayList<?> changes = (ArrayList<?>)evt.getProperty("changes");
 					for(Object o : changes){
 					 if (o instanceof mxChildChange)
 					    {

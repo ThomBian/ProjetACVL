@@ -1,8 +1,9 @@
 package view;
 
-import javax.swing.*;
+import java.util.List;
 
-import com.mxgraph.view.mxGraph;
+import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 
 import controller.DiagramError;
 import controller.command.CreateCompositeState;
@@ -11,8 +12,6 @@ import controller.command.CreateInitialState;
 import controller.command.CreateState;
 import controller.command.FlattenDiagram;
 import controller.command.ValidateDiagram;
-
-import java.util.List;
 
 public class MainView {
 

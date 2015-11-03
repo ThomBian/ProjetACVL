@@ -81,7 +81,7 @@ public final class CompositeState extends NamedState {
         return sons;
     }
 
-    public boolean removeTransitionInSons(Transition t) {
+    public boolean removeTransitionInSons(Transition<State> t) {
         if (getOutgoingTransitions().remove(t))
             return true;
         for (State s : states) {
@@ -97,14 +97,14 @@ public final class CompositeState extends NamedState {
      * Get & remove transition that leads to the target state
      * Return the transitions to be removed
      */
-    public List<Transition> removeTransitionInSonsFromTarget(State target) {
-        List<Transition> toBeRemoved = new ArrayList<Transition>();
-        for (Transition t : getOutgoingTransitions()) {
+    public List<Transition<State>> removeTransitionInSonsFromTarget(State target) {
+        List<Transition<State>> toBeRemoved = new ArrayList<Transition<State>>();
+        for (Transition<State> t : getOutgoingTransitions()) {
             if (t.getDestination().equals(target)) {
                 toBeRemoved.add(t);
             }
         }
-        for (Transition t : toBeRemoved) {
+        for (Transition<State> t : toBeRemoved) {
             getOutgoingTransitions().remove(t);
         }
         for (State s : states) {
@@ -114,8 +114,8 @@ public final class CompositeState extends NamedState {
     }
 
     @Override
-    public Collection<? extends Transition> getAllTransitions() {
-		Set<Transition> transitions = new HashSet<Transition>();
+    public Collection<? extends Transition<State>> getAllTransitions() {
+		Set<Transition<State>> transitions = new HashSet<Transition<State>>();
 		transitions.addAll(getOutgoingTransitions());
 		for(State s : states){
 			transitions.addAll(s.getAllTransitions());

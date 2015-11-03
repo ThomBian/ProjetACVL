@@ -1,7 +1,5 @@
 package model;
 
-import java.util.Set;
-
 public abstract class NamedState extends State {
 
 	protected String name;

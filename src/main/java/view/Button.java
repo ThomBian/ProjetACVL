@@ -14,6 +14,11 @@ import controller.command.CreateInitialState;
 
 public class Button extends JButton implements ActionListener {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6991413053863319L;
+
 	private Command command = new CreateInitialState();
 
 	private final String tooltip;
