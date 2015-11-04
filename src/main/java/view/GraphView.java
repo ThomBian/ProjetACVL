@@ -23,6 +23,7 @@ import com.mxgraph.view.mxStylesheet;
 
 import controller.Diagram;
 import model.CompositeState;
+import model.NamedState;
 import model.State;
 
 public class GraphView extends JPanel {
@@ -65,6 +66,16 @@ public class GraphView extends JPanel {
 			}
 		});
 		
+		graph.addListener(mxEvent.LABEL_CHANGED, new mxEventSource.mxIEventListener() {
+			public void invoke(Object sender, mxEventObject evt) {
+				mxCell cell = (mxCell) evt.getProperty("cell");
+				String label = (String) evt.getProperty("label");
+				Diagram d = Diagram.getInstance();
+				NamedState state = (NamedState) d.getStateFromMxCell(cell);
+				d.updateStateName(state, label);
+				
+			}
+		});
 
 		graph.addListener(mxEvent.REMOVE_CELLS, new mxEventSource.mxIEventListener() {
 			public void invoke(Object sender, mxEventObject evt) {
@@ -163,6 +174,7 @@ public class GraphView extends JPanel {
 	private Hashtable<String, Object> getPictureStyle(String picName) {
 		// define image style
 		Hashtable<String, Object> style = new Hashtable<String, Object>();
+		style.put(mxConstants.STYLE_NOLABEL, "1");
 		style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_IMAGE);
 		style.put(mxConstants.STYLE_IMAGE, "file:src/resources/" + picName);
 		style.put(mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_BOTTOM);

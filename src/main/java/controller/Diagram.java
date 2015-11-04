@@ -395,20 +395,16 @@ public class Diagram {
 							sons[0] = linkedStates.get(son);
 							mainView.getGraph().getGraph().removeCells(sons);
 							toBeRemoved.add(son);
-							//removeState(son);
 						}
 					}
 					mainView.getGraph().getGraph().ungroupCells(cells);
 					toBeRemoved.add(s);
-					// removeState(s); // children will go away too with this ones
 				}	
 			}
 			
 			for(State s : toBeRemoved){
 				removeState(s);
 			}
-			System.out.println();
-			System.out.println(this.toString());
 			mainView.getGraph().informUser("Operation performed !");
 		}
 		else{
@@ -442,6 +438,13 @@ public class Diagram {
 			transitions.addAll(s.getAllTransitions());
 		}
 		return transitions;
+	}
+
+	public void updateStateName(NamedState state, String label) {
+		if (!verifyName(label)) {
+			label = changeName(label);
+		}
+		state.setName(label);
 	}
 	
 }

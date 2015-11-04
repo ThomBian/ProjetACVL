@@ -1,6 +1,8 @@
 package view;
 
 import com.mxgraph.model.mxCell;
+import com.mxgraph.util.mxEvent;
+import com.mxgraph.util.mxEventObject;
 import com.mxgraph.view.mxGraph;
 
 public class CustomMxGraph extends mxGraph {
@@ -43,6 +45,30 @@ public class CustomMxGraph extends mxGraph {
 		}catch(Exception e){
 			return false;
 		}
-		
+	}
+	@Override
+	public boolean isCellEditable(Object cell) {
+		String style =  ((mxCell)cell).getStyle();
+		if(style.equals(Style.INITIAL) || style.equals(Style.FINAL)) return false;
+		return true;
+	};
+	@Override
+	public void cellLabelChanged(Object cell, Object value, boolean autoSize)
+	{
+		model.beginUpdate();
+		try
+		{
+			getModel().setValue(cell, value);
+
+			if (autoSize)
+			{
+				cellSizeUpdated(cell, false);
+			}
+		}
+		finally
+		{
+			model.endUpdate();
+		}
+		fireEvent(new mxEventObject(mxEvent.LABEL_CHANGED, "cell", cell,"label",value));
 	}
 }
