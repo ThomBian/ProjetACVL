@@ -405,10 +405,14 @@ public class Diagram {
 	}
 
 	public void updateStateName(NamedState state, String label) {
+		System.out.println("vérif");
 		if (!verifyName(label)) {
 			label = changeName(label);
 		}
 		state.setName(label);
+		mxCell newCell = linkedStates.get(state);
+		newCell.setValue(label);
+		mainView.getGraph().getGraph().refresh();
 	}
 
 	public MainView getView() {
