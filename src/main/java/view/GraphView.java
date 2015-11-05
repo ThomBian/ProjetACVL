@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JOptionPane;
@@ -25,6 +26,7 @@ import controller.Diagram;
 import model.CompositeState;
 import model.NamedState;
 import model.State;
+import model.Transition;
 
 public class GraphView extends JPanel {
 
@@ -72,9 +74,14 @@ public class GraphView extends JPanel {
 				mxCell cell = (mxCell) evt.getProperty("cell");
 				String label = (String) evt.getProperty("label");
 				Diagram d = Diagram.getInstance();
-				NamedState state = (NamedState) d.getStateFromMxCell(cell);
-				d.updateStateName(state, label);
-				
+				if (cell.isVertex()) {					
+					NamedState state = (NamedState) d.getStateFromMxCell(cell);
+					List<State> states = d.getAllStates();
+					d.updateStateName(state, label, states);
+				} else {
+					Transition<State> transition = d.getTransitionFromMxCell(cell);
+					d.updateTransitionName(transition, label);
+				}
 			}
 		});
 

@@ -6,13 +6,13 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
-import controller.DiagramError;
 import controller.command.CreateCompositeState;
 import controller.command.CreateFinalState;
 import controller.command.CreateInitialState;
 import controller.command.CreateState;
 import controller.command.FlattenDiagram;
 import controller.command.ValidateDiagram;
+import model.error.DiagramError;
 
 public class MainView {
 
