@@ -30,16 +30,17 @@ public class MainView {
 	private final Button validateButton = new Button("Validate diagram", new ValidateDiagram());
 
 
-	public void displayValidationWindow(List<DiagramError> errors) {
-        if (errors.size() == 0){
+	public void displayValidationWindow(List<DiagramError> dErrors) {
+        if (dErrors.size() == 0){
             //display ok
-            System.out.println("OK !");
+			graphView.informUser("Ok !");
         } else {
             //display all errors
-            for (DiagramError error : errors){
-                System.out.println(error.toString());
+			String errors = "Errors found : \n";
+            for (DiagramError error : dErrors){
+				errors += error.toString()+"\n";
             }
-
+            graphView.informUser(errors);
         }
 	}
 
