@@ -31,6 +31,7 @@ public class CustomMxGraph extends mxGraph {
 	@Override
 	public boolean isValidConnection(Object source, Object target){
 		// Disallow transition to an initial state
+		
 		if(((mxCell)target).getStyle().equals(Style.INITIAL)) return false;
 		if(((mxCell)target).isEdge()) return false;
 		return true;
