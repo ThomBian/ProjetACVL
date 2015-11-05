@@ -245,7 +245,7 @@ public class Diagram {
 	public void addTransitionToModel(State sourceState, State targetState, mxCell transition) {
 		Transition<?> t;
 		if(sourceState.isInitialState()){
-			t = new Transition<InitialState>((InitialState)sourceState,targetState);
+			t = new InitialTransition((InitialState)sourceState,targetState);
 		}else{
 			t = new StandardTransition(sourceState,targetState);
 		}
