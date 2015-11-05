@@ -239,7 +239,7 @@ public class Diagram {
 	}
 	
 	/*
-	 * Flatten a VALID graph
+	 * Flatten a VALID 
 	 */
 	@SuppressWarnings("unchecked")
 	public void flatten() {

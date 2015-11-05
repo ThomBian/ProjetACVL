@@ -5,6 +5,10 @@ import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.view.mxGraph;
 
+import controller.Diagram;
+import model.CompositeState;
+import model.State;
+
 public class CustomMxGraph extends mxGraph {
 	// Make all edges unmovable
 	@Override
@@ -30,9 +34,19 @@ public class CustomMxGraph extends mxGraph {
 
 	@Override
 	public boolean isValidConnection(Object source, Object target){
+		
+		if(((mxCell)target).getStyle().equals(Style.COMPOSITE) && ((mxCell)source).getStyle().equals(Style.INITIAL) ){
+			CompositeState c = (CompositeState) Diagram.getInstance().getStateFromMxCell(target);
+			State s = Diagram.getInstance().getStateFromMxCell(source);
+			for(State cur : c.getStates()){
+				if(cur.equals(s)){
+					return false;
+				}
+			}
+		}
 		// Disallow transition to an initial state
-		if(((mxCell)target).getStyle().equals(Style.INITIAL)) return false;
-		if(((mxCell)target).isEdge()) return false;
+		else if(((mxCell)target).getStyle().equals(Style.INITIAL)) return false;
+		else if(((mxCell)target).isEdge()) return false;
 		return true;
 	}
 	
