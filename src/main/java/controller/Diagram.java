@@ -4,6 +4,7 @@ import javax.swing.UIManager;
 
 import com.mxgraph.model.mxCell;
 
+import controller.factory.StateFactory;
 import model.Action;
 import model.CompositeState;
 import model.FinalState;
@@ -14,6 +15,7 @@ import model.SimpleState;
 import model.StandardTransition;
 import model.State;
 import model.Transition;
+import view.GraphView;
 import view.MainView;
 import view.Style;
 

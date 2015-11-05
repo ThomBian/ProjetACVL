@@ -1,4 +1,4 @@
-package controller;
+package model.error;
 /**
  * Created by Thomas on 28/10/15.
  */
