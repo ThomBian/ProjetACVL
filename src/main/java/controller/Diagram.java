@@ -244,7 +244,7 @@ public class Diagram {
 	@SuppressWarnings("unchecked")
 	public void flatten() {
 		// TODO Verify that the graph is Valid
-
+		
 		if(validate()){
 
 			Set<Transition<State>> transitions = getAllTransitions();

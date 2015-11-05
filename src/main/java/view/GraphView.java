@@ -42,6 +42,7 @@ public class GraphView extends JPanel {
 		graph.setAllowDanglingEdges(false);
 		graph.setConnectableEdges(false);
 		graph.setDropEnabled(true);
+		graph.setAllowLoops(true);
         com.mxgraph.swing.util.mxGraphTransferable.enableImageSupport = false;
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 		setLayout(new BorderLayout());
