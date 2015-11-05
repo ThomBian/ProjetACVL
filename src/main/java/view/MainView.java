@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Dimension;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -65,7 +66,10 @@ public class MainView {
 	 */
 	private void initialize() {
 		frame = new JFrame("Diagram editor");
+		
 		frame.setBounds(100, 100, 950, 450);
+		frame.setMinimumSize(new Dimension(1050, 500));
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		menuBar = new JMenuBar();
