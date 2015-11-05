@@ -219,6 +219,7 @@ public class Diagram {
 		}
 		sourceState.getOutgoingTransitions().add((Transition<State>) t);
 		linkedTransitions.put((Transition<State>) t, transition);
+		updateTransitionName((Transition<State>) t,"Default transition");
 	}
 	
 	/*
@@ -423,6 +424,13 @@ public class Diagram {
 	
 	public void updateTransitionName(Transition<State> transition, String label) {
 		transition.setAction(new Action(label));
+		mxCell newCell = linkedTransitions.get(transition);
+		newCell.setValue(label);
+		mainView.getGraph().getGraph().refresh();
+	}
+	
+	public void updateGuard(Transition<State> transition, String label) {
+		transition.getGuard().setCondition(label);
 	}
 
 	public MainView getView() {
