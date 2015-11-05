@@ -396,7 +396,7 @@ public class Diagram {
 		return states;
 	}
 	
-	private Set<Transition<State>> getAllTransitions(){
+	public Set<Transition<State>> getAllTransitions(){
 		Set<Transition<State>> transitions = new HashSet<Transition<State>>();
 		for(State s : directSons){
 			transitions.addAll(s.getAllTransitions());
@@ -405,7 +405,6 @@ public class Diagram {
 	}
 
 	public void updateStateName(NamedState state, String label) {
-		System.out.println("vérif");
 		if (!verifyName(label)) {
 			label = changeName(label);
 		}
