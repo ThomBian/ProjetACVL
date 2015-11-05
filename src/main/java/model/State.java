@@ -73,6 +73,8 @@ public abstract class State {
         }
     }
 
+	public abstract boolean isValid();
+
 	public Collection<? extends Transition<State>> getAllTransitions() {
 		return getOutgoingTransitions();
 	}

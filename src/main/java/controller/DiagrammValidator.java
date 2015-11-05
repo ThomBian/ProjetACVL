@@ -25,7 +25,7 @@ public class DiagrammValidator {
     }
 
     private boolean areAllStatesReachable() {
-        boolean isValid = areInitialFinalStatesValid();
+        boolean isValid = areNbInitialFinalStatesValid();
         if (validationInput != null) {
             validationInput.reach();
         }
@@ -42,7 +42,7 @@ public class DiagrammValidator {
         return isValid;
     }
 
-    private boolean areInitialFinalStatesValid() {
+    private boolean areNbInitialFinalStatesValid() {
         boolean isValid = true;
         int nbInitialState = 0;
         int nbFinalState = 0;
@@ -59,11 +59,23 @@ public class DiagrammValidator {
                                            "only one initial state..."));
             isValid = false;
         }
+
         if (nbFinalState > 1) {
             this.addError(new DiagramError("Diagram should contain one and " +
                                            "only one final state..."));
             isValid = false;
         }
+        return isValid;
+    }
+
+    private boolean areStateValid(){
+        boolean isValid = true;
+        for (State s : Diagram.getInstance().getAllStates()){
+                isValid = isValid & s.isValid();
+
+        }
+
+
         return isValid;
     }
 

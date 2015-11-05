@@ -143,4 +143,15 @@ public final class CompositeState extends NamedState {
             }
         }
     }
+
+    @Override
+    boolean isValid() {
+        boolean isValid = true;
+        InitialState s = getInitState();
+        if(s == null){
+            isValid = false;
+        }
+        return isValid;
+
+    }
 }

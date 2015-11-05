@@ -20,4 +20,11 @@ public class InitialState extends State {
 		return states;
 	}
 
+	public boolean isValid(){
+		boolean isValid = true;
+		if (getOutgoingTransitions().size() > 1 || getOutgoingTransitions()
+														   .size() == 0)
+			isValid = false;
+		return isValid;
+	}
 }

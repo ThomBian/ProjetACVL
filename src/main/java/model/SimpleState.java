@@ -19,6 +19,11 @@ public final class SimpleState extends NamedState {
 	}
 
 	@Override
+	boolean isValid() {
+		return true;
+	}
+
+	@Override
 	public Collection<? extends State> getSimpleFinalStateInSons()  {
 		Set<State> states = new HashSet<State>();
 		states.add(this);

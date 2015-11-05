@@ -13,7 +13,13 @@ public class FinalState extends State {
     public void reach() {
         this.reach = true;
     }
-    @Override
+
+	@Override
+	boolean isValid() {
+		return ! (getOutgoingTransitions().size() > 0);
+	}
+
+	@Override
     public boolean isFinalState(){
 		return true;
 	}
