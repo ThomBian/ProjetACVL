@@ -1,10 +1,18 @@
 package controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import javax.swing.UIManager;
 
 import com.mxgraph.model.mxCell;
 
-import controller.factory.StateFactory;
+import controller.visitor.FlattenVisitor;
+import controller.visitor.ValidVisitor;
 import model.Action;
 import model.CompositeState;
 import model.FinalState;
@@ -16,16 +24,8 @@ import model.SimpleState;
 import model.StandardTransition;
 import model.State;
 import model.Transition;
-import view.GraphView;
 import view.MainView;
 import view.Style;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class Diagram {
 
@@ -36,7 +36,8 @@ public class Diagram {
 	}
 
 	private MainView mainView;
-	
+	private FlattenVisitor flattenVisitor = new FlattenVisitor();
+	private ValidVisitor validVisitor = new ValidVisitor();
 	private Set<State> directSons = new HashSet<State>();
 	// Will be placed in graph view soon
 	private Map<State, mxCell> linkedStates = new HashMap<State, mxCell>();
@@ -388,6 +389,18 @@ public class Diagram {
 		}
 	}
 	
+	public void flatten2(){
+		
+		if(true){
+		//if(validate()){
+			for(State s : directSons){
+				s.apply(flattenVisitor);
+			}
+			mainView.getGraph().informUser("Operation performed !");
+		}else{
+			mainView.getGraph().informUser("The graph must be valid in order to perform this operation");
+		}
+	}
 	private boolean areSomeTransitionsLinkedToCompositeState() {
 		for(Transition<State> t: getAllTransitions()){
 			if (t.getDestination().isCompositeState() || t.getSource().isCompositeState()){

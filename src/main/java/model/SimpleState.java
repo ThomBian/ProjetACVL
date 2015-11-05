@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import controller.visitor.Visitor;
+
 /**
  * 
  *
@@ -23,5 +25,9 @@ public final class SimpleState extends NamedState {
 		Set<State> states = new HashSet<State>();
 		states.add(this);
 		return states;
+	}
+	@Override
+	public void apply(Visitor v) {
+		v.visit(this);
 	}
 }

@@ -2,6 +2,8 @@ package model;
 
 import java.util.*;
 
+import controller.visitor.Visitor;
+
 public final class CompositeState extends NamedState {
 
     private Set<State> states;
@@ -143,4 +145,9 @@ public final class CompositeState extends NamedState {
             }
         }
     }
+
+	@Override
+	public void apply(Visitor v) {
+		v.visit(this);
+	}
 }
