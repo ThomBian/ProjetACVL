@@ -301,16 +301,20 @@ public class Diagram {
 						
 						InitialState init = ((CompositeState)t.getDestination()).getInitState();
 						// Generate transitions and add it to the source
-						for(Transition<State> tInit : init.getOutgoingTransitions()){
-							
-							if(source.isInitialState()){
-								newTransition = new InitialTransition((InitialState)source, tInit.getDestination());
-							}else{
-								newTransition = new StandardTransition(source, tInit.getDestination());
-							}
-							source.getOutgoingTransitions().add((Transition<State>) newTransition);
-							newTransitions.add((Transition<State>) newTransition);
+						Transition<State> tInit = null ;
+						for(Transition <State> tInitBis : init.getOutgoingTransitions()){
+							tInit = t; 
+							break;
 						}
+							
+						if(source.isInitialState()){
+							newTransition = new InitialTransition((InitialState)source, tInit.getDestination());
+						}else{
+							newTransition = new StandardTransition(source, tInit.getDestination());
+						}
+						source.getOutgoingTransitions().add((Transition<State>) newTransition);
+						newTransitions.add((Transition<State>) newTransition);
+					
 						// Remove current transition 
 						trashOfTransitions.add(t);
 					}

@@ -43,6 +43,9 @@ public class CustomMxGraph extends mxGraph {
 					return false;
 				}
 			}
+		}else if(((mxCell)source).getStyle().equals(Style.INITIAL)){
+			// at this moment it really have one ;) 
+			if(((mxCell)source).getEdgeCount() == 2) return false;
 		}
 		// Disallow transition to an initial state
 		else if(((mxCell)target).getStyle().equals(Style.INITIAL)) return false;
