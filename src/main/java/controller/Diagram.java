@@ -8,6 +8,7 @@ import controller.factory.StateFactory;
 import model.Action;
 import model.CompositeState;
 import model.FinalState;
+import model.Guard;
 import model.InitialState;
 import model.InitialTransition;
 import model.NamedState;
@@ -217,6 +218,8 @@ public class Diagram {
 		}else{
 			t = new StandardTransition(sourceState,targetState);
 		}
+		if (t instanceof StandardTransition)
+			((StandardTransition)t).setGuard(new Guard("Default Guard"));
 		sourceState.getOutgoingTransitions().add((Transition<State>) t);
 		linkedTransitions.put((Transition<State>) t, transition);
 		updateTransitionName((Transition<State>) t,"Default transition");
@@ -423,14 +426,30 @@ public class Diagram {
 	}
 	
 	public void updateTransitionName(Transition<State> transition, String label) {
+		if (transition instanceof StandardTransition) {
+			String[] parts = label.split("/");
+			System.out.println(parts);
+			label= parts[0];
+			if (parts.length > 1)
+				updateGuard((StandardTransition)transition, parts[1]);
+		}
+		
 		transition.setAction(new Action(label));
 		mxCell newCell = linkedTransitions.get(transition);
-		newCell.setValue(label);
+		if (transition instanceof StandardTransition)
+			newCell.setValue(transition.getAction().getName() + " / " + ((StandardTransition)transition).getGuard().getCondition());
+		else
+			newCell.setValue(transition.getAction().getName());
 		mainView.getGraph().getGraph().refresh();
+		System.out.println("Action is : " + transition.getAction().getName());
 	}
 	
-	public void updateGuard(Transition<State> transition, String label) {
+	public void updateGuard(StandardTransition transition, String label) {
 		transition.getGuard().setCondition(label);
+		mxCell newCell = linkedTransitions.get(transition);
+		newCell.setValue(transition.getAction().getName() + " / " + transition.getGuard().getCondition());
+		mainView.getGraph().getGraph().refresh();
+		System.out.println("Guard is : " + transition.getGuard().getCondition());
 	}
 
 	public MainView getView() {

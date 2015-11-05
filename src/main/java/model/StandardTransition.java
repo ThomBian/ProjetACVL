@@ -10,6 +10,7 @@ public final class StandardTransition extends Transition<State> {
 	}
 
 	private Guard guard;
+	private Event event;
 	
 	public Guard getGuard() {
 		return guard;
@@ -17,6 +18,14 @@ public final class StandardTransition extends Transition<State> {
 
 	public void setGuard(Guard guard) {
 		this.guard = guard;
+	}
+	
+	public Event getEvent() {
+		return event;
+	}
+	
+	public void setEvent(Event event) {
+		this.event = event;
 	}
 	
 
