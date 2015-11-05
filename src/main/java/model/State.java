@@ -6,10 +6,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.mxgraph.model.mxCell;
+
 public abstract class State {
     //boolean switches to true during validation step
     //must be false at initialisation
     protected boolean reach = false;
+    
+    private mxCell graphic;
 
 	private Set<Transition<State>> outgoingTransitions = new HashSet<Transition<State>>();
 	
@@ -81,5 +85,11 @@ public abstract class State {
 
 	public void setReach(boolean reach) {
 		this.reach = reach;
+	}
+	public mxCell getGraphic() {
+		return graphic;
+	}
+	public void setGraphic(mxCell graphic) {
+		this.graphic = graphic;
 	}
 }

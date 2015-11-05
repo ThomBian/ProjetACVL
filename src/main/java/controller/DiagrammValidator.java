@@ -1,5 +1,6 @@
 package controller;
 import model.*;
+import model.error.DiagramError;
 
 import java.util.ArrayList;
 import java.util.List;
