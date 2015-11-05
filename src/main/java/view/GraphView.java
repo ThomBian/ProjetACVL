@@ -25,6 +25,7 @@ import controller.Diagram;
 import model.CompositeState;
 import model.NamedState;
 import model.State;
+import model.Transition;
 
 public class GraphView extends JPanel {
 
@@ -71,9 +72,13 @@ public class GraphView extends JPanel {
 				mxCell cell = (mxCell) evt.getProperty("cell");
 				String label = (String) evt.getProperty("label");
 				Diagram d = Diagram.getInstance();
-				NamedState state = (NamedState) d.getStateFromMxCell(cell);
-				d.updateStateName(state, label);
-				
+				if (cell.isVertex()) {					
+					NamedState state = (NamedState) d.getStateFromMxCell(cell);
+					d.updateStateName(state, label);
+				} else {
+					Transition<State> transition = d.getTransitionFromMxCell(cell);
+					d.updateTransitionName(transition, label);
+				}
 			}
 		});
 

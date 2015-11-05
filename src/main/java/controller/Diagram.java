@@ -4,6 +4,7 @@ import javax.swing.UIManager;
 
 import com.mxgraph.model.mxCell;
 
+import model.Action;
 import model.CompositeState;
 import model.FinalState;
 import model.InitialState;
@@ -412,6 +413,10 @@ public class Diagram {
 		mxCell newCell = linkedStates.get(state);
 		newCell.setValue(label);
 		mainView.getGraph().getGraph().refresh();
+	}
+	
+	public void updateTransitionName(Transition<State> transition, String label) {
+		transition.setAction(new Action(label));
 	}
 
 	public MainView getView() {
