@@ -405,7 +405,6 @@ public class Diagram {
 	}
 
 	public void updateStateName(NamedState state, String label) {
-		System.out.println("vérif");
 		if (!verifyName(label)) {
 			label = changeName(label);
 		}
