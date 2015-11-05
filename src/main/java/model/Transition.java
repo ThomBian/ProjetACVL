@@ -18,7 +18,6 @@ public abstract class Transition<T extends State> {
 		this.source = source;
 	}
 	protected Action action;
-	protected String mSource, mDest;
 	
 	public State getDestination() {
 		return destination;
@@ -37,17 +36,5 @@ public abstract class Transition<T extends State> {
 	}
 	public void setAction(Action action) {
 		this.action = action;
-	}
-	public String getmSource() {
-		return mSource;
-	}
-	public void setmSource(String mSource) {
-		this.mSource = mSource;
-	}
-	public String getmDest() {
-		return mDest;
-	}
-	public void setmDest(String mDest) {
-		this.mDest = mDest;
 	}
 }
