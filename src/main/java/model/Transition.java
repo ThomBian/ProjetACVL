@@ -12,7 +12,6 @@ public abstract class Transition<T extends State> {
 
 	protected State destination;
 	protected T source;
-	protected Guard guard;
 	
 	private mxCell graphic;
 	
@@ -46,11 +45,5 @@ public abstract class Transition<T extends State> {
 	}
 	public void setGraphic(mxCell graphic) {
 		this.graphic = graphic;
-	}
-	public Guard getGuard() {
-		return this.guard;
-	}
-	public void setGuard(Guard guard) {
-		this.guard = guard;
 	}
 }
