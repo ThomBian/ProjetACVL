@@ -1,5 +1,6 @@
 package model;
 
+import com.mxgraph.model.mxCell;
 
 /**
  * 
@@ -11,6 +12,8 @@ public abstract class Transition<T extends State> {
 
 	protected State destination;
 	protected T source;
+	
+	private mxCell graphic;
 	
 	public Transition(T source,State destination) {
 		super();
@@ -36,5 +39,11 @@ public abstract class Transition<T extends State> {
 	}
 	public void setAction(Action action) {
 		this.action = action;
+	}
+	public mxCell getGraphic() {
+		return graphic;
+	}
+	public void setGraphic(mxCell graphic) {
+		this.graphic = graphic;
 	}
 }

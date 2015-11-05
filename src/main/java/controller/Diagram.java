@@ -4,6 +4,7 @@ import javax.swing.UIManager;
 
 import com.mxgraph.model.mxCell;
 
+import controller.factory.StateFactory;
 import model.CompositeState;
 import model.FinalState;
 import model.InitialState;
@@ -13,6 +14,7 @@ import model.SimpleState;
 import model.StandardTransition;
 import model.State;
 import model.Transition;
+import view.GraphView;
 import view.MainView;
 import view.Style;
 
@@ -52,37 +54,27 @@ public class Diagram {
 	}
 
 	public void createInitialState() {
-		State s = new InitialState();
+		State s = StateFactory.createInitialState(mainView.getGraph());
 		directSons.add(s);
-		// TODO : call to graphview instead of direct class mxgraph object
-		mxCell vertex = (mxCell) mainView.getGraph().getGraph().createVertex(mainView.getGraph().getGraph().getDefaultParent(), null, "", 20, 20, 30, 30, Style.INITIAL);
-		mainView.getGraph().getGraph().addCell(vertex);
-		linkedStates.put(s, vertex);
+		linkedStates.put(s, s.getGraphic());
 	}
 
 	public void createState(String name) {
 		if (!verifyName(name)) {
 			name = changeName(name);
 		}
-		State s = new SimpleState(name);
+		State s = StateFactory.createSimpleState(mainView.getGraph(), name);
 		directSons.add(s);
-		// TODO : call to graphview instead of direct class mxgraph object
-		mxCell vertex = (mxCell) mainView.getGraph().getGraph().createVertex(mainView.getGraph().getGraph().getDefaultParent(), null, name, 20, 20, 80, 30, Style.STATE);
-		mainView.getGraph().getGraph().addCell(vertex);
-		linkedStates.put(s, vertex);
+		linkedStates.put(s, s.getGraphic());
 	}
 
 	public void createCompositeState(String name) {
 		if (!verifyName(name)) {
 			name = changeName(name);
 		}
-		State s = new CompositeState(name);
+		State s = StateFactory.createCompositeState(mainView.getGraph(), name);
 		directSons.add(s);
-		// TODO : call to graphview instead of direct class mxgraph object
-		mxCell vertex = (mxCell) mainView.getGraph().getGraph().createVertex(mainView.getGraph().getGraph().getDefaultParent(), null, name, 20, 20, 150, 180,
-				Style.COMPOSITE);
-		mainView.getGraph().getGraph().addCell(vertex);
-		linkedStates.put(s, vertex);
+		linkedStates.put(s, s.getGraphic());
 	}
 	
 	// c == null => first level state
@@ -152,12 +144,9 @@ public class Diagram {
 	}
 
 	public void createFinalState() {
-		State s = new FinalState();
+		State s = StateFactory.createFinalState(mainView.getGraph());
 		directSons.add(s);
-		// TODO : call to graphview instead of direct class mxgraph object
-		mxCell vertex = (mxCell) mainView.getGraph().getGraph().createVertex(mainView.getGraph().getGraph().getDefaultParent(), null, "", 20, 20, 30, 30, Style.FINAL);
-		mainView.getGraph().getGraph().addCell(vertex);
-		linkedStates.put(s, vertex);
+		linkedStates.put(s, s.getGraphic());
 	}
 
 	private CompositeState findParentState(State s) {

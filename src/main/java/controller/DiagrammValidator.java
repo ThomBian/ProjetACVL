@@ -1,6 +1,7 @@
 package controller;
 import model.InitialState;
 import model.State;
+import model.error.DiagramError;
 
 import java.util.ArrayList;
 import java.util.List;
