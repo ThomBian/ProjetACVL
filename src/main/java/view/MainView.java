@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Dimension;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -30,16 +31,17 @@ public class MainView {
 	private final Button validateButton = new Button("Validate diagram", new ValidateDiagram());
 
 
-	public void displayValidationWindow(List<DiagramError> errors) {
-        if (errors.size() == 0){
+	public void displayValidationWindow(List<DiagramError> dErrors) {
+        if (dErrors.size() == 0){
             //display ok
-            System.out.println("OK !");
+			graphView.informUser("Ok !");
         } else {
             //display all errors
-            for (DiagramError error : errors){
-                System.out.println(error.toString());
+			String errors = "Errors found : \n";
+            for (DiagramError error : dErrors){
+				errors += error.toString()+"\n";
             }
-
+            graphView.informUser(errors);
         }
 	}
 
@@ -64,7 +66,10 @@ public class MainView {
 	 */
 	private void initialize() {
 		frame = new JFrame("Diagram editor");
+		
 		frame.setBounds(100, 100, 950, 450);
+		frame.setMinimumSize(new Dimension(1050, 500));
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		menuBar = new JMenuBar();

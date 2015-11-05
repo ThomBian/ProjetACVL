@@ -34,7 +34,6 @@ public class Diagram {
 	private MainView mainView;
 	
 	private Set<State> directSons = new HashSet<State>();
-	private List<DiagramError> errors;
 	// Will be placed in graph view soon
 	private Map<State, mxCell> linkedStates = new HashMap<State, mxCell>();
 	private Map<Transition<State>, mxCell> linkedTransitions = new HashMap<Transition<State>, mxCell>();
@@ -49,7 +48,7 @@ public class Diagram {
     }
 
 	private Diagram() {
-        errors = new ArrayList<>();
+
 	}
 
 	public void createInitialState() {
@@ -105,7 +104,13 @@ public class Diagram {
 			c.getStates().add(s);
 		}
 	}
-	private void removeTransitionFromTarget(State target){
+
+    public boolean validate() {
+        DiagrammValidator validator = new DiagrammValidator();
+        return validator.validate();
+    }
+
+    private void removeTransitionFromTarget(State target){
 		List<Transition<State>> removed;
 		for(State s : directSons){
 			removed = s.removeTransitionInSonsFromTarget(target);
@@ -153,47 +158,6 @@ public class Diagram {
 		mxCell vertex = (mxCell) mainView.getGraph().getGraph().createVertex(mainView.getGraph().getGraph().getDefaultParent(), null, "", 20, 20, 30, 30, Style.FINAL);
 		mainView.getGraph().getGraph().addCell(vertex);
 		linkedStates.put(s, vertex);
-	}
-
-	public boolean validate() {
-        boolean isValid = true;
-        isValid = areAllStatesReachable();
-		mainView.displayValidationWindow(errors);
-        errors.clear();
-        return isValid;
-	}
-
-    private boolean areAllStatesReachable() {
-        boolean isValid = true;
-        int nbInitialState = 0;
-        InitialState input = null;
-        for(State s: directSons){
-            if (s instanceof InitialState) {
-                nbInitialState++;
-                input = (InitialState) s;
-            }
-        }
-        if (nbInitialState == 0 || nbInitialState > 1){
-            this.addError(new DiagramError("Erreur avec les états initiaux"));
-            isValid = false;
-        }
-        if(input != null){
-            input.reach();
-        }
-        for(State s : getAllStates()){
-            if (!s.isReach()){
-                this.addError(new DiagramError("State unreachable : "+s.toString()));
-				isValid = false;
-            }
-        }
-        for(State s: getAllStates()){
-            s.setReach(false);
-        }
-        return isValid;
-    }
-
-    public void addError(DiagramError e) {
-		errors.add(e);
 	}
 
 	private CompositeState findParentState(State s) {
@@ -280,7 +244,7 @@ public class Diagram {
 	@SuppressWarnings("unchecked")
 	public void flatten() {
 		// TODO Verify that the graph is Valid
-
+		
 		if(validate()){
 
 			Set<Transition<State>> transitions = getAllTransitions();
@@ -424,7 +388,7 @@ public class Diagram {
 	/*
 	 * Retrieve all states
 	 */
-	private List<State> getAllStates(){
+	public List<State> getAllStates(){
 		List<State> states = new ArrayList<State>();
 		for(State s : directSons){
 			states.addAll(s.getAllStates());
@@ -445,6 +409,16 @@ public class Diagram {
 			label = changeName(label);
 		}
 		state.setName(label);
+		mxCell newCell = linkedStates.get(state);
+		newCell.setValue(label);
+		mainView.getGraph().getGraph().refresh();
 	}
-	
+
+	public MainView getView() {
+		return mainView;
+	}
+
+    public Set<State> getDirectSons() {
+        return directSons;
+    }
 }
