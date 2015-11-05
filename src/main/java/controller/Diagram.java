@@ -247,12 +247,12 @@ public class Diagram {
 	}
 	
 	/*
-	 * Flatten a VALID graph
+	 * Flatten a VALID 
 	 */
 	@SuppressWarnings("unchecked")
 	public void flatten() {
 		// TODO Verify that the graph is Valid
-		
+
 		if(validate()){
 
 			Set<Transition<State>> transitions = getAllTransitions();
@@ -304,16 +304,20 @@ public class Diagram {
 						
 						InitialState init = ((CompositeState)t.getDestination()).getInitState();
 						// Generate transitions and add it to the source
-						for(Transition<State> tInit : init.getOutgoingTransitions()){
-							
-							if(source.isInitialState()){
-								newTransition = new InitialTransition((InitialState)source, tInit.getDestination());
-							}else{
-								newTransition = new StandardTransition(source, tInit.getDestination());
-							}
-							source.getOutgoingTransitions().add((Transition<State>) newTransition);
-							newTransitions.add((Transition<State>) newTransition);
+						Transition<State> tInit = null ;
+						for(Transition <State> tInitBis : init.getOutgoingTransitions()){
+							tInit = t; 
+							break;
 						}
+							
+						if(source.isInitialState()){
+							newTransition = new InitialTransition((InitialState)source, tInit.getDestination());
+						}else{
+							newTransition = new StandardTransition(source, tInit.getDestination());
+						}
+						source.getOutgoingTransitions().add((Transition<State>) newTransition);
+						newTransitions.add((Transition<State>) newTransition);
+					
 						// Remove current transition 
 						trashOfTransitions.add(t);
 					}
@@ -404,7 +408,7 @@ public class Diagram {
 		return states;
 	}
 	
-	private Set<Transition<State>> getAllTransitions(){
+	public Set<Transition<State>> getAllTransitions(){
 		Set<Transition<State>> transitions = new HashSet<Transition<State>>();
 		for(State s : directSons){
 			transitions.addAll(s.getAllTransitions());
@@ -424,7 +428,7 @@ public class Diagram {
 		newCell.setValue(label);
 		mainView.getGraph().getGraph().refresh();
 	}
-	
+
 	public void updateTransitionName(Transition<State> transition, String label) {
 		if (transition instanceof StandardTransition) {
 			String[] parts = label.split("/");
@@ -445,6 +449,7 @@ public class Diagram {
 	}
 	
 	public void updateGuard(StandardTransition transition, String label) {
+
 		transition.getGuard().setCondition(label);
 		mxCell newCell = linkedTransitions.get(transition);
 		newCell.setValue(transition.getAction().getName() + " / " + transition.getGuard().getCondition());

@@ -13,9 +13,11 @@ public class InitialState extends State {
 	public boolean isInitialState() {
 		return true;
 	}
+
 	@Override
 	public Collection<? extends State> getSimpleFinalStateInSons() {
 		Set<State> states = new HashSet<State>();
 		return states;
 	}
+
 }

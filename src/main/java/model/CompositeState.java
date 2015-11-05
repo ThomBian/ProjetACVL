@@ -1,14 +1,10 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public final class CompositeState extends NamedState {
 
-    private Set<State>             states;
+    private Set<State> states;
 
     public CompositeState(String name) {
         super(name);
@@ -20,18 +16,19 @@ public final class CompositeState extends NamedState {
      * Precondition The composite state must have only one initial state !!!
      */
     public InitialState getInitState() {
-    	int nbInitState = 0;
-    	InitialState init = null;
-        for(State s: states){
-        	if(s.isInitialState()){
-        		nbInitState ++;
-        		init = (InitialState) s;
-        	}
+        int nbInitState = 0;
+        InitialState init = null;
+        for (State s : states) {
+            if (s.isInitialState()) {
+                nbInitState++;
+                init = (InitialState) s;
+            }
         }
-
+        if (nbInitState == 0 || nbInitState > 1) {
+            return null;
+        }
         return init;
     }
-
 
     public Set<State> getStates() {
         return states;
@@ -97,8 +94,10 @@ public final class CompositeState extends NamedState {
      * Get & remove transition that leads to the target state
      * Return the transitions to be removed
      */
-    public List<Transition<State>> removeTransitionInSonsFromTarget(State target) {
-        List<Transition<State>> toBeRemoved = new ArrayList<Transition<State>>();
+    public List<Transition<State>> removeTransitionInSonsFromTarget(
+            State target) {
+        List<Transition<State>> toBeRemoved =
+                new ArrayList<Transition<State>>();
         for (Transition<State> t : getOutgoingTransitions()) {
             if (t.getDestination().equals(target)) {
                 toBeRemoved.add(t);
@@ -115,31 +114,33 @@ public final class CompositeState extends NamedState {
 
     @Override
     public Collection<? extends Transition<State>> getAllTransitions() {
-		Set<Transition<State>> transitions = new HashSet<Transition<State>>();
-		transitions.addAll(getOutgoingTransitions());
-		for(State s : states){
-			transitions.addAll(s.getAllTransitions());
-		}
-    	return transitions;
-	}
+        Set<Transition<State>> transitions = new HashSet<Transition<State>>();
+        transitions.addAll(getOutgoingTransitions());
+        for (State s : states) {
+            transitions.addAll(s.getAllTransitions());
+        }
+        return transitions;
+    }
 
-	@Override
-	public Collection<? extends State> getSimpleFinalStateInSons() {
-		Set<State> finalSimple = new HashSet<State>();
-		for(State s : states){
-			finalSimple.addAll(s.getSimpleFinalStateInSons());
-		}
-		return finalSimple;
-	}
+    @Override
+    public Collection<? extends State> getSimpleFinalStateInSons() {
+        Set<State> finalSimple = new HashSet<State>();
+        for (State s : states) {
+            finalSimple.addAll(s.getSimpleFinalStateInSons());
+        }
+        return finalSimple;
+    }
 
     @Override
     public void reach() {
         this.reach = true;
         InitialState initState = getInitState();
-        initState.reach();
-        for (Transition<State> t : getOutgoingTransitions()){
-            State s = t.getDestination();
-            s.reach();
+        if (initState != null) {
+            initState.reach();
+            for (Transition<State> t : getOutgoingTransitions()) {
+                State s = t.getDestination();
+                s.reach();
+            }
         }
     }
 }
