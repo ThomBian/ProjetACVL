@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JOptionPane;
@@ -74,7 +75,8 @@ public class GraphView extends JPanel {
 				Diagram d = Diagram.getInstance();
 				if (cell.isVertex()) {					
 					NamedState state = (NamedState) d.getStateFromMxCell(cell);
-					d.updateStateName(state, label);
+					List<State> states = d.getAllStates();
+					d.updateStateName(state, label, states);
 				} else {
 					Transition<State> transition = d.getTransitionFromMxCell(cell);
 					d.updateTransitionName(transition, label);

@@ -62,7 +62,7 @@ public class Diagram {
 	}
 
 	public void createState(String name) {
-		if (!verifyName(name)) {
+		if (!verifyName(name, getAllStates())) {
 			name = changeName(name);
 		}
 		State s = new SimpleState(name);
@@ -74,7 +74,7 @@ public class Diagram {
 	}
 
 	public void createCompositeState(String name) {
-		if (!verifyName(name)) {
+		if (!verifyName(name, getAllStates())) {
 			name = changeName(name);
 		}
 		State s = new CompositeState(name);
@@ -184,11 +184,12 @@ public class Diagram {
 		return result;
 	}
 	
-	private boolean verifyName(String name) {
-		for (State s : getAllStates()) {
+	private boolean verifyName(String name, List<State> states) {
+		for (State s : states) {
 			if (s.isNamedState()) {
-				if (name.equals(((NamedState) s).getName()))
+				if (name.equals(((NamedState) s).getName())) {
 					return false;
+				}
 			}
 		}
 		return true;
@@ -198,7 +199,7 @@ public class Diagram {
 	private String changeName(String name) {
 		int number = 2;
 		while (true) {
-			if (verifyName(name + " " + String.valueOf(number))) {
+			if (verifyName(name + " " + String.valueOf(number), getAllStates())) {
 				return name + " " + String.valueOf(number);
 			}
 			number++;
@@ -405,9 +406,12 @@ public class Diagram {
 		return transitions;
 	}
 
-	public void updateStateName(NamedState state, String label) {
-		if (!verifyName(label)) {
+	public void updateStateName(NamedState state, String label, List<State> states) {
+		states.remove(state);
+		if (!verifyName(label, states)) {
+			System.out.println("label before : " + label);
 			label = changeName(label);
+			System.out.println("label after : " + label);
 		}
 		state.setName(label);
 		mxCell newCell = linkedStates.get(state);
