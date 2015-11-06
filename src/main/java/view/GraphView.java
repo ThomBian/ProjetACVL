@@ -42,6 +42,21 @@ public class GraphView extends JPanel {
 	private Map<State, mxCell> linkedStates = new HashMap<State, mxCell>();
 	private Map<Transition<State>, mxCell> linkedTransitions = new HashMap<Transition<State>, mxCell>();
 	Map<State, mxCell> tmpStates = null;
+	private int initialX = 20;
+	private int initialY = 20;
+	
+	private int getInitialX(){
+		if(initialX >= 200) initialX = 20;
+		else initialX += 20;
+		return initialX;
+	}
+	
+	private int getInitialY(){
+		if(initialY >= 200) initialY = 20;
+		else initialY += 20;
+		return initialY;
+	}
+	
 
 	public GraphView() {
 		super();
@@ -217,7 +232,7 @@ public class GraphView extends JPanel {
 	public void insertState(InitialState initialState, CompositeState parent) {
 		mxGeometry geo = getPreviousGeometry(initialState);
 		if (geo == null) {
-			geo = new mxGeometry(20, 20, 30, 30);
+			geo = new mxGeometry(getInitialX(), getInitialY(), 30, 30);
 			geo.setRelative(false);
 		}
 
@@ -238,7 +253,7 @@ public class GraphView extends JPanel {
 	public void insertState(FinalState finalState, CompositeState parent) {
 		mxGeometry geo = getPreviousGeometry(finalState);
 		if (geo == null) {
-			geo = new mxGeometry(20, 20, 30, 30);
+			geo = new mxGeometry(getInitialX(), getInitialY(), 30, 30);
 			geo.setRelative(false);
 		}
 
@@ -259,7 +274,7 @@ public class GraphView extends JPanel {
 	public void insertState(SimpleState simpleState, CompositeState parent) {
 		mxGeometry geo = getPreviousGeometry(simpleState);
 		if (geo == null) {
-			geo = new mxGeometry(20, 20, 80, 30);
+			geo = new mxGeometry(getInitialX(), getInitialY(), 80, 30);
 			geo.setRelative(false);
 		}
 		Object pCell = linkedStates.get(parent);
@@ -279,7 +294,7 @@ public class GraphView extends JPanel {
 	public void insertState(CompositeState compositeState, CompositeState parent) {
 		mxGeometry geo = getPreviousGeometry(compositeState);
 		if (geo == null) {
-			geo = new mxGeometry(20, 20, 300, 300);
+			geo = new mxGeometry(getInitialX(), getInitialY(), 300, 300);
 			geo.setRelative(false);
 		}
 
