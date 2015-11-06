@@ -139,7 +139,15 @@ public class Diagram {
 
 	public void launchApplication() {
 		try {
+			// Linux UI
+			try{
+				UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+			}catch(Exception e){
+				
+			}
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			
+			
 			mainView = new MainView();
 			mainView.getFrame().setVisible(true);
 		} catch (Exception e) {
