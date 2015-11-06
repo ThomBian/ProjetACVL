@@ -8,6 +8,8 @@ import java.util.Set;
 
 import com.mxgraph.model.mxCell;
 
+import controller.visitor.Visitor;
+
 public abstract class State {
     //boolean switches to true during validation step
     //must be false at initialisation
@@ -73,8 +75,6 @@ public abstract class State {
         }
     }
 
-	public abstract boolean isValid();
-
 	public Collection<? extends Transition<State>> getAllTransitions() {
 		return getOutgoingTransitions();
 	}
@@ -94,4 +94,6 @@ public abstract class State {
 	public void setGraphic(mxCell graphic) {
 		this.graphic = graphic;
 	}
+	
+	public abstract void apply(Visitor v);
 }

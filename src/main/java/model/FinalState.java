@@ -3,6 +3,8 @@ package model;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import controller.visitor.Visitor;
 public class FinalState extends State {
 
 	public String toString(){
@@ -15,11 +17,6 @@ public class FinalState extends State {
     }
 
 	@Override
-	boolean isValid() {
-		return ! (getOutgoingTransitions().size() > 0);
-	}
-
-	@Override
     public boolean isFinalState(){
 		return true;
 	}
@@ -30,5 +27,8 @@ public class FinalState extends State {
 		states.add(this);
 		return states;
 	}
-
+	@Override
+	public void apply(Visitor v) {
+		v.visit(this);
+	}
 }

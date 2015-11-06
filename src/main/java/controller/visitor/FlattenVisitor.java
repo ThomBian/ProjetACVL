@@ -1,8 +1,8 @@
 package controller.visitor;
 
+import model.CompositeState;
 import model.FinalState;
 import model.InitialState;
-import model.NamedState;
 import model.SimpleState;
 
 public class FlattenVisitor implements Visitor {
@@ -14,7 +14,7 @@ public class FlattenVisitor implements Visitor {
 	}
 
 	@Override
-	public void visit(NamedState s) {
+	public void visit(CompositeState s) {
 		// TODO Auto-generated method stub
 
 	}
