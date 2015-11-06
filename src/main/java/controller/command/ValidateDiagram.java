@@ -5,7 +5,7 @@ public class ValidateDiagram implements Command {
 
 	@Override
 	public void execute() {
-		Diagram.getInstance().validate();
+		Diagram.getInstance().validate(true);
 	}
 
 }

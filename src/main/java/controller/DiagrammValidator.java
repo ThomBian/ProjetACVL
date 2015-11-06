@@ -22,11 +22,12 @@ public class DiagrammValidator {
         isValid = true;
     }
 
-    public boolean validate() {
+    public boolean validate(boolean displayErrors) {
         areStatesValid();
         areAllStatesReachable();
         areCompositeValid();
-        Diagram.getInstance().getView().displayValidationWindow(errors);
+        if (displayErrors)
+            Diagram.getInstance().getView().displayValidationWindow(errors);
         errors.clear();
         return isValid;
     }
@@ -87,6 +88,6 @@ public class DiagrammValidator {
     }
 
     public void setValid(boolean valid) {
-        isValid = isValid & valid;
+        isValid = valid & isValid;
     }
 }

@@ -111,9 +111,9 @@ public class Diagram {
 		}
 	}
 
-    public boolean validate() {
+    public boolean validate(boolean display) {
         validator = new DiagrammValidator();
-        return validator.validate();
+        return validator.validate(display);
     }
 
     private void removeTransitionFromTarget(State target){
@@ -255,7 +255,7 @@ public class Diagram {
 	public void flatten() {
 		// TODO Verify that the graph is Valid
 
-		if(validate()){
+		if(validate(false)){
 
 			Set<Transition<State>> transitions = getAllTransitions();
 			Set<Transition<State>> trashOfTransitions = new HashSet<Transition<State>>();
