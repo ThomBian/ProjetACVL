@@ -118,15 +118,16 @@ public class Diagram {
 	/*
 	 * Remove a state and the transitions leading to it
 	 * If its a composite one, the sons are deleted and the transitions too
+	 * removeoldPosition inform if we want to remerber the position of the state for later user
 	 */
-	public void removeState(State s) {
+	public void removeState(State s, boolean removeOldPosition) {
 		// remove transitions linked to this state
 		List<State> sonsAndFather = s.getAllStates();
 		for(State son : sonsAndFather){
 			
 			removeTransitionFromState(son);
-			
-			mainView.getGraph().getLinkedStates().remove(son);
+			if(removeOldPosition)
+				mainView.getGraph().getLinkedStates().remove(son);
 		}
 		CompositeState parent = findParentState(s);
 		if(parent == null){
@@ -248,6 +249,7 @@ public class Diagram {
 	 */
 	public void flatten(){
 		if(validate(false)){
+			// save graphical components if case we want to draw the with the same position as before 
 			Set<CompositeState> statesToDelete = new HashSet<CompositeState>();
 			Set<State> statesToAdd= new HashSet<State>();
 			for(State s : directSons){
@@ -344,12 +346,10 @@ public class Diagram {
 			}
 			else if(s.isCompositeState()){
 				mainView.getGraph().insertState((CompositeState)s, null);
+				s.apply(drawerVisitor);
 			}
 			else {
 				mainView.getGraph().insertState((SimpleState)s, null);
-			}
-			if(s.isCompositeState()){
-				s.apply(drawerVisitor);
 			}
 		}
 		for(Transition<State> t : getAllTransitions()){

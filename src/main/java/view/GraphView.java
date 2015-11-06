@@ -100,7 +100,7 @@ public class GraphView extends JPanel {
 					Diagram d = Diagram.getInstance();
 					for (Object cell : cells) {
 						if (((mxCell) cell).isVertex()) {
-							d.removeState(getStateFromMxCell((mxCell) cell));
+							d.removeState(getStateFromMxCell((mxCell) cell), true);
 						} else {
 							d.removeTransition(getTransitionFromMxCell((mxCell) cell));
 						}
@@ -201,26 +201,24 @@ public class GraphView extends JPanel {
 	private mxGeometry getPreviousGeometry(State s) {
 		if (getTmpStates() != null && getTmpStates().containsKey(s)) {
 			mxCell cell = getTmpStates().get(s);
+			// Compute if it was in a parent before
+			mxICell parent = cell.getParent();
+			while(parent != null && parent.getGeometry() != null){
+				cell.getGeometry().setX(cell.getGeometry().getX() + parent.getGeometry().getX());
+				cell.getGeometry().setY(cell.getGeometry().getY() + parent.getGeometry().getY());
+				parent = parent.getParent();
+			}
 			return cell.getGeometry();
 		} else {
 			return null;
 		}
 	}
 
-	private void computeGeometry(mxGeometry geo, State s) {
-		if (getTmpStates().get(s).getParent() == graph.getDefaultParent()) {
-			geo.setX(geo.getOffset().getX());
-			geo.setY(geo.getOffset().getY());
-		}
-	}
-
 	public void insertState(InitialState initialState, CompositeState parent) {
 		mxGeometry geo = getPreviousGeometry(initialState);
-		if (geo != null) {
-			computeGeometry(geo, initialState);
-
-		} else {
+		if (geo == null) {
 			geo = new mxGeometry(20, 20, 30, 30);
+			geo.setRelative(false);
 		}
 
 		Object pCell = linkedStates.get(parent);
@@ -239,10 +237,9 @@ public class GraphView extends JPanel {
 
 	public void insertState(FinalState finalState, CompositeState parent) {
 		mxGeometry geo = getPreviousGeometry(finalState);
-		if (geo != null) {
-			computeGeometry(geo, finalState);
-		} else {
+		if (geo == null) {
 			geo = new mxGeometry(20, 20, 30, 30);
+			geo.setRelative(false);
 		}
 
 		Object pCell = linkedStates.get(parent);
@@ -261,12 +258,10 @@ public class GraphView extends JPanel {
 
 	public void insertState(SimpleState simpleState, CompositeState parent) {
 		mxGeometry geo = getPreviousGeometry(simpleState);
-		if (geo != null) {
-			computeGeometry(geo, simpleState);
-		} else {
+		if (geo == null) {
 			geo = new mxGeometry(20, 20, 80, 30);
+			geo.setRelative(false);
 		}
-
 		Object pCell = linkedStates.get(parent);
 		if (parent == null)
 			pCell = getGraph().getDefaultParent();
@@ -283,10 +278,9 @@ public class GraphView extends JPanel {
 
 	public void insertState(CompositeState compositeState, CompositeState parent) {
 		mxGeometry geo = getPreviousGeometry(compositeState);
-		if (geo != null) {
-			computeGeometry(geo, compositeState);
-		} else {
+		if (geo == null) {
 			geo = new mxGeometry(20, 20, 300, 300);
+			geo.setRelative(false);
 		}
 
 		Object pCell = linkedStates.get(parent);

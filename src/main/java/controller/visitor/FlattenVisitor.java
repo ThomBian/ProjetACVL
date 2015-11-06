@@ -66,7 +66,7 @@ public class FlattenVisitor implements Visitor {
 		// Remove everything
 		d.removeTransitions(transitionToRemove);
 		for(State s : stateToRemove){
-			d.removeState(s);
+			d.removeState(s, false);
 		}
 	}
 
