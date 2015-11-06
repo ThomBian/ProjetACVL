@@ -41,15 +41,8 @@ public class GraphView extends JPanel {
 
 	private Map<State, mxCell> linkedStates = new HashMap<State, mxCell>();
 	private Map<Transition<State>, mxCell> linkedTransitions = new HashMap<Transition<State>, mxCell>();
+	Map<State, mxCell> tmpStates = null;
 	
-	public Map<State, mxCell> getLinkedStates() {
-		return linkedStates;
-	}
-
-	public Map<Transition<State>, mxCell> getLinkedTransitions() {
-		return linkedTransitions;
-	}
-
 	public GraphView() {
 		super();
 		graph = new CustomMxGraph();
@@ -209,22 +202,25 @@ public class GraphView extends JPanel {
 		JOptionPane.showMessageDialog(null, message);
 	}
 	
-	public mxGeometry getGeometry(State s){
-		if(linkedStates.containsKey(s)){
-			mxCell cell = linkedStates.get(s);
+	private mxGeometry getPreviousGeometry(State s){
+		if(getTmpStates() != null && getTmpStates().containsKey(s)){
+			mxCell cell = getTmpStates().get(s);
 			return cell.getGeometry();
 		}else{
 			return null;
 		}
-		
+	}
+	private void computeGeometry(mxGeometry geo, State s){
+		if(getTmpStates().get(s).getParent() == graph.getDefaultParent()){
+			geo.setX(geo.getOffset().getX());
+			geo.setY(geo.getOffset().getY());
+		}
 	}
 	public void insertState(InitialState initialState, CompositeState parent){
-		mxGeometry geo = getGeometry(initialState);
+		mxGeometry geo = getPreviousGeometry(initialState);
 		if(geo != null){
-			if(linkedStates.get(initialState).getParent() == graph.getDefaultParent()){
-				geo.setX(geo.getOffset().getX());
-				geo.setY(geo.getOffset().getY());
-			}
+			computeGeometry(geo, initialState);
+			
 		}else{
 			geo = new mxGeometry(20, 20, 30, 30);
 		}
@@ -239,13 +235,9 @@ public class GraphView extends JPanel {
 		insertState(initialState, null);
 	}
 	public void insertState(FinalState finalState, CompositeState parent){
-		mxGeometry geo = getGeometry(finalState);
+		mxGeometry geo = getPreviousGeometry(finalState);
 		if(geo != null){
-			if(linkedStates.get(finalState).getParent() == graph.getDefaultParent()){
-				
-				geo.setX(geo.getOffset().getX());
-				geo.setY(geo.getOffset().getY());
-			}
+			computeGeometry(geo, finalState);
 		}else{
 			geo = new mxGeometry(20, 20, 30, 30);
 		}
@@ -261,12 +253,9 @@ public class GraphView extends JPanel {
 	}
 	
 	public void insertState(SimpleState simpleState, CompositeState parent){
-		mxGeometry geo = getGeometry(simpleState);
+		mxGeometry geo = getPreviousGeometry(simpleState);
 		if(geo != null){
-			if(linkedStates.get(simpleState).getParent() == graph.getDefaultParent()){
-				geo.setX(geo.getOffset().getX());
-				geo.setY(geo.getOffset().getY());
-			}
+				computeGeometry(geo, simpleState);
 		}else{
 			geo = new mxGeometry(20, 20, 80, 30);
 		}
@@ -282,12 +271,9 @@ public class GraphView extends JPanel {
 	}
 	
 	public void insertState(CompositeState compositeState, CompositeState parent){
-		mxGeometry geo = getGeometry(compositeState);
+		mxGeometry geo = getPreviousGeometry(compositeState);
 		if(geo != null){
-			if(linkedStates.get(compositeState).getParent() == graph.getDefaultParent()){
-				geo.setX(geo.getOffset().getX());
-				geo.setY(geo.getOffset().getY());
-			}
+			computeGeometry(geo, compositeState);			
 		}else{
 			geo = new mxGeometry(20, 20, 300, 300);
 		}
@@ -329,5 +315,30 @@ public class GraphView extends JPanel {
 		edge = (mxCell) getGraph().addEdge(edge, getGraph().getDefaultParent(), sourceCell, destCell, null);
 		
 	}
+	
+	public Map<State, mxCell> getTmpStates() {
+		return tmpStates;
+	}
+
+	public void setTmpStates(Map<State, mxCell> tmpStates) {
+		this.tmpStates = tmpStates;
+	}
+
+	public void setLinkedStates(Map<State, mxCell> linkedStates) {
+		this.linkedStates = linkedStates;
+	}
+
+	public void setLinkedTransitions(Map<Transition<State>, mxCell> linkedTransitions) {
+		this.linkedTransitions = linkedTransitions;
+	}
+
+	public Map<State, mxCell> getLinkedStates() {
+		return linkedStates;
+	}
+
+	public Map<Transition<State>, mxCell> getLinkedTransitions() {
+		return linkedTransitions;
+	}
+
 
 }

@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,6 @@ import com.mxgraph.model.mxCell;
 
 import controller.visitor.FlattenVisitor;
 import controller.visitor.StateDrawerVisitor;
-import controller.visitor.ValidVisitor;
 import model.Action;
 import model.CompositeState;
 import model.FinalState;
@@ -25,9 +25,7 @@ import model.StandardTransition;
 import model.State;
 import model.Transition;
 import view.CustomMxGraph;
-import view.GraphView;
 import view.MainView;
-import view.Style;
 
 public class Diagram {
 
@@ -45,8 +43,6 @@ public class Diagram {
 
 	private Set<State> directSons = new HashSet<State>();
 	
-	
-
 	private Diagram() {
 
 	}
@@ -444,12 +440,9 @@ public class Diagram {
 	public void  refreshGraph(){
 		CustomMxGraph graph = mainView.getGraph().getGraph();
 		// Save positions 
-		Map<State, mxCell> tmpStates = getLinkedStates();
-		Map<Transition<State>, mxCell> tmpTransitions = getLinkedTransitions();
-		
-		//getLinkedStates() = new HashMap<State, mxCell>();
-		//linkedTransitions = new HashMap<Transition<State>, mxCell>();
-		
+		getView().getGraph().setTmpStates(getLinkedStates());
+		getView().getGraph().setLinkedStates(new HashMap<State, mxCell>());
+
 		// Reset graph 
 		graph.setReactToDeleteEvent(false);
 		graph.removeCells(graph.getChildVertices(graph.getDefaultParent()));
@@ -476,7 +469,7 @@ public class Diagram {
 		for(Transition<State> t : getAllTransitions()){
 			mainView.getGraph().insertTransition(t);
 		}
-		
+		getView().getGraph().setTmpStates(null);
 	}
 
 	public MainView getView() {
