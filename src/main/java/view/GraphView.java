@@ -135,14 +135,11 @@ public class GraphView extends JPanel {
 					        	if(s != null){
 					        		d.dropStateIntoCompositeState(getStateFromMxCell(dropped), (CompositeState) getStateFromMxCell(parent));
 					        	}
-								
 					        }
 					    }
 					}
 				}
 			});
-
-
 	}
 
 	public CustomMxGraph getGraph() {
@@ -229,6 +226,7 @@ public class GraphView extends JPanel {
 		if(parent == null) pCell = getGraph().getDefaultParent();
 		mxCell vertex = (mxCell) getGraph().createVertex(pCell, null, "", geo.getX(), geo.getY(), geo.getWidth(), geo.getHeight(), Style.INITIAL);
 		getGraph().addCell(vertex);
+		getGraph().setSelectionCell(vertex);
 		linkedStates.put(initialState, vertex);
 	}
 	public void insertState(InitialState initialState){
@@ -247,6 +245,7 @@ public class GraphView extends JPanel {
 		mxCell vertex = (mxCell) getGraph().createVertex(pCell, null, "",  geo.getX(), geo.getY(), geo.getWidth(), geo.getHeight(), Style.FINAL);
 		getGraph().addCell(vertex);
 		getLinkedStates().put(finalState, vertex);
+		getGraph().setSelectionCell(vertex);
 	}
 	public void insertState(FinalState finalState){
 		insertState(finalState, null);
@@ -265,6 +264,7 @@ public class GraphView extends JPanel {
 		mxCell vertex = (mxCell) getGraph().createVertex(pCell, null, simpleState.getName(),  geo.getX(), geo.getY(), geo.getWidth(), geo.getHeight(), Style.STATE);
 		getGraph().addCell(vertex);
 		linkedStates.put(simpleState, vertex);
+		getGraph().setSelectionCell(vertex);
 	}
 	public void insertState(SimpleState simpleState){
 		insertState(simpleState, null);
@@ -284,6 +284,7 @@ public class GraphView extends JPanel {
 				Style.COMPOSITE);
 		getGraph().addCell(vertex);
 		linkedStates.put(compositeState, vertex);
+		getGraph().setSelectionCell(vertex);
 	}
 	
 	public void insertState(CompositeState compositeState){
