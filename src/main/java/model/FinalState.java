@@ -15,7 +15,8 @@ public class FinalState extends State {
     public void reach() {
         this.reach = true;
     }
-    @Override
+
+	@Override
     public boolean isFinalState(){
 		return true;
 	}

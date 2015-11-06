@@ -33,14 +33,16 @@ public class Diagram {
 
 	private static final Diagram instance = new Diagram();
 
-	public static Diagram getInstance() {
+    private DiagrammValidator validator;
+
+    public static Diagram getInstance() {
 		return instance;
 	}
 
 	private MainView mainView;
 	private FlattenVisitor flattenVisitor = new FlattenVisitor();
-	private ValidVisitor validVisitor = new ValidVisitor();
 	private StateDrawerVisitor drawerVisitor = new StateDrawerVisitor();
+
 	private Set<State> directSons = new HashSet<State>();
 	
 	
@@ -93,9 +95,9 @@ public class Diagram {
 		}
 	}
 
-    public boolean validate() {
-        DiagrammValidator validator = new DiagrammValidator();
-        return validator.validate();
+    public boolean validate(boolean display) {
+        validator = new DiagrammValidator();
+        return validator.validate(display);
     }
 
     private void removeTransitionFromTarget(State target){
@@ -232,7 +234,7 @@ public class Diagram {
 	public void flatten() {
 		// TODO Verify that the graph is Valid
 
-		if(validate()){
+		if(validate(false)){
 
 			Set<Transition<State>> transitions = getAllTransitions();
 			Set<Transition<State>> trashOfTransitions = new HashSet<Transition<State>>();
@@ -483,5 +485,8 @@ public class Diagram {
 
     public Set<State> getDirectSons() {
         return directSons;
+    }
+    public DiagrammValidator getValidator() {
+        return validator;
     }
 }

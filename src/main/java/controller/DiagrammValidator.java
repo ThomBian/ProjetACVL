@@ -1,31 +1,39 @@
 package controller;
-import model.*;
+import controller.visitor.ValidVisitor;
+import model.FinalState;
+import model.InitialState;
+import model.State;
 import model.error.DiagramError;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 /**
  * Created by Thomas on 05/11/15.
  */
 public class DiagrammValidator {
+    private boolean            isValid;
     private List<DiagramError> errors;
     private State              validationInput;
+    private ValidVisitor       validVisitor;
 
     public DiagrammValidator() {
         errors = new ArrayList<>();
+        validVisitor = new ValidVisitor();
+        isValid = true;
     }
 
-    public boolean validate() {
-        boolean isValid = areAllStatesReachable();
-        isValid = isValid & areCompositeValid();
-        Diagram.getInstance().getView().displayValidationWindow(errors);
+    public boolean validate(boolean displayErrors) {
+        areStatesValid();
+        areAllStatesReachable();
+        areCompositeValid();
+        if (displayErrors)
+            Diagram.getInstance().getView().displayValidationWindow(errors);
         errors.clear();
         return isValid;
     }
 
-    private boolean areAllStatesReachable() {
-        boolean isValid = areInitialFinalStatesValid();
+    private void areAllStatesReachable() {
+        areNbInitialFinalStatesValid();
         if (validationInput != null) {
             validationInput.reach();
         }
@@ -39,11 +47,9 @@ public class DiagrammValidator {
         for (State s : Diagram.getInstance().getAllStates()) {
             s.setReach(false);
         }
-        return isValid;
     }
 
-    private boolean areInitialFinalStatesValid() {
-        boolean isValid = true;
+    private void areNbInitialFinalStatesValid() {
         int nbInitialState = 0;
         int nbFinalState = 0;
         for (State s : Diagram.getInstance().getDirectSons()) {
@@ -59,34 +65,29 @@ public class DiagrammValidator {
                                            "only one initial state..."));
             isValid = false;
         }
+
         if (nbFinalState > 1) {
             this.addError(new DiagramError("Diagram should contain one and " +
                                            "only one final state..."));
             isValid = false;
         }
-        return isValid;
     }
 
-    private boolean areCompositeValid() {
-        boolean isValid = true;
-        Set<Transition<State>> transitions =
-                Diagram.getInstance().getAllTransitions();
-        for (Transition t : transitions) {
-            if (t.getDestination() instanceof CompositeState) {
-                if (((CompositeState) t.getDestination()).getInitState() ==
-                    null) {
-                    this.addError(new DiagramError("Initial state(s) is(are) " +
-                                                   "invalid in " +
-                                                   t.getDestination()
-                                                           .toString()));
-                    isValid = false;
-                }
-            }
+    private void areCompositeValid() {
+
+    }
+
+    private void areStatesValid() {
+        for (State s : Diagram.getInstance().getAllStates()) {
+            s.apply(validVisitor);
         }
-        return isValid;
     }
 
     public void addError(DiagramError e) {
         errors.add(e);
+    }
+
+    public void setValid(boolean valid) {
+        isValid = valid & isValid;
     }
 }
