@@ -13,6 +13,7 @@ public class CustomMxGraph extends mxGraph {
 	
 	private boolean reactToDeleteEvent = true;
 	
+
 	// Make all edges unmovable
 	@Override
 	public boolean isCellMovable(Object cell) {

@@ -1,6 +1,5 @@
 package model;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,7 +20,7 @@ public final class SimpleState extends NamedState {
 	}
 
 	@Override
-	public Collection<? extends State> getSimpleFinalStateInSons()  {
+	public Set<State> getSimpleFinalStateInSons()  {
 		Set<State> states = new HashSet<State>();
 		states.add(this);
 		return states;

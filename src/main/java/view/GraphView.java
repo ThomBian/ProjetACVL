@@ -42,7 +42,7 @@ public class GraphView extends JPanel {
 	private Map<State, mxCell> linkedStates = new HashMap<State, mxCell>();
 	private Map<Transition<State>, mxCell> linkedTransitions = new HashMap<Transition<State>, mxCell>();
 	Map<State, mxCell> tmpStates = null;
-	
+
 	public GraphView() {
 		super();
 		graph = new CustomMxGraph();
@@ -50,17 +50,17 @@ public class GraphView extends JPanel {
 		graph.setConnectableEdges(false);
 		graph.setDropEnabled(true);
 		graph.setAllowLoops(true);
-        com.mxgraph.swing.util.mxGraphTransferable.enableImageSupport = false;
+		com.mxgraph.swing.util.mxGraphTransferable.enableImageSupport = false;
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 		setLayout(new BorderLayout());
 		add(graphComponent, BorderLayout.CENTER);
 		initializeAllStyle(graph.getStylesheet());
-		
+
 		// Allow deletion of graph components
 		new CustomKeyboardHandler(graphComponent);
-		
+
 		// Example of possible listeners
-		
+
 		// Detects edge connection
 		graphComponent.getConnectionHandler().addListener(mxEvent.CONNECT, new mxIEventListener() {
 			public void invoke(Object sender, mxEventObject evt) {
@@ -70,16 +70,16 @@ public class GraphView extends JPanel {
 				Diagram d = Diagram.getInstance();
 				State sourceState = getStateFromMxCell(source);
 				State targetState = getStateFromMxCell(target);
-				d.addTransitionToModel(sourceState,targetState,newTransition);
+				d.addTransitionToModel(sourceState, targetState, newTransition);
 			}
 		});
-		
+
 		graph.addListener(mxEvent.LABEL_CHANGED, new mxEventSource.mxIEventListener() {
 			public void invoke(Object sender, mxEventObject evt) {
 				mxCell cell = (mxCell) evt.getProperty("cell");
 				String label = (String) evt.getProperty("label");
 				Diagram d = Diagram.getInstance();
-				if (cell.isVertex()) {					
+				if (cell.isVertex()) {
 					NamedState state = (NamedState) getStateFromMxCell(cell);
 					List<State> states = d.getAllStates();
 					d.updateStateName(state, label, states);
@@ -92,54 +92,50 @@ public class GraphView extends JPanel {
 
 		graph.addListener(mxEvent.REMOVE_CELLS, new mxEventSource.mxIEventListener() {
 			public void invoke(Object sender, mxEventObject evt) {
-				if( ! graph.isReactToDeleteEvent()){
-					return ;
+				if (!graph.isReactToDeleteEvent()) {
+					return;
 				}
-				try{
-					
-					Object [] cells = (Object[]) evt.getProperty("cells");
+				try {
+					Object[] cells = (Object[]) evt.getProperty("cells");
 					Diagram d = Diagram.getInstance();
-					for(Object cell : cells){
-						if(((mxCell) cell).isVertex()){
-							d.removeState(getStateFromMxCell((mxCell)cell));
-						}else{
-							d.removeTransitionFromModel(getTransitionFromMxCell((mxCell)cell));
+					for (Object cell : cells) {
+						if (((mxCell) cell).isVertex()) {
+							d.removeState(getStateFromMxCell((mxCell) cell));
+						} else {
+							d.removeTransition(getTransitionFromMxCell((mxCell) cell));
 						}
 					}
-					//System.out.println("transition removed =" + evt.getProperty("includeEdges"));
-				}catch(Exception e){
-					
+				} catch (Exception e) {
+
 				}
-				
-				
 			}
 		});
-		
-			graph.getModel().addListener(mxEvent.CHANGE, new mxEventSource.mxIEventListener() {
-				public void invoke(Object sender, mxEventObject evt) {
-					
-					// lets detect DROP events
-					ArrayList<?> changes = (ArrayList<?>)evt.getProperty("changes");
-					for(Object o : changes){
-					 if (o instanceof mxChildChange)
-					    {
-					    	mxChildChange childChange = (mxChildChange) o;
-					    	mxCell dropped = (mxCell) childChange.getChild();
-					        mxCell previousParent = (mxCell) childChange.getPrevious();
-					        mxCell parent = (mxCell) childChange.getParent();
-					        // previousParent == null = insertion / parent == null = deletion
-					        if(previousParent != null && parent != null && !dropped.isEdge()){
-					        	// we are sure its a drop
-					        	Diagram d = Diagram.getInstance();
-					        	State s = getStateFromMxCell(dropped);
-					        	if(s != null){
-					        		d.dropStateIntoCompositeState(getStateFromMxCell(dropped), (CompositeState) getStateFromMxCell(parent));
-					        	}
-					        }
-					    }
+
+		graph.getModel().addListener(mxEvent.CHANGE, new mxEventSource.mxIEventListener() {
+			public void invoke(Object sender, mxEventObject evt) {
+				// lets detect DROP events
+				ArrayList<?> changes = (ArrayList<?>) evt.getProperty("changes");
+				for (Object o : changes) {
+					if (o instanceof mxChildChange) {
+						mxChildChange childChange = (mxChildChange) o;
+						mxCell dropped = (mxCell) childChange.getChild();
+						mxCell previousParent = (mxCell) childChange.getPrevious();
+						mxCell parent = (mxCell) childChange.getParent();
+						// previousParent == null = insertion / parent == null =
+						// deletion
+						if (previousParent != null && parent != null && !dropped.isEdge()) {
+							// we are sure its a drop
+							Diagram d = Diagram.getInstance();
+							State s = getStateFromMxCell(dropped);
+							if (s != null) {
+								d.dropStateIntoCompositeState(getStateFromMxCell(dropped),
+										(CompositeState) getStateFromMxCell(parent));
+							}
+						}
 					}
 				}
-			});
+			}
+		});
 	}
 
 	public CustomMxGraph getGraph() {
@@ -153,21 +149,24 @@ public class GraphView extends JPanel {
 		styleSheet.putCellStyle(Style.STATE, getNormalStyle());
 		applyEdgeDefaults(styleSheet);
 	}
+
 	private void applyEdgeDefaults(mxStylesheet styleSheet) {
-	    // Settings for edges
-	    Map<String, Object> edge = new HashMap<String, Object>();
-	    edge.put(mxConstants.STYLE_ROUNDED, true);
-	    edge.put(mxConstants.STYLE_ORTHOGONAL, false);
-	    edge.put(mxConstants.STYLE_EDGE, "elbowEdgeStyle");
-	    edge.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_CONNECTOR);
-	    edge.put(mxConstants.STYLE_ENDARROW, mxConstants.ARROW_CLASSIC);
-	    edge.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_MIDDLE);
-	    edge.put(mxConstants.STYLE_ALIGN, mxConstants.ALIGN_CENTER);
-	    edge.put(mxConstants.STYLE_STROKECOLOR, "#000000"); // default is #6482B9
-	    edge.put(mxConstants.STYLE_FONTCOLOR, "#446299");
-	    styleSheet.putCellStyle(Style.EDGE, edge);
-	    styleSheet.setDefaultEdgeStyle(edge);
+		// Settings for edges
+		Map<String, Object> edge = new HashMap<String, Object>();
+		edge.put(mxConstants.STYLE_ROUNDED, true);
+		edge.put(mxConstants.STYLE_ORTHOGONAL, false);
+		edge.put(mxConstants.STYLE_EDGE, "elbowEdgeStyle");
+		edge.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_CONNECTOR);
+		edge.put(mxConstants.STYLE_ENDARROW, mxConstants.ARROW_CLASSIC);
+		edge.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_MIDDLE);
+		edge.put(mxConstants.STYLE_ALIGN, mxConstants.ALIGN_CENTER);
+		edge.put(mxConstants.STYLE_STROKECOLOR, "#000000"); // default is
+															// #6482B9
+		edge.put(mxConstants.STYLE_FONTCOLOR, "#446299");
+		styleSheet.putCellStyle(Style.EDGE, edge);
+		styleSheet.setDefaultEdgeStyle(edge);
 	}
+
 	private Map<String, Object> getNormalStyle() {
 		Hashtable<String, Object> style = new Hashtable<String, Object>();
 		style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_ELLIPSE);
@@ -198,125 +197,139 @@ public class GraphView extends JPanel {
 	public void informUser(String message) {
 		JOptionPane.showMessageDialog(null, message);
 	}
-	
-	private mxGeometry getPreviousGeometry(State s){
-		if(getTmpStates() != null && getTmpStates().containsKey(s)){
+
+	private mxGeometry getPreviousGeometry(State s) {
+		if (getTmpStates() != null && getTmpStates().containsKey(s)) {
 			mxCell cell = getTmpStates().get(s);
 			return cell.getGeometry();
-		}else{
+		} else {
 			return null;
 		}
 	}
-	private void computeGeometry(mxGeometry geo, State s){
-		if(getTmpStates().get(s).getParent() == graph.getDefaultParent()){
+
+	private void computeGeometry(mxGeometry geo, State s) {
+		if (getTmpStates().get(s).getParent() == graph.getDefaultParent()) {
 			geo.setX(geo.getOffset().getX());
 			geo.setY(geo.getOffset().getY());
 		}
 	}
-	public void insertState(InitialState initialState, CompositeState parent){
+
+	public void insertState(InitialState initialState, CompositeState parent) {
 		mxGeometry geo = getPreviousGeometry(initialState);
-		if(geo != null){
+		if (geo != null) {
 			computeGeometry(geo, initialState);
-			
-		}else{
+
+		} else {
 			geo = new mxGeometry(20, 20, 30, 30);
 		}
-		
+
 		Object pCell = linkedStates.get(parent);
-		if(parent == null) pCell = getGraph().getDefaultParent();
-		mxCell vertex = (mxCell) getGraph().createVertex(pCell, null, "", geo.getX(), geo.getY(), geo.getWidth(), geo.getHeight(), Style.INITIAL);
+		if (parent == null)
+			pCell = getGraph().getDefaultParent();
+		mxCell vertex = (mxCell) getGraph().createVertex(pCell, null, "", geo.getX(), geo.getY(), geo.getWidth(),
+				geo.getHeight(), Style.INITIAL);
 		getGraph().addCell(vertex);
 		getGraph().setSelectionCell(vertex);
 		linkedStates.put(initialState, vertex);
 	}
-	public void insertState(InitialState initialState){
+
+	public void insertState(InitialState initialState) {
 		insertState(initialState, null);
 	}
-	public void insertState(FinalState finalState, CompositeState parent){
+
+	public void insertState(FinalState finalState, CompositeState parent) {
 		mxGeometry geo = getPreviousGeometry(finalState);
-		if(geo != null){
+		if (geo != null) {
 			computeGeometry(geo, finalState);
-		}else{
+		} else {
 			geo = new mxGeometry(20, 20, 30, 30);
 		}
-		
+
 		Object pCell = linkedStates.get(parent);
-		if(parent == null) pCell = getGraph().getDefaultParent();
-		mxCell vertex = (mxCell) getGraph().createVertex(pCell, null, "",  geo.getX(), geo.getY(), geo.getWidth(), geo.getHeight(), Style.FINAL);
+		if (parent == null)
+			pCell = getGraph().getDefaultParent();
+		mxCell vertex = (mxCell) getGraph().createVertex(pCell, null, "", geo.getX(), geo.getY(), geo.getWidth(),
+				geo.getHeight(), Style.FINAL);
 		getGraph().addCell(vertex);
 		getLinkedStates().put(finalState, vertex);
 		getGraph().setSelectionCell(vertex);
 	}
-	public void insertState(FinalState finalState){
+
+	public void insertState(FinalState finalState) {
 		insertState(finalState, null);
 	}
-	
-	public void insertState(SimpleState simpleState, CompositeState parent){
+
+	public void insertState(SimpleState simpleState, CompositeState parent) {
 		mxGeometry geo = getPreviousGeometry(simpleState);
-		if(geo != null){
-				computeGeometry(geo, simpleState);
-		}else{
+		if (geo != null) {
+			computeGeometry(geo, simpleState);
+		} else {
 			geo = new mxGeometry(20, 20, 80, 30);
 		}
-		
+
 		Object pCell = linkedStates.get(parent);
-		if(parent == null) pCell = getGraph().getDefaultParent();
-		mxCell vertex = (mxCell) getGraph().createVertex(pCell, null, simpleState.getName(),  geo.getX(), geo.getY(), geo.getWidth(), geo.getHeight(), Style.STATE);
+		if (parent == null)
+			pCell = getGraph().getDefaultParent();
+		mxCell vertex = (mxCell) getGraph().createVertex(pCell, null, simpleState.getName(), geo.getX(), geo.getY(),
+				geo.getWidth(), geo.getHeight(), Style.STATE);
 		getGraph().addCell(vertex);
 		linkedStates.put(simpleState, vertex);
 		getGraph().setSelectionCell(vertex);
 	}
-	public void insertState(SimpleState simpleState){
+
+	public void insertState(SimpleState simpleState) {
 		insertState(simpleState, null);
 	}
-	
-	public void insertState(CompositeState compositeState, CompositeState parent){
+
+	public void insertState(CompositeState compositeState, CompositeState parent) {
 		mxGeometry geo = getPreviousGeometry(compositeState);
-		if(geo != null){
-			computeGeometry(geo, compositeState);			
-		}else{
+		if (geo != null) {
+			computeGeometry(geo, compositeState);
+		} else {
 			geo = new mxGeometry(20, 20, 300, 300);
 		}
-		
+
 		Object pCell = linkedStates.get(parent);
-		if(parent == null) pCell = getGraph().getDefaultParent();
-		mxCell vertex = (mxCell) getGraph().createVertex(pCell, null, compositeState.getName(), geo.getX(), geo.getY(), geo.getWidth(), geo.getHeight(),
-				Style.COMPOSITE);
+		if (parent == null)
+			pCell = getGraph().getDefaultParent();
+		mxCell vertex = (mxCell) getGraph().createVertex(pCell, null, compositeState.getName(), geo.getX(), geo.getY(),
+				geo.getWidth(), geo.getHeight(), Style.COMPOSITE);
 		getGraph().addCell(vertex);
 		linkedStates.put(compositeState, vertex);
 		getGraph().setSelectionCell(vertex);
 	}
-	
-	public void insertState(CompositeState compositeState){
+
+	public void insertState(CompositeState compositeState) {
 		insertState(compositeState, null);
 	}
-	
-	public State getStateFromMxCell(Object cell){
+
+	public State getStateFromMxCell(Object cell) {
 		for (State o : linkedStates.keySet()) {
-		    if (linkedStates.get(o).equals(cell)) {
-		      return o;
-		    }
-		} 
+			if (linkedStates.get(o).equals(cell)) {
+				return o;
+			}
+		}
 		return null;
-    }
+	}
 
 	public Transition<State> getTransitionFromMxCell(mxCell cell) {
 		for (Transition<State> o : getLinkedTransitions().keySet()) {
-		    if (getLinkedTransitions().get(o).equals(cell)) {
-		      return o;
-		    }
+			if (getLinkedTransitions().get(o).equals(cell)) {
+				return o;
+			}
 		}
 		return null;
 	}
 
 	public void insertTransition(Transition<State> t) {
-		
-		mxCell sourceCell = getLinkedStates().get(t.getSource()), destCell = getLinkedStates().get(t.getDestination()) ;
-		mxCell edge = (mxCell) getGraph().createEdge(getGraph().getDefaultParent(), null, "", sourceCell, destCell, Style.EDGE);
+
+		mxCell sourceCell = getLinkedStates().get(t.getSource()), destCell = getLinkedStates().get(t.getDestination());
+		mxCell edge = (mxCell) getGraph().createEdge(getGraph().getDefaultParent(), null, "", sourceCell, destCell,
+				Style.EDGE);
 		edge = (mxCell) getGraph().addEdge(edge, getGraph().getDefaultParent(), sourceCell, destCell, null);
-		
+
 	}
-	
+
 	public Map<State, mxCell> getTmpStates() {
 		return tmpStates;
 	}
@@ -340,6 +353,5 @@ public class GraphView extends JPanel {
 	public Map<Transition<State>, mxCell> getLinkedTransitions() {
 		return linkedTransitions;
 	}
-
 
 }

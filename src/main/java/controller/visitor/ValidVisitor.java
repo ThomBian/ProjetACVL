@@ -1,7 +1,6 @@
 package controller.visitor;
 
 import controller.Diagram;
-import controller.DiagrammValidator;
 import model.CompositeState;
 import model.FinalState;
 import model.InitialState;
