@@ -1,8 +1,6 @@
 package controller;
 import controller.visitor.ValidVisitor;
-import model.FinalState;
-import model.InitialState;
-import model.State;
+import model.*;
 import model.error.DiagramError;
 
 import java.util.ArrayList;
@@ -10,13 +8,13 @@ import java.util.List;
 /**
  * Created by Thomas on 05/11/15.
  */
-public class DiagrammValidator {
+public class DiagramValidator {
     private boolean            isValid;
     private List<DiagramError> errors;
     private State              validationInput;
     private ValidVisitor       validVisitor;
 
-    public DiagrammValidator() {
+    public DiagramValidator() {
         errors = new ArrayList<>();
         validVisitor = new ValidVisitor();
         isValid = true;
@@ -46,6 +44,7 @@ public class DiagrammValidator {
         }
         for (State s : Diagram.getInstance().getAllStates()) {
             s.setReach(false);
+            s.setAlreadyTest(false);
         }
     }
 
@@ -74,7 +73,15 @@ public class DiagrammValidator {
     }
 
     private void areCompositeValid() {
+        for (State s : Diagram.getInstance().getAllStates()){
+            if (s.isCompositeState()){
+                InitialState init = ((CompositeState) s).getInitState();
+                if(init != null){
 
+
+                }
+            }
+        }
     }
 
     private void areStatesValid() {

@@ -32,9 +32,9 @@ public class Diagram {
 
 	private static final Diagram instance = new Diagram();
 
-    private DiagrammValidator validator;
+	private DiagramValidator validator;
 
-    public static Diagram getInstance() {
+	public static Diagram getInstance() {
 		return instance;
 	}
 
@@ -43,7 +43,7 @@ public class Diagram {
 	private StateDrawerVisitor drawerVisitor = new StateDrawerVisitor();
 
 	private Set<State> directSons = new HashSet<State>();
-	
+
 	private Diagram() {
 
 	}
@@ -71,7 +71,7 @@ public class Diagram {
 		directSons.add(s);
 		mainView.getGraph().insertState(s);
 	}
-	
+
 	// c == null => first level state
 	// old == null => was a first level state
 	public void dropStateIntoCompositeState(State s, CompositeState c) {
@@ -92,12 +92,12 @@ public class Diagram {
 		}
 	}
 
-    public boolean validate(boolean display) {
-        validator = new DiagrammValidator();
-        return validator.validate(display);
-    }
-    
-    private void removeTransitionFromState(State s){
+	public boolean validate(boolean display) {
+		validator = new DiagramValidator();
+		return validator.validate(display);
+	}
+
+	private void removeTransitionFromState(State s){
 		for(Transition<State> t : s.getIncomingTransitions()){
 			t.getSource().getOutgoingTransitions().remove(t);
 			getLinkedTransitions().remove(t);
@@ -109,7 +109,7 @@ public class Diagram {
 		s.getIncomingTransitions().clear();
 		s.getOutgoingTransitions().clear();
 	}
-	
+
     public Map<State, mxCell> getLinkedStates(){
     	return mainView.getGraph().getLinkedStates();
     }
@@ -230,7 +230,8 @@ public class Diagram {
 		if(sourceState.isInitialState()){
 			t = new InitialTransition((InitialState)sourceState,targetState);
 		}else{
-			t = new StandardTransition(sourceState,targetState);			
+			t = new StandardTransition(sourceState,targetState);
+			((StandardTransition)t).setGuard(new Guard("Default Guard"));
 		}
 		
 		sourceState.getOutgoingTransitions().add((Transition<State>) t);
@@ -294,10 +295,7 @@ public class Diagram {
 		}
 		return transitions;
 	}
-	
-	/*
-	 * Update state name both in the model and the graph
-	 */
+
 	public void updateStateName(NamedState state, String label, List<State> states) {
 		states.remove(state);
 		if (!verifyName(label, states)) {
@@ -335,6 +333,7 @@ public class Diagram {
 				updateGuard((StandardTransition)transition, parts[2]);
 			}			
 		}
+		
 		transition.setAction(new Action(label));
 		mxCell newCell = getLinkedTransitions().get(transition);
 		if (transition instanceof StandardTransition)
@@ -361,7 +360,7 @@ public class Diagram {
 			} 
 		}		
 	}
-	
+
 	/*
 	 * Formats and update Event
 	 */
@@ -389,7 +388,7 @@ public class Diagram {
 			transition.setEvent(null);
 		}
 	}
-	
+
 	/*
 	 * Formats and update Guard
 	 */
@@ -449,10 +448,10 @@ public class Diagram {
 		return mainView;
 	}
 
-    public Set<State> getDirectSons() {
-        return directSons;
-    }
-    public DiagrammValidator getValidator() {
-        return validator;
-    }
+	public Set<State> getDirectSons() {
+		return directSons;
+	}
+	public DiagramValidator getValidator() {
+		return validator;
+	}
 }
