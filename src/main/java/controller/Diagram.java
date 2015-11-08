@@ -15,6 +15,7 @@ import controller.visitor.FlattenVisitor;
 import controller.visitor.StateDrawerVisitor;
 import model.Action;
 import model.CompositeState;
+import model.Event;
 import model.FinalState;
 import model.Guard;
 import model.InitialState;
@@ -215,7 +216,8 @@ public class Diagram {
 			t = new InitialTransition((InitialState)sourceState,targetState);
 		}else{
 			t = new StandardTransition(sourceState,targetState);
-			((StandardTransition)t).setGuard(new Guard("Default Guard"));
+			((StandardTransition)t).setGuard(new Guard("[Default Guard]"));
+			((StandardTransition)t).setEvent(new Event("(Default Event)"));
 		}
 			
 		sourceState.getOutgoingTransitions().add((Transition<State>) t);
@@ -230,8 +232,7 @@ public class Diagram {
 		if(sourceState.isInitialState()){
 			t = new InitialTransition((InitialState)sourceState,targetState);
 		}else{
-			t = new StandardTransition(sourceState,targetState);
-			((StandardTransition)t).setGuard(new Guard("Default Guard"));
+			t = new StandardTransition(sourceState,targetState);			
 		}
 		
 		sourceState.getOutgoingTransitions().add((Transition<State>) t);
@@ -295,7 +296,10 @@ public class Diagram {
 		}
 		return transitions;
 	}
-
+	
+	/*
+	 * Update state name both in the model and the graph
+	 */
 	public void updateStateName(NamedState state, String label, List<State> states) {
 		states.remove(state);
 		if (!verifyName(label, states)) {
@@ -307,32 +311,59 @@ public class Diagram {
 		mainView.getGraph().getGraph().refresh();
 	}
 
+	/*
+	 * Formats and update Transition's name
+	 */
 	public void updateTransitionName(Transition<State> transition, String label) {
 		if (transition instanceof StandardTransition) {
-			String[] parts = label.split("/");
+			String[] parts = label.split(" / ");
 			System.out.println(parts);
 			label= parts[0];
-			if (parts.length > 1)
-				updateGuard((StandardTransition)transition, parts[1]);
+			if (parts.length > 2) {
+				updateEvent((StandardTransition)transition, parts[1]);
+				updateGuard((StandardTransition)transition, parts[2]);
+			}
 		}
-		
 		transition.setAction(new Action(label));
 		mxCell newCell = getLinkedTransitions().get(transition);
 		if (transition instanceof StandardTransition)
-			newCell.setValue(transition.getAction().getName() + " / " + ((StandardTransition)transition).getGuard().getCondition());
+			newCell.setValue(transition.getAction().getName() + " / " + ((StandardTransition)transition).getEvent().getName() + " / " +
+							((StandardTransition)transition).getGuard().getCondition());
 		else
 			newCell.setValue(transition.getAction().getName());
 		mainView.getGraph().getGraph().refresh();
-		System.out.println("Action is : " + transition.getAction().getName());
 	}
 	
+	/*
+	 * Formats and update Event
+	 */
+	public void updateEvent(StandardTransition transition, String label) {
+		String newstr = "(";
+		if(!(label.startsWith("(")))
+			label = newstr.concat(label);
+		if(!(label.endsWith(")")))
+			label = label.concat(")");
+		transition.getEvent().setName(label);
+		mxCell newCell = getLinkedTransitions().get(transition);
+		newCell.setValue(transition.getAction().getName() + " / " + ((StandardTransition)transition).getEvent().getName() + " / " +
+				((StandardTransition)transition).getGuard().getCondition());
+		mainView.getGraph().getGraph().refresh();
+	}
+	
+	/*
+	 * Formats and update Guard
+	 */
 	public void updateGuard(StandardTransition transition, String label) {
-
+		String newstr = "[";
+		if(!(label.startsWith("[")))
+			label = newstr.concat(label);
+		if(!(label.endsWith("]")))
+			label = label.concat("]");
 		transition.getGuard().setCondition(label);
 		mxCell newCell = getLinkedTransitions().get(transition);
-		newCell.setValue(transition.getAction().getName() + " / " + transition.getGuard().getCondition());
+		newCell.setValue(transition.getAction().getName() + " / " + ((StandardTransition)transition).getEvent().getName() + " / " +
+				((StandardTransition)transition).getGuard().getCondition());;
 		mainView.getGraph().getGraph().refresh();
-		System.out.println("Guard is : " + transition.getGuard().getCondition());
 	}
 	
 	/*
