@@ -12,7 +12,6 @@ import javax.swing.UIManager;
 import com.mxgraph.model.mxCell;
 
 import controller.visitor.FlattenVisitor;
-import controller.visitor.ValidVisitor;
 import model.Action;
 import model.CompositeState;
 import model.FinalState;
@@ -31,7 +30,7 @@ public class Diagram {
 
 	private static final Diagram instance = new Diagram();
 
-    private DiagrammValidator validator;
+    private DiagramValidator validator;
 
     public static Diagram getInstance() {
 		return instance;
@@ -112,7 +111,7 @@ public class Diagram {
 	}
 
     public boolean validate(boolean display) {
-        validator = new DiagrammValidator();
+        validator = new DiagramValidator();
         return validator.validate(display);
     }
 
@@ -478,7 +477,7 @@ public class Diagram {
     public Set<State> getDirectSons() {
         return directSons;
     }
-    public DiagrammValidator getValidator() {
+    public DiagramValidator getValidator() {
         return validator;
     }
 }

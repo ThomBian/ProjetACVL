@@ -14,6 +14,7 @@ public abstract class State {
     //boolean switches to true during validation step
     //must be false at initialisation
     protected boolean reach = false;
+	protected boolean alreadyTest = false;
     
     private mxCell graphic;
 
@@ -68,11 +69,14 @@ public abstract class State {
 	}
 
     public void reach() {
-        this.reach = true;
-        for(Transition<State> t: outgoingTransitions){
-            State s = t.getDestination();
-           	s.reach();
-        }
+		if (!alreadyTest) {
+			this.alreadyTest = true;
+			this.reach = true;
+			for (Transition<State> t : outgoingTransitions) {
+				State s = t.getDestination();
+				s.reach();
+			}
+		}
     }
 
 	public Collection<? extends Transition<State>> getAllTransitions() {
@@ -96,4 +100,12 @@ public abstract class State {
 	}
 	
 	public abstract void apply(Visitor v);
+
+	public boolean isAlreadyTest() {
+		return alreadyTest;
+	}
+
+	public void setAlreadyTest(boolean alreadyTest) {
+		this.alreadyTest = alreadyTest;
+	}
 }
