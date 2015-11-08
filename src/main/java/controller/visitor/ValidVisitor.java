@@ -1,10 +1,7 @@
 package controller.visitor;
 
 import controller.Diagram;
-import model.CompositeState;
-import model.FinalState;
-import model.InitialState;
-import model.SimpleState;
+import model.*;
 import model.error.DiagramError;
 
 import java.util.Set;
@@ -29,7 +26,8 @@ public class ValidVisitor implements Visitor {
      */
     @Override
     public void visit(CompositeState s) {
-        if(s.getInitState() == null){
+        InitialState init = s.getInitState();
+        if(init == null){
             Diagram.getInstance().getValidator().addError(new DiagramError(
                     s.toString() + "must contain one and only one initial " +
                     "state"));

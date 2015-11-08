@@ -14,8 +14,8 @@ public final class CompositeState extends NamedState {
     }
 
     /*
-     * Return the initial state of a composite one
-     * Precondition The composite state must have only one initial state !!!
+     * Return the initial state of a composite one Precondition The composite
+     * state must have only one initial state !!!
      */
     public InitialState getInitState() {
         int nbInitState = 0;
@@ -80,26 +80,15 @@ public final class CompositeState extends NamedState {
         return sons;
     }
 
-    public boolean removeTransitionInSons(Transition<State> t) {
-        if (getOutgoingTransitions().remove(t))
-            return true;
-        for (State s : states) {
-            if (s.removeTransitionInSons(t))
-                return true;
-        }
-        return false;
-    }
-
     /*
      * (non-Javadoc)
-     * @see model.State#removeTransitionInSonsFromTarget(model.State)
-     * Get & remove transition that leads to the target state
-     * Return the transitions to be removed
+     *
+     * @see model.State#removeTransitionInSonsFromTarget(model.State) Get &
+     * remove transition that leads to the target state Return the transitions
+     * to be removed
      */
-    public List<Transition<State>> removeTransitionInSonsFromTarget(
-            State target) {
-        List<Transition<State>> toBeRemoved =
-                new ArrayList<Transition<State>>();
+    public List<Transition<State>> removeTransitionInSonsFromTarget(State target) {
+        List<Transition<State>> toBeRemoved = new ArrayList<Transition<State>>();
         for (Transition<State> t : getOutgoingTransitions()) {
             if (t.getDestination().equals(target)) {
                 toBeRemoved.add(t);
@@ -125,7 +114,7 @@ public final class CompositeState extends NamedState {
     }
 
     @Override
-    public Collection<? extends State> getSimpleFinalStateInSons() {
+    public Set<State> getSimpleFinalStateInSons() {
         Set<State> finalSimple = new HashSet<State>();
         for (State s : states) {
             finalSimple.addAll(s.getSimpleFinalStateInSons());
@@ -135,22 +124,19 @@ public final class CompositeState extends NamedState {
 
     @Override
     public void reach() {
-        if(!alreadyTest) {
-            this.alreadyTest = true;
-            this.reach = true;
-            InitialState initState = getInitState();
-            if (initState != null) {
-                initState.reach();
-                for (Transition<State> t : getOutgoingTransitions()) {
-                    State s = t.getDestination();
-                    s.reach();
-                }
+        this.reach = true;
+        InitialState initState = getInitState();
+        if (initState != null) {
+            initState.reach();
+            for (Transition<State> t : getOutgoingTransitions()) {
+                State s = t.getDestination();
+                s.reach();
             }
         }
     }
 
-	@Override
-	public void apply(Visitor v) {
-		v.visit(this);
-	}
+    @Override
+    public void apply(Visitor v) {
+        v.visit(this);
+    }
 }
