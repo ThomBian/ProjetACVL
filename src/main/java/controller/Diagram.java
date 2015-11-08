@@ -216,8 +216,6 @@ public class Diagram {
 			t = new InitialTransition((InitialState)sourceState,targetState);
 		}else{
 			t = new StandardTransition(sourceState,targetState);
-			((StandardTransition)t).setGuard(new Guard("[Default Guard]"));
-			((StandardTransition)t).setEvent(new Event("(Default Event)"));
 		}
 			
 		sourceState.getOutgoingTransitions().add((Transition<State>) t);
@@ -317,53 +315,102 @@ public class Diagram {
 	public void updateTransitionName(Transition<State> transition, String label) {
 		if (transition instanceof StandardTransition) {
 			String[] parts = label.split(" / ");
-			System.out.println(parts);
 			label= parts[0];
-			if (parts.length > 2) {
+			if (parts.length == 1) {
+				((StandardTransition)transition).setEvent(null);
+				((StandardTransition)transition).setGuard(null);
+			}
+			if (parts.length == 2) {
+				if (parts[1].startsWith("[")) {
+					updateGuard((StandardTransition)transition, parts[1]);
+					((StandardTransition)transition).setEvent(null);
+				}
+				else {
+					updateEvent((StandardTransition)transition, parts[1]);
+					((StandardTransition)transition).setGuard(null);
+				} 
+			}
+			if (parts.length >= 3) {
 				updateEvent((StandardTransition)transition, parts[1]);
 				updateGuard((StandardTransition)transition, parts[2]);
-			}
+			}			
 		}
 		transition.setAction(new Action(label));
 		mxCell newCell = getLinkedTransitions().get(transition);
 		if (transition instanceof StandardTransition)
-			newCell.setValue(transition.getAction().getName() + " / " + ((StandardTransition)transition).getEvent().getName() + " / " +
-							((StandardTransition)transition).getGuard().getCondition());
+			setStandardTransitionValue(newCell, transition);
 		else
 			newCell.setValue(transition.getAction().getName());
 		mainView.getGraph().getGraph().refresh();
+	}
+	
+	public void setStandardTransitionValue(mxCell cell, Transition<State> transition) {
+		if (transition instanceof StandardTransition) {
+			if(((StandardTransition) transition).getEvent() != null){
+				if (((StandardTransition) transition).getGuard() != null) {
+					cell.setValue(transition.getAction().getName() + " / " + ((StandardTransition)transition).getEvent().getName()
+							+ " / " + ((StandardTransition)transition).getGuard().getCondition());
+				} else {
+					cell.setValue(transition.getAction().getName() + " / " + ((StandardTransition)transition).getEvent().getName());
+				}
+			} else if (((StandardTransition) transition).getGuard() != null) {
+					cell.setValue(transition.getAction().getName() + " / " + ((StandardTransition)transition).getGuard().getCondition());
+			}
+			else {
+				cell.setValue(transition.getAction().getName());
+			} 
+		}		
 	}
 	
 	/*
 	 * Formats and update Event
 	 */
 	public void updateEvent(StandardTransition transition, String label) {
-		String newstr = "(";
-		if(!(label.startsWith("(")))
-			label = newstr.concat(label);
-		if(!(label.endsWith(")")))
-			label = label.concat(")");
-		transition.getEvent().setName(label);
-		mxCell newCell = getLinkedTransitions().get(transition);
-		newCell.setValue(transition.getAction().getName() + " / " + ((StandardTransition)transition).getEvent().getName() + " / " +
-				((StandardTransition)transition).getGuard().getCondition());
-		mainView.getGraph().getGraph().refresh();
+		System.out.println("updateEvent de " + label);
+		if (!(label.isEmpty())){
+			String newstr = "(";
+			if(!(label.startsWith("(")))
+				label = newstr.concat(label);
+			System.out.println("etat label : " + label);
+			if(!(label.endsWith(")")))
+				label = label.concat(")");
+			System.out.println("etat label : " + label);
+			if (transition.getEvent() != null)
+				transition.getEvent().setName(label);
+			else {
+				transition.setEvent(new Event(label));
+			}
+			System.out.println("etat label : " + label);
+			System.out.println("transition.getEvent.getName : " + transition.getEvent().getName());
+			mxCell newCell = getLinkedTransitions().get(transition);
+			setStandardTransitionValue(newCell, transition);
+			mainView.getGraph().getGraph().refresh();
+		} else {
+			transition.setEvent(null);
+		}
 	}
 	
 	/*
 	 * Formats and update Guard
 	 */
 	public void updateGuard(StandardTransition transition, String label) {
-		String newstr = "[";
-		if(!(label.startsWith("[")))
-			label = newstr.concat(label);
-		if(!(label.endsWith("]")))
-			label = label.concat("]");
-		transition.getGuard().setCondition(label);
-		mxCell newCell = getLinkedTransitions().get(transition);
-		newCell.setValue(transition.getAction().getName() + " / " + ((StandardTransition)transition).getEvent().getName() + " / " +
-				((StandardTransition)transition).getGuard().getCondition());;
-		mainView.getGraph().getGraph().refresh();
+		if (!(label.isEmpty())){
+			String newstr = "[";
+			if(!(label.startsWith("[")))
+				label = newstr.concat(label);
+			if(!(label.endsWith("]")))
+				label = label.concat("]");
+			if (transition.getGuard() != null)
+				transition.getGuard().setCondition(label);
+			else {
+				transition.setGuard(new Guard(label));
+			}
+			mxCell newCell = getLinkedTransitions().get(transition);
+			setStandardTransitionValue(newCell, transition);
+			mainView.getGraph().getGraph().refresh();
+		} else {
+			transition.setGuard(null);
+		}
 	}
 	
 	/*
