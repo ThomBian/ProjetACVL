@@ -28,7 +28,7 @@ public class MainView {
 	private final Button createFinalStateButton = new Button("Create a final state", "final.png",
 			new CreateFinalState());
 	private final Button flattenButton = new Button("Flatten diagram", new FlattenDiagram());
-	private final Button validateButton = new Button("Validate diagram", new ValidateDiagram());
+	private final Button validateButton = new Button("Validate diagram", "check-icon.png", new ValidateDiagram());
 
 
 	public void displayValidationWindow(List<DiagramError> dErrors) {

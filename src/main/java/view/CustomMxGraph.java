@@ -10,6 +10,10 @@ import model.CompositeState;
 import model.State;
 
 public class CustomMxGraph extends mxGraph {
+	
+	private boolean reactToDeleteEvent = true;
+	
+
 	// Make all edges unmovable
 	@Override
 	public boolean isCellMovable(Object cell) {
@@ -31,24 +35,40 @@ public class CustomMxGraph extends mxGraph {
 			return false;
 		}
 	}
-
+	
+	public boolean isReactToDeleteEvent() {
+		return reactToDeleteEvent;
+	}
+	public void setReactToDeleteEvent(boolean reactToDeleteEvent) {
+		this.reactToDeleteEvent = reactToDeleteEvent;
+	}
 	@Override
 	public boolean isValidConnection(Object source, Object target){
-		
-		if(((mxCell)target).getStyle().equals(Style.COMPOSITE) && ((mxCell)source).getStyle().equals(Style.INITIAL) ){
-			CompositeState c = (CompositeState) Diagram.getInstance().getStateFromMxCell(target);
-			State s = Diagram.getInstance().getStateFromMxCell(source);
+
+		if(((mxCell)target).getStyle().equals(Style.INITIAL)) return false;
+		else if(((mxCell)target).getStyle().equals(Style.COMPOSITE) && ((mxCell)source).getStyle().equals(Style.INITIAL) ){
+			CompositeState c = (CompositeState) Diagram.getInstance().getView().getGraph().getStateFromMxCell(target);
+			State s = Diagram.getInstance().getView().getGraph().getStateFromMxCell(source);
 			for(State cur : c.getStates()){
 				if(cur.equals(s)){
 					return false;
 				}
 			}
-		}else if(((mxCell)source).getStyle().equals(Style.INITIAL)){
-			// at this moment it really have one ;) 
-			if(((mxCell)source).getEdgeCount() == 2) return false;
 		}
 		// Disallow transition to an initial state
-		else if(((mxCell)target).getStyle().equals(Style.INITIAL)) return false;
+		if(((mxCell)source).getStyle().equals(Style.INITIAL)){
+			// at this moment it really have one ;) 
+			if(((mxCell)source).getEdgeCount() == 2) return false;
+			// disallow transition from an initial state to another state not being of direct son of its parent
+			if(((mxCell)source).getParent() != null){
+				mxCell parent = (mxCell) ((mxCell)source).getParent();
+				if( parent.getStyle() != null && ((mxCell)source).getParent().getStyle().equals(Style.COMPOSITE)){
+					CompositeState c = (CompositeState) Diagram.getInstance().getView().getGraph().getStateFromMxCell(parent);
+					State s = Diagram.getInstance().getView().getGraph().getStateFromMxCell(target);
+					if(!c.getStates().contains(s)) return false;
+				}
+			}
+		}
 		else if(((mxCell)target).isEdge()) return false;
 		return true;
 	}

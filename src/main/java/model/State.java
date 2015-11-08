@@ -19,7 +19,7 @@ public abstract class State {
     private mxCell graphic;
 
 	private Set<Transition<State>> outgoingTransitions = new HashSet<Transition<State>>();
-	
+	private Set<Transition<State>> incomingTransitions = new HashSet<Transition<State>>();	
 	// TODO This is  not the place for transitions because it allows final transition to have transitions !!!
 	public Set<Transition<State>> getOutgoingTransitions() {
 		return outgoingTransitions;
@@ -30,9 +30,7 @@ public abstract class State {
 	public boolean isFinalState(){
 		return false;
 	}
-	public boolean removeTransitionInSons(Transition<State> t){
-		return outgoingTransitions.remove(t);
-	}
+
 	/*
 	 * Retrieve all states including itself and the children
 	 */
@@ -83,7 +81,7 @@ public abstract class State {
 		return getOutgoingTransitions();
 	}
 
-	public abstract Collection<? extends State> getSimpleFinalStateInSons();
+	public abstract Set<State> getSimpleFinalStateInSons();
 
 	public boolean isReach() {
 		return reach;
@@ -98,7 +96,9 @@ public abstract class State {
 	public void setGraphic(mxCell graphic) {
 		this.graphic = graphic;
 	}
-	
+	public Set<Transition<State>> getIncomingTransitions() {
+		return incomingTransitions;
+	}
 	public abstract void apply(Visitor v);
 
 	public boolean isAlreadyTest() {
