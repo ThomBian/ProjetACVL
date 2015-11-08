@@ -15,6 +15,7 @@ import controller.visitor.FlattenVisitor;
 import controller.visitor.StateDrawerVisitor;
 import model.Action;
 import model.CompositeState;
+import model.Event;
 import model.FinalState;
 import model.Guard;
 import model.InitialState;
@@ -109,12 +110,12 @@ public class Diagram {
 		s.getOutgoingTransitions().clear();
 	}
 
-	public Map<State, mxCell> getLinkedStates(){
-		return mainView.getGraph().getLinkedStates();
-	}
-	public Map<Transition<State>, mxCell> getLinkedTransitions(){
-		return mainView.getGraph().getLinkedTransitions();
-	}
+    public Map<State, mxCell> getLinkedStates(){
+    	return mainView.getGraph().getLinkedStates();
+    }
+    public Map<Transition<State>, mxCell> getLinkedTransitions(){
+    	return mainView.getGraph().getLinkedTransitions();
+    }
 	/*
 	 * Remove a state and the transitions leading to it
 	 * If its a composite one, the sons are deleted and the transitions too
@@ -124,7 +125,7 @@ public class Diagram {
 		// remove transitions linked to this state
 		List<State> sonsAndFather = s.getAllStates();
 		for(State son : sonsAndFather){
-
+			
 			removeTransitionFromState(son);
 			if(removeOldPosition)
 				mainView.getGraph().getLinkedStates().remove(son);
@@ -144,11 +145,11 @@ public class Diagram {
 			try{
 				UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
 			}catch(Exception e){
-
+				
 			}
-
-
-
+			
+			
+			
 			mainView = new MainView();
 			mainView.getFrame().setVisible(true);
 		} catch (Exception e) {
@@ -184,7 +185,7 @@ public class Diagram {
 		}
 		return result;
 	}
-
+	
 	private boolean verifyName(String name, List<State> states) {
 		for (State s : states) {
 			if (s.isNamedState()) {
@@ -217,14 +218,14 @@ public class Diagram {
 			t = new StandardTransition(sourceState,targetState);
 			((StandardTransition)t).setGuard(new Guard("Default Guard"));
 		}
-
+			
 		sourceState.getOutgoingTransitions().add((Transition<State>) t);
 		targetState.getIncomingTransitions().add((Transition<State>) t);
-
+		
 		getLinkedTransitions().put((Transition<State>) t, transition);
 		updateTransitionName((Transition<State>) t,"Default transition");
 	}
-
+	
 	public void addTransition(State sourceState, State targetState) {
 		Transition<?> t;
 		if(sourceState.isInitialState()){
@@ -233,12 +234,12 @@ public class Diagram {
 			t = new StandardTransition(sourceState,targetState);
 			((StandardTransition)t).setGuard(new Guard("Default Guard"));
 		}
-
+		
 		sourceState.getOutgoingTransitions().add((Transition<State>) t);
 		targetState.getIncomingTransitions().add((Transition<State>) t);
-
+		
 	}
-
+	
 	/*
 	 * Remove this transition from everywhere (incl. states)
 	 */
@@ -246,7 +247,7 @@ public class Diagram {
 		getLinkedTransitions().remove(transition);
 		transition.destroy();
 	}
-
+	
 	public void removeTransitions(Set<Transition<State>> transitions){
 		for(Transition<State> t : transitions){
 			removeTransition(t);
@@ -258,7 +259,7 @@ public class Diagram {
 	 */
 	public void flatten(){
 		if(validate(false)){
-			// save graphical components if case we want to draw the with the same position as before
+			// save graphical components if case we want to draw the with the same position as before 
 			Set<CompositeState> statesToDelete = new HashSet<CompositeState>();
 			Set<State> statesToAdd= new HashSet<State>();
 			for(State s : directSons){
@@ -287,7 +288,7 @@ public class Diagram {
 		}
 		return states;
 	}
-
+	
 	public Set<Transition<State>> getAllTransitions(){
 		Set<Transition<State>> transitions = new HashSet<Transition<State>>();
 		for(State s : directSons){
@@ -307,43 +308,72 @@ public class Diagram {
 		mainView.getGraph().getGraph().refresh();
 	}
 
+	/*
+	 * Formats and update Transition's name
+	 */
 	public void updateTransitionName(Transition<State> transition, String label) {
 		if (transition instanceof StandardTransition) {
-			String[] parts = label.split("/");
+			String[] parts = label.split(" / ");
 			System.out.println(parts);
 			label= parts[0];
-			if (parts.length > 1)
-				updateGuard((StandardTransition)transition, parts[1]);
+			if (parts.length > 2) {
+				updateEvent((StandardTransition)transition, parts[1]);
+				updateGuard((StandardTransition)transition, parts[2]);
+			}
 		}
-
+		
 		transition.setAction(new Action(label));
 		mxCell newCell = getLinkedTransitions().get(transition);
 		if (transition instanceof StandardTransition)
-			newCell.setValue(transition.getAction().getName() + " / " + ((StandardTransition)transition).getGuard().getCondition());
+			newCell.setValue(transition.getAction().getName() + " / " + ((StandardTransition)transition).getEvent().getName() + " / " +
+							((StandardTransition)transition).getGuard().getCondition());
 		else
 			newCell.setValue(transition.getAction().getName());
 		mainView.getGraph().getGraph().refresh();
 		System.out.println("Action is : " + transition.getAction().getName());
 	}
 
-	public void updateGuard(StandardTransition transition, String label) {
-
-		transition.getGuard().setCondition(label);
+	/*
+	 * Formats and update Event
+	 */
+	public void updateEvent(StandardTransition transition, String label) {
+		String newstr = "(";
+		if(!(label.startsWith("(")))
+			label = newstr.concat(label);
+		if(!(label.endsWith(")")))
+			label = label.concat(")");
+		transition.getEvent().setName(label);
 		mxCell newCell = getLinkedTransitions().get(transition);
-		newCell.setValue(transition.getAction().getName() + " / " + transition.getGuard().getCondition());
+		newCell.setValue(transition.getAction().getName() + " / " + ((StandardTransition)transition).getEvent().getName() + " / " +
+				((StandardTransition)transition).getGuard().getCondition());
 		mainView.getGraph().getGraph().refresh();
-		System.out.println("Guard is : " + transition.getGuard().getCondition());
 	}
 
+	/*
+	 * Formats and update Guard
+	 */
+	public void updateGuard(StandardTransition transition, String label) {
+		String newstr = "[";
+		if(!(label.startsWith("[")))
+			label = newstr.concat(label);
+		if(!(label.endsWith("]")))
+			label = label.concat("]");
+		transition.getGuard().setCondition(label);
+		mxCell newCell = getLinkedTransitions().get(transition);
+		newCell.setValue(transition.getAction().getName() + " / " + ((StandardTransition)transition).getEvent().getName() + " / " +
+				((StandardTransition)transition).getGuard().getCondition());;
+		mainView.getGraph().getGraph().refresh();
+	}
+	
 	/*
 	 * Refresh the graph from data modal (erase all existing graphical components)
 	 */
 	public void  refreshGraph(){
 		CustomMxGraph graph = mainView.getGraph().getGraph();
-		// Save positions
+		// Save positions 
 		getView().getGraph().setTmpStates(getLinkedStates());
 		getView().getGraph().setLinkedStates(new HashMap<State, mxCell>());
-		// Reset graph
+		// Reset graph 
 		graph.setReactToDeleteEvent(false);
 		graph.removeCells(graph.getChildVertices(graph.getDefaultParent()));
 		graph.setReactToDeleteEvent(true);
