@@ -50,4 +50,11 @@ public abstract class Transition<T extends State> {
 		getDestination().getIncomingTransitions().remove(this);	
 		getSource().getOutgoingTransitions().remove(this);
 	}
+	public boolean isInitialTransition() {
+		return false;
+	}
+	public  boolean isStandardTransition(){
+		return false;
+	}
+
 }

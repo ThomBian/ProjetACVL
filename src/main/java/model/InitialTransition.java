@@ -6,6 +6,8 @@ public final class InitialTransition extends Transition<InitialState> {
 		super(source, destination);
 	}
 
-	
-
+	@Override
+	public boolean isInitialTransition() {
+		return true;
+	}
 }

@@ -117,4 +117,6 @@ public abstract class State {
 	public void setInCompositeState(boolean inCompositeState) {
 		isInCompositeState = inCompositeState;
 	}
+
+
 }

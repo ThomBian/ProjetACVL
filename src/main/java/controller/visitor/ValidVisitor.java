@@ -4,7 +4,6 @@ import controller.Diagram;
 import model.*;
 import model.error.DiagramError;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class ValidVisitor implements Visitor {
@@ -25,19 +24,30 @@ public class ValidVisitor implements Visitor {
                 Diagram.getInstance().getValidator().setValid(false);
             }
         } else {
-            Set<String> allTransitionsActions = new HashSet<>();
+            boolean isValid = true;
             for (Transition t : transitions) {
-                if (allTransitionsActions.contains(t.getAction().getName())) {
+                if (t.isStandardTransition()) {
+                    for (Transition t1 : transitions) {
+                        if (t1 != t && t1.isStandardTransition()) {
+                            isValid &= !((StandardTransition) t)
+                                    .isDefinedTheSameAs(
+                                            ((StandardTransition) t1));
+                        }
+                    }
+                }
+                if (!isValid) {
+                    String tr = ((StandardTransition) t).toString();
                     Diagram.getInstance().getValidator().addError(
-                            new DiagramError("Diagramm is not determinist, [" +
-                                             t.getAction().getName() + "] is " +
-                                             "on " +
-                                             "outgoing " +
-                                             "transitions several time for " +
-                                             s.toString()));
-                    Diagram.getInstance().getValidator().setValid(false);
-                } else {
-                    allTransitionsActions.add(t.getAction().getName());
+                            new DiagramError(
+                                    "Diagramm is not determinist," + tr +
+                                    "is " +
+                                    "on " +
+                                    "outgoing " +
+                                    "transitions several time for" +
+                                    " " +
+                                    s.toString()));
+                    Diagram.getInstance().getValidator().setValid(isValid);
+                    isValid = true;
                 }
             }
         }
@@ -53,9 +63,12 @@ public class ValidVisitor implements Visitor {
     public void visit(CompositeState s) {
         InitialState init = s.getInitState();
         if (init == null) {
-            Diagram.getInstance().getValidator().addError(new DiagramError(
-                    s.toString() + "must contain one and only one initial " +
-                    "state"));
+            Diagram.getInstance().getValidator()
+                    .addError(new DiagramError(s.toString() +
+                                               "must contain one and only one" +
+                                               " " +
+                                               "initial " +
+                                               "state"));
             Diagram.getInstance().getValidator().setValid(false);
         } else {
             if (init.getOutgoingTransitions().size() == 1) {
