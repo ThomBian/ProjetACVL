@@ -46,7 +46,9 @@ public class FlattenVisitor implements Visitor {
 			}
 			states = c.getSimpleFinalStateInSons();
 			for(State s : states){
-				d.addTransition(s, newDest);
+				if(!s.isFinalState()){
+					d.addTransition(s, newDest);
+				}
 			}
 			transitionToRemove.add(t);
 		}
