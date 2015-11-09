@@ -9,27 +9,22 @@ import view.GraphView;
 
 /**
  * <p>
- * {@link IFactory} abstract for states. Acts as a facade for all implementation
- * to secure access from other packages.
+ * Factory facade for States. Provide convenience methods to create States.
  * 
  * @author ncouret
  *
- * @param <T>
  */
-public abstract class StateFactory<T extends State> implements IFactory<T> {
+public final class StateFactory<T extends State> {
 
 	protected StateFactory() {
 	}
 
-	@Override
-	public abstract T create(GraphView graph);
-
 	public static FinalState createFinalState(GraphView graph) {
-		return FinalStateFactory.getInstance().create(graph);
+		return FinalStateFactory.INSTANCE.create(graph);
 	}
 
 	public static InitialState createInitialState(GraphView graph) {
-		return InitialStateFactory.getInstance().create(graph);
+		return InitialStateFactory.INSTANCE.create(graph);
 	}
 
 	public static SimpleState createSimpleState(GraphView graph, String name) {

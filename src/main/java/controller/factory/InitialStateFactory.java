@@ -15,28 +15,18 @@ import view.Style;
  * @author ncouret
  *
  */
-class InitialStateFactory extends StateFactory<InitialState> {
-	
-	private static volatile InitialStateFactory instance;
+enum InitialStateFactory implements IStateFactory<InitialState> {
 
-	public static InitialStateFactory getInstance() {
-		if (instance == null) {
-			synchronized (InitialStateFactory.class) {
-				if (instance == null) {
-					instance = new InitialStateFactory();
-				}
-			}
+	INSTANCE {
+
+		@Override
+		public InitialState create(GraphView graph) {
+			InitialState is = new InitialState();
+			mxCell cell = (mxCell) graph.getGraph().createVertex(graph.getGraph().getDefaultParent(), null, "", 20, 20,
+					30, 30, Style.INITIAL);
+			is.setGraphic(cell);
+			graph.getGraph().addCell(cell);
+			return is;
 		}
-		return instance;
 	}
-
-	@Override
-	public InitialState create(GraphView graph) {
-		InitialState is = new InitialState();
-		mxCell cell = (mxCell) graph.getGraph().createVertex(graph.getGraph().getDefaultParent(), null, "", 20, 20,30,30,Style.INITIAL);
-		is.setGraphic(cell);
-		graph.getGraph().addCell(cell);
-		return is;
-	}
-
 }

@@ -15,7 +15,7 @@ import model.Transition;
  * @author ncouret
  *
  */
-public interface ITransitionFactory<T extends Transition<S>, S extends State> {
+interface ITransitionFactory<T extends Transition<S>, S extends State> {
 	
 	/**
 	 * 

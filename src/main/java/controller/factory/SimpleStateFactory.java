@@ -13,7 +13,7 @@ import view.Style;
  * @author ncouret
  *
  */
-class SimpleStateFactory extends StateFactory<SimpleState> {
+class SimpleStateFactory implements IStateFactory<SimpleState> {
 	
 	private static volatile SimpleStateFactory instance;
 

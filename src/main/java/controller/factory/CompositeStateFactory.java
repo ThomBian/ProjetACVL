@@ -13,7 +13,7 @@ import view.Style;
  * @author ncouret
  *
  */
-final class CompositeStateFactory extends StateFactory<CompositeState> {
+final class CompositeStateFactory implements IStateFactory<CompositeState> {
 	
 	private static volatile CompositeStateFactory instance;
 	
