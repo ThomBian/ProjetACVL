@@ -4,6 +4,7 @@ import controller.Diagram;
 import model.*;
 import model.error.DiagramError;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class ValidVisitor implements Visitor {
@@ -15,7 +16,31 @@ public class ValidVisitor implements Visitor {
      */
     @Override
     public void visit(SimpleState s) {
-        Diagram.getInstance().getValidator().setValid(true);
+        Set<Transition<State>> transitions = s.getOutgoingTransitions();
+        //we can go out of all simple state
+        if (!(transitions.size() > 0)) {
+            if (!s.isInCompositeState()) {
+                Diagram.getInstance().getValidator().addError(
+                        new DiagramError(s.toString() + " is a well"));
+                Diagram.getInstance().getValidator().setValid(false);
+            }
+        } else {
+            Set<String> allTransitionsActions = new HashSet<>();
+            for (Transition t : transitions) {
+                if (allTransitionsActions.contains(t.getAction().getName())) {
+                    Diagram.getInstance().getValidator().addError(
+                            new DiagramError("Diagramm is not determinist, [" +
+                                             t.getAction().getName() + "] is " +
+                                             "on " +
+                                             "outgoing " +
+                                             "transitions several time for " +
+                                             s.toString()));
+                    Diagram.getInstance().getValidator().setValid(false);
+                } else {
+                    allTransitionsActions.add(t.getAction().getName());
+                }
+            }
+        }
     }
 
     /**
@@ -27,7 +52,7 @@ public class ValidVisitor implements Visitor {
     @Override
     public void visit(CompositeState s) {
         InitialState init = s.getInitState();
-        if(init == null){
+        if (init == null) {
             Diagram.getInstance().getValidator().addError(new DiagramError(
                     s.toString() + "must contain one and only one initial " +
                     "state"));
@@ -83,6 +108,14 @@ public class ValidVisitor implements Visitor {
      */
     @Override
     public void visit(FinalState s) {
-        Diagram.getInstance().getValidator().setValid(true);
+        boolean isValid = s.getOutgoingTransitions().size() == 0;
+        if (!isValid) {
+            Diagram.getInstance().getValidator()
+                    .addError(new DiagramError("Final " +
+                                               "state can't " +
+                                               "own outgoing " +
+                                               "transtions"));
+        }
+        Diagram.getInstance().getValidator().setValid(isValid);
     }
 }

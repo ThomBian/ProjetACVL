@@ -23,7 +23,7 @@ public class DiagramValidator {
     public boolean validate(boolean displayErrors) {
         areStatesValid();
         areAllStatesReachable();
-        areCompositeValid();
+//        areCompositeValid();
         if (displayErrors)
             Diagram.getInstance().getView().displayValidationWindow(errors);
         errors.clear();
@@ -71,18 +71,17 @@ public class DiagramValidator {
             isValid = false;
         }
     }
-
+/**
     private void areCompositeValid() {
         for (State s : Diagram.getInstance().getAllStates()){
             if (s.isCompositeState()){
                 InitialState init = ((CompositeState) s).getInitState();
                 if(init != null){
 
-
                 }
             }
         }
-    }
+    }**/
 
     private void areStatesValid() {
         for (State s : Diagram.getInstance().getAllStates()) {

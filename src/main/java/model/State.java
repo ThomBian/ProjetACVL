@@ -15,6 +15,7 @@ public abstract class State {
     //must be false at initialisation
     protected boolean reach = false;
 	protected boolean alreadyTest = false;
+	protected boolean isInCompositeState = false;
     
     private mxCell graphic;
 
@@ -107,5 +108,13 @@ public abstract class State {
 
 	public void setAlreadyTest(boolean alreadyTest) {
 		this.alreadyTest = alreadyTest;
+	}
+
+	public boolean isInCompositeState() {
+		return isInCompositeState;
+	}
+
+	public void setInCompositeState(boolean inCompositeState) {
+		isInCompositeState = inCompositeState;
 	}
 }

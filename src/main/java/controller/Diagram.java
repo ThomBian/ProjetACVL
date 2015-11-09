@@ -81,14 +81,17 @@ public class Diagram {
 			parent.getStates().remove(s);
 			// add new link
 			c.getStates().add(s);
+			s.setInCompositeState(true);
 		}else if(parent != null && c == null){
 			parent.getStates().remove(s);
 			// add new link
 			directSons.add(s);
+			s.setInCompositeState(false);
 		}else if (parent == null && c != null){
 			directSons.remove(s);
 			// add new link
 			c.getStates().add(s);
+			s.setInCompositeState(true);
 		}
 	}
 
