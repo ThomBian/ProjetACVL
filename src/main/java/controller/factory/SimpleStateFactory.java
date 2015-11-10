@@ -40,7 +40,7 @@ class SimpleStateFactory implements IStateFactory<SimpleState> {
 	public SimpleState create(GraphView graph, String name) {
 		SimpleState s = new SimpleState(name);
 		mxCell vertex = (mxCell) graph.getGraph().createVertex(graph.getGraph().getDefaultParent(), null, name, 20, 20, 80, 30, Style.STATE);
-		graph.getGraph().addCell(vertex);
+		graph.insertState(s);
 		s.setGraphic(vertex);
 		return s;
 	}

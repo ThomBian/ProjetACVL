@@ -4,7 +4,6 @@ import model.CompositeState;
 import model.FinalState;
 import model.InitialState;
 import model.SimpleState;
-import model.State;
 import view.GraphView;
 
 /**
@@ -14,7 +13,7 @@ import view.GraphView;
  * @author ncouret
  *
  */
-public final class StateFactory<T extends State> {
+public final class StateFactory {
 
 	protected StateFactory() {
 	}

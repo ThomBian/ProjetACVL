@@ -25,7 +25,7 @@ enum InitialStateFactory implements IStateFactory<InitialState> {
 			mxCell cell = (mxCell) graph.getGraph().createVertex(graph.getGraph().getDefaultParent(), null, "", 20, 20,
 					30, 30, Style.INITIAL);
 			is.setGraphic(cell);
-			graph.getGraph().addCell(cell);
+			graph.insertState(is);
 			return is;
 		}
 	}

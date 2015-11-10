@@ -15,7 +15,7 @@ enum FinalStateFactory implements IStateFactory<FinalState> {
 			mxCell vertex = (mxCell) graph.getGraph().createVertex(graph.getGraph().getDefaultParent(), null, "", 20,
 					20, 30, 30, Style.FINAL);
 			fs.setGraphic(vertex);
-			graph.getGraph().addCell(vertex);
+			graph.insertState(fs);
 			return fs;
 		}
 	}

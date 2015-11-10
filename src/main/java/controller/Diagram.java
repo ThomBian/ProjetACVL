@@ -11,6 +11,8 @@ import javax.swing.UIManager;
 
 import com.mxgraph.model.mxCell;
 
+import controller.factory.StateFactory;
+import controller.factory.TransitionFactory;
 import controller.visitor.FlattenVisitor;
 import controller.visitor.StateDrawerVisitor;
 import model.Action;
@@ -19,7 +21,6 @@ import model.Event;
 import model.FinalState;
 import model.Guard;
 import model.InitialState;
-import model.InitialTransition;
 import model.NamedState;
 import model.SimpleState;
 import model.StandardTransition;
@@ -49,17 +50,15 @@ public class Diagram {
 	}
 
 	public void createInitialState() {
-		InitialState s = new InitialState();
+		InitialState s = StateFactory.createInitialState(mainView.getGraph());
 		directSons.add(s);
-		mainView.getGraph().insertState(s);
 	}
 
 	public void createState(String name) {
 		if (!verifyName(name, getAllStates())) {
 			name = changeName(name);
 		}
-		SimpleState s = new SimpleState(name);
-		mainView.getGraph().insertState(s);
+		SimpleState s = StateFactory.createSimpleState(mainView.getGraph(), name);
 		directSons.add(s);
 	}
 
@@ -67,9 +66,8 @@ public class Diagram {
 		if (!verifyName(name, getAllStates())) {
 			name = changeName(name);
 		}
-		CompositeState s = new CompositeState(name);
+		CompositeState s = StateFactory.createCompositeState(mainView.getGraph(), name);
 		directSons.add(s);
-		mainView.getGraph().insertState(s);
 	}
 
 	// c == null => first level state
@@ -158,9 +156,8 @@ public class Diagram {
 	}
 
 	public void createFinalState() {
-		FinalState s = new FinalState();
+		FinalState s = StateFactory.createFinalState(mainView.getGraph());
 		directSons.add(s);
-		mainView.getGraph().insertState(s);
 	}
 
 	private CompositeState findParentState(State s) {
@@ -213,9 +210,9 @@ public class Diagram {
 	public void addTransitionToModel(State sourceState, State targetState, mxCell transition) {
 		Transition<?> t;
 		if(sourceState.isInitialState()){
-			t = new InitialTransition((InitialState)sourceState,targetState);
+			t = TransitionFactory.createInitialTransition((InitialState) sourceState, targetState, transition);
 		}else{
-			t = new StandardTransition(sourceState,targetState);
+			t = TransitionFactory.createStandardTransition(sourceState, targetState, transition);
 		}
 			
 		sourceState.getOutgoingTransitions().add((Transition<State>) t);
@@ -225,13 +222,13 @@ public class Diagram {
 		updateTransitionName((Transition<State>) t,"Default transition");
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void addTransition(State sourceState, State targetState) {
-		Transition<?> t;
+		Transition<? extends State> t;
 		if(sourceState.isInitialState()){
-			t = new InitialTransition((InitialState)sourceState,targetState);
+			t = TransitionFactory.createInitialTransition((InitialState) sourceState, targetState, null);
 		}else{
-			t = new StandardTransition(sourceState,targetState);
-			((StandardTransition)t).setGuard(new Guard("Default Guard"));
+			t = TransitionFactory.createStandardTransition(sourceState, targetState, null, new Guard("Default Guard"));
 		}
 		
 		sourceState.getOutgoingTransitions().add((Transition<State>) t);
