@@ -333,30 +333,10 @@ public class Diagram {
 		
 		transition.setAction(new Action(label));
 		mxCell newCell = getLinkedTransitions().get(transition);
-		if (transition instanceof StandardTransition)
-			setStandardTransitionValue(newCell, transition);
-		else
-			newCell.setValue(transition.getAction().getName());
+		newCell.setValue(transition.toString());
 		mainView.getGraph().getGraph().refresh();
 	}
 	
-	public void setStandardTransitionValue(mxCell cell, Transition<State> transition) {
-		if (transition instanceof StandardTransition) {
-			if(((StandardTransition) transition).getEvent() != null){
-				if (((StandardTransition) transition).getGuard() != null) {
-					cell.setValue(transition.getAction().getName() + " / " + ((StandardTransition)transition).getEvent().getName()
-							+ " / " + ((StandardTransition)transition).getGuard().getCondition());
-				} else {
-					cell.setValue(transition.getAction().getName() + " / " + ((StandardTransition)transition).getEvent().getName());
-				}
-			} else if (((StandardTransition) transition).getGuard() != null) {
-					cell.setValue(transition.getAction().getName() + " / " + ((StandardTransition)transition).getGuard().getCondition());
-			}
-			else {
-				cell.setValue(transition.getAction().getName());
-			} 
-		}		
-	}
 
 	/*
 	 * Formats and update Event
@@ -379,7 +359,7 @@ public class Diagram {
 			System.out.println("etat label : " + label);
 			System.out.println("transition.getEvent.getName : " + transition.getEvent().getName());
 			mxCell newCell = getLinkedTransitions().get(transition);
-			setStandardTransitionValue(newCell, transition);
+			newCell.setValue(transition.toString());
 			mainView.getGraph().getGraph().refresh();
 		} else {
 			transition.setEvent(null);
@@ -402,7 +382,7 @@ public class Diagram {
 				transition.setGuard(new Guard(label));
 			}
 			mxCell newCell = getLinkedTransitions().get(transition);
-			setStandardTransitionValue(newCell, transition);
+			newCell.setValue(transition.toString());
 			mainView.getGraph().getGraph().refresh();
 		} else {
 			transition.setGuard(null);

@@ -28,5 +28,19 @@ public final class StandardTransition extends Transition<State> {
 		this.event = event;
 	}
 	
-
+	public String toString(){
+		if(this.getEvent() != null){
+			if (getGuard() != null) {
+				return getAction().getName() + " / " + getEvent().getName()
+						+ " / " + getGuard().getCondition();
+			} else {
+				return getAction().getName() + " / " + getEvent().getName();
+			}
+		} else if (getGuard() != null) {
+				return getAction().getName() + " / " + getGuard().getCondition();
+		}
+		else {
+			return getAction().getName();
+		}
+	}
 }

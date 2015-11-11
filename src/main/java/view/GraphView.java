@@ -333,7 +333,7 @@ public class GraphView extends JPanel {
 	public void insertTransition(Transition<State> t) {
 
 		mxCell sourceCell = getLinkedStates().get(t.getSource()), destCell = getLinkedStates().get(t.getDestination());
-		mxCell edge = (mxCell) getGraph().createEdge(getGraph().getDefaultParent(), null, "", sourceCell, destCell,
+		mxCell edge = (mxCell) getGraph().createEdge(getGraph().getDefaultParent(), null, t.toString(), sourceCell, destCell,
 				Style.EDGE);
 		edge = (mxCell) getGraph().addEdge(edge, getGraph().getDefaultParent(), sourceCell, destCell, null);
 
