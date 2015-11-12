@@ -40,7 +40,7 @@ public class ValidVisitor implements Visitor {
                     Diagram.getInstance().getValidator().addError(
                             new DiagramError(
                                     "Diagramm is not determinist," + tr +
-                                    "is " +
+                                    " is " +
                                     "on " +
                                     "outgoing " +
                                     "transitions several time for" +
