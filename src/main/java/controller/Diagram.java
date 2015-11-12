@@ -319,24 +319,17 @@ public class Diagram {
      * Formats and update Event
      */
     private void updateEvent(StandardTransition transition, String label, boolean isRefreshGraph) {
-        System.out.println("updateEvent de " + label);
         if (!(label.isEmpty())) {
             String newstr = "(";
             if (!(label.startsWith("(")))
                 label = newstr.concat(label);
-            System.out.println("etat label : " + label);
             if (!(label.endsWith(")")))
                 label = label.concat(")");
-            System.out.println("etat label : " + label);
             if (transition.getEvent() != null)
                 transition.getEvent().setName(label);
             else {
                 transition.setEvent(new Event(label));
             }
-            System.out.println("etat label : " + label);
-            System.out.println("transition.getEvent.getName : " + transition.getEvent().getName());
-            /*if(isRefreshGraph)
-            	mainView.getGraph().updateTransitionLabel(transition); */
         } else {
             transition.setEvent(null);
         }
@@ -357,7 +350,6 @@ public class Diagram {
             else {
                 transition.setGuard(new Guard(label));
             }
-           // mainView.getGraph().updateTransitionLabel(transition);
         } else {
             transition.setGuard(null);
         }
