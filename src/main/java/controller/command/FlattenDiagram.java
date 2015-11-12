@@ -4,9 +4,8 @@ import controller.Diagram;
 
 public class FlattenDiagram implements Command {
 
-	@Override
-	public void execute() {
-		Diagram.getInstance().flatten();
-	}
-
+    @Override
+    public void execute() {
+        Diagram.getInstance().flatten();
+    }
 }

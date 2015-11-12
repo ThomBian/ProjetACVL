@@ -7,31 +7,29 @@ import model.SimpleState;
 import view.GraphView;
 
 /**
- * <p>
+ * <p/>
  * Factory facade for States. Provide convenience methods to create States.
- * 
- * @author ncouret
  *
+ * @author ncouret
  */
 public final class StateFactory {
 
-	protected StateFactory() {
-	}
+    protected StateFactory() {
+    }
 
-	public static FinalState createFinalState(GraphView graph) {
-		return FinalStateFactory.INSTANCE.create(graph);
-	}
+    public static FinalState createFinalState(GraphView graph) {
+        return FinalStateFactory.INSTANCE.create(graph);
+    }
 
-	public static InitialState createInitialState(GraphView graph) {
-		return InitialStateFactory.INSTANCE.create(graph);
-	}
+    public static InitialState createInitialState(GraphView graph) {
+        return InitialStateFactory.INSTANCE.create(graph);
+    }
 
-	public static SimpleState createSimpleState(GraphView graph, String name) {
-		return SimpleStateFactory.getInstance().create(graph, name);
-	}
+    public static SimpleState createSimpleState(GraphView graph, String name) {
+        return SimpleStateFactory.getInstance().create(graph, name);
+    }
 
-	public static CompositeState createCompositeState(GraphView graph, String name) {
-		return CompositeStateFactory.getInstance().create(graph, name);
-	}
-
+    public static CompositeState createCompositeState(GraphView graph, String name) {
+        return CompositeStateFactory.getInstance().create(graph, name);
+    }
 }
