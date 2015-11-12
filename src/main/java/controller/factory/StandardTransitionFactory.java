@@ -1,7 +1,5 @@
 package controller.factory;
 
-import com.mxgraph.model.mxCell;
-
 import model.Action;
 import model.Event;
 import model.Guard;
@@ -18,58 +16,57 @@ enum StandardTransitionFactory implements ITransitionFactory<StandardTransition,
 	INSTANCE {
 
 		@Override
-		public StandardTransition create(State source, State destination, mxCell graphic) {
+		public StandardTransition create(State source, State destination) {
 			StandardTransition t = new StandardTransition(source, destination);
-			t.setGraphic(graphic);
 			return t;
 		}
 
 		@Override
-		public StandardTransition create(State source, State destination, mxCell graphic, Action action) {
-			StandardTransition t = create(source, destination, graphic);
+		public StandardTransition create(State source, State destination, Action action) {
+			StandardTransition t = create(source, destination);
 			t.setAction(action);
 			return t;
 		}
 
 		@Override
-		public StandardTransition create(State source, State destination, mxCell graphic, Event event) {
-			StandardTransition t = create(source, destination, graphic);
+		public StandardTransition create(State source, State destination, Event event) {
+			StandardTransition t = create(source, destination);
 			t.setEvent(event);
 			return t;
 		}
 
 		@Override
-		public StandardTransition create(State source, State destination, mxCell graphic, Guard guard) {
-			StandardTransition t = create(source, destination, graphic);
+		public StandardTransition create(State source, State destination, Guard guard) {
+			StandardTransition t = create(source, destination);
 			t.setGuard(guard);
 			return t;
 		}
 
 		@Override
-		public StandardTransition create(State source, State destination, mxCell graphic, Action action, Event event) {
-			StandardTransition t = create(source, destination, graphic, action);
+		public StandardTransition create(State source, State destination, Action action, Event event) {
+			StandardTransition t = create(source, destination, action);
 			t.setEvent(event);
 			return t;
 		}
 
 		@Override
-		public StandardTransition create(State source, State destination, mxCell graphic, Action action, Guard guard) {
-			StandardTransition t = create(source, destination, graphic, action);
+		public StandardTransition create(State source, State destination, Action action, Guard guard) {
+			StandardTransition t = create(source, destination, action);
 			t.setGuard(guard);
 			return t;
 		}
 
 		@Override
-		public StandardTransition create(State source, State destination, mxCell graphic, Event event, Guard guard) {
-			StandardTransition t = create(source, destination, graphic, event);
+		public StandardTransition create(State source, State destination, Event event, Guard guard) {
+			StandardTransition t = create(source, destination, event);
 			t.setGuard(guard);
 			return t;
 		}
 
 		@Override
-		public StandardTransition create(State source, State destination, mxCell graphic, Action action, Event event,
+		public StandardTransition create(State source, State destination, Action action, Event event,
 				Guard guard) {
-			StandardTransition t = create(source, destination, graphic, action, event);
+			StandardTransition t = create(source, destination, action, event);
 			t.setGuard(guard);
 			return t;
 		}

@@ -3,8 +3,6 @@
  */
 package controller.factory;
 
-import com.mxgraph.model.mxCell;
-
 import model.Action;
 import model.Event;
 import model.Guard;
@@ -26,56 +24,55 @@ enum InitialTransitionFactory implements ITransitionFactory<InitialTransition, I
 	INSTANCE {
 
 		@Override
-		public InitialTransition create(InitialState source, State destination, mxCell graphic) {
+		public InitialTransition create(InitialState source, State destination) {
 			InitialTransition t = new InitialTransition(source, destination);
-			t.setGraphic(graphic);
 			return t;
 		}
 
 		@Override
-		public InitialTransition create(InitialState source, State destination, mxCell graphic, Action action) {
-			InitialTransition t = create(source, destination, graphic);
+		public InitialTransition create(InitialState source, State destination, Action action) {
+			InitialTransition t = create(source, destination);
 			t.setAction(action);
 			return t;
 		}
 
 		@Override
-		public InitialTransition create(InitialState source, State destination, mxCell graphic, Event event) {
-			return create(source, destination, graphic);
+		public InitialTransition create(InitialState source, State destination, Event event) {
+			return create(source, destination);
 		}
 
 		@Override
-		public InitialTransition create(InitialState source, State destination, mxCell graphic, Guard guard) {
+		public InitialTransition create(InitialState source, State destination, Guard guard) {
 
-			return create(source, destination, graphic);
+			return create(source, destination);
 		}
 
 		@Override
-		public InitialTransition create(InitialState source, State destination, mxCell graphic, Action action,
+		public InitialTransition create(InitialState source, State destination, Action action,
 				Event event) {
 
-			return create(source, destination, graphic, action);
+			return create(source, destination, action);
 		}
 
 		@Override
-		public InitialTransition create(InitialState source, State destination, mxCell graphic, Action action,
+		public InitialTransition create(InitialState source, State destination, Action action,
 				Guard guard) {
 
-			return create(source, destination, graphic, action);
+			return create(source, destination, action);
 		}
 
 		@Override
-		public InitialTransition create(InitialState source, State destination, mxCell graphic, Event event,
+		public InitialTransition create(InitialState source, State destination, Event event,
 				Guard guard) {
 
-			return create(source, destination, graphic);
+			return create(source, destination);
 		}
 
 		@Override
-		public InitialTransition create(InitialState source, State destination, mxCell graphic, Action action,
+		public InitialTransition create(InitialState source, State destination, Action action,
 				Event event, Guard guard) {
 
-			return create(source, destination, graphic, action);
+			return create(source, destination, action);
 		}
 
 	}

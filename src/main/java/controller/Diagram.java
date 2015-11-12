@@ -216,7 +216,7 @@ public class Diagram {
 		if(sourceState.isInitialState()){
 			t = TransitionFactory.createInitialTransition((InitialState) sourceState, targetState, null);
 		}else{
-			t = TransitionFactory.createStandardTransition(sourceState, targetState, null, new Guard("Default Guard"));
+			t = TransitionFactory.createStandardTransition(sourceState, targetState, new Guard("Default Guard"));
 		}
 		sourceState.getOutgoingTransitions().add((Transition<State>) t);
 		targetState.getIncomingTransitions().add((Transition<State>) t);

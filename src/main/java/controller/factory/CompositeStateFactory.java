@@ -3,11 +3,8 @@
  */
 package controller.factory;
 
-import com.mxgraph.model.mxCell;
-
 import model.CompositeState;
 import view.GraphView;
-import view.Style;
 
 /**
  * @author ncouret
@@ -38,10 +35,7 @@ final class CompositeStateFactory implements IStateFactory<CompositeState> {
 	
 	public CompositeState create(GraphView graph, String name) {
 		CompositeState s = new CompositeState(name);
-		mxCell vertex = (mxCell) graph.getGraph().createVertex(graph.getGraph().getDefaultParent(), null, name, 20, 20, 150, 180,
-				Style.COMPOSITE);
 		graph.insertState(s);
-		s.setGraphic(vertex);
 		return s;
 	}
 

@@ -1,7 +1,5 @@
 package controller.factory;
 
-import com.mxgraph.model.mxCell;
-
 import model.Action;
 import model.Event;
 import model.Guard;
@@ -20,40 +18,40 @@ public final class TransitionFactory {
 	private TransitionFactory() {
 	}
 	
-	public static InitialTransition createInitialTransition(InitialState source, State destination, mxCell graphic) {
-		return InitialTransitionFactory.INSTANCE.create(source, destination, graphic);
+	public static InitialTransition createInitialTransition(InitialState source, State destination) {
+		return InitialTransitionFactory.INSTANCE.create(source, destination);
 	}
 	
-	public static InitialTransition createInitialTransition(InitialState source, State destination, mxCell graphic, Action action) {
-		return InitialTransitionFactory.INSTANCE.create(source, destination, graphic, action);
+	public static InitialTransition createInitialTransition(InitialState source, State destination, Action action) {
+		return InitialTransitionFactory.INSTANCE.create(source, destination, action);
 	}
 	
-	public static StandardTransition createStandardTransition(State source, State destination, mxCell graphic) {
-		return StandardTransitionFactory.INSTANCE.create(source, destination, graphic);
+	public static StandardTransition createStandardTransition(State source, State destination) {
+		return StandardTransitionFactory.INSTANCE.create(source, destination);
 	}
 	
-	public static StandardTransition createStandardTransition(State source, State destination, mxCell graphic, Event event) {
-		return StandardTransitionFactory.INSTANCE.create(source, destination, graphic, event);
+	public static StandardTransition createStandardTransition(State source, State destination, Event event) {
+		return StandardTransitionFactory.INSTANCE.create(source, destination, event);
 	}
 	
-	public static StandardTransition createStandardTransition(State source, State destination, mxCell graphic, Guard guard) {
-		return StandardTransitionFactory.INSTANCE.create(source, destination, graphic, guard);
+	public static StandardTransition createStandardTransition(State source, State destination, Guard guard) {
+		return StandardTransitionFactory.INSTANCE.create(source, destination, guard);
 	}
 	
-	public static StandardTransition createStandardTransition(State source, State destination, mxCell graphic, Action action, Event event) {
-		return StandardTransitionFactory.INSTANCE.create(source, destination, graphic, action, event);
+	public static StandardTransition createStandardTransition(State source, State destination, Action action, Event event) {
+		return StandardTransitionFactory.INSTANCE.create(source, destination, action, event);
 	}
 	
-	public static StandardTransition createStandardTransition(State source, State destination, mxCell graphic, Action action, Guard guard) {
-		return StandardTransitionFactory.INSTANCE.create(source, destination, graphic, action, guard);
+	public static StandardTransition createStandardTransition(State source, State destination, Action action, Guard guard) {
+		return StandardTransitionFactory.INSTANCE.create(source, destination, action, guard);
 	}
 	
-	public static StandardTransition createStandardTransition(State source, State destination, mxCell graphic, Event event, Guard guard) {
-		return StandardTransitionFactory.INSTANCE.create(source, destination, graphic, event, guard);
+	public static StandardTransition createStandardTransition(State source, State destination, Event event, Guard guard) {
+		return StandardTransitionFactory.INSTANCE.create(source, destination, event, guard);
 	}
 	
-	public static StandardTransition createStandardTransition(State source, State destination, mxCell graphic, Action action, Event event, Guard guard) {
-		return StandardTransitionFactory.INSTANCE.create(source, destination, graphic, action, event, guard);
+	public static StandardTransition createStandardTransition(State source, State destination, Action action, Event event, Guard guard) {
+		return StandardTransitionFactory.INSTANCE.create(source, destination, action, event, guard);
 	}
 }
 
