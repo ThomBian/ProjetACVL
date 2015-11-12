@@ -13,7 +13,7 @@ import view.Style;
  * @author ncouret
  *
  */
-final class CompositeStateFactory extends StateFactory<CompositeState> {
+final class CompositeStateFactory implements IStateFactory<CompositeState> {
 	
 	private static volatile CompositeStateFactory instance;
 	
@@ -40,7 +40,7 @@ final class CompositeStateFactory extends StateFactory<CompositeState> {
 		CompositeState s = new CompositeState(name);
 		mxCell vertex = (mxCell) graph.getGraph().createVertex(graph.getGraph().getDefaultParent(), null, name, 20, 20, 150, 180,
 				Style.COMPOSITE);
-		graph.getGraph().addCell(vertex);
+		graph.insertState(s);
 		s.setGraphic(vertex);
 		return s;
 	}

@@ -1,13 +1,20 @@
 package controller.factory;
 
+import model.State;
 import view.GraphView;
 
 /**
  * 
  * @author ncouret
  *
- * @param <T>
+ * @param <T> 
  */
-public interface IFactory<T> {
+interface IStateFactory<T extends State> {
+	
+	/**
+	 * 
+	 * @param graph
+	 * @return
+	 */
 	public T create(GraphView graph);
 }

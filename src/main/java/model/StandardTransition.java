@@ -14,17 +14,33 @@ public final class StandardTransition extends Transition<State> {
         return guard;
     }
 
-    public void setGuard(Guard guard) {
-        this.guard = guard;
-    }
-
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
-    }
+	public void setGuard(Guard guard) {
+		this.guard = guard;
+	}
+	
+	public Event getEvent() {
+		return event;
+	}
+	
+	public void setEvent(Event event) {
+		this.event = event;
+	}
+	
+	public String toString(){
+		if(this.getEvent() != null){
+			if (getGuard() != null) {
+				return getAction().getName() + " / " + getEvent().getName()
+						+ " / " + getGuard().getCondition();
+			} else {
+				return getAction().getName() + " / " + getEvent().getName();
+			}
+		} else if (getGuard() != null) {
+				return getAction().getName() + " / " + getGuard().getCondition();
+		}
+		else {
+			return getAction().getName();
+		}
+	}
 
     @Override
     public boolean isStandardTransition() {
@@ -47,23 +63,5 @@ public final class StandardTransition extends Transition<State> {
             }
         }
         return false;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder s = new StringBuilder();
-        s.append(" ");
-        if (action != null) {
-            s.append(action.getName());
-            s.append(" / ");
-        }
-        if (guard != null) {
-            s.append(guard.getCondition());
-        }
-        s.append(" / ");
-        if (event != null) {
-            s.append(event.getName());
-        }
-        return s.toString();
     }
 }

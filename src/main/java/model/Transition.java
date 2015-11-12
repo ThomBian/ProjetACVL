@@ -46,6 +46,9 @@ public abstract class Transition<T extends State> {
 	public void setGraphic(mxCell graphic) {
 		this.graphic = graphic;
 	}
+	public String toString(){
+		return getAction().getName();
+	}
 	public void destroy() {
 		getDestination().getIncomingTransitions().remove(this);	
 		getSource().getOutgoingTransitions().remove(this);
