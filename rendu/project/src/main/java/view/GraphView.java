@@ -196,7 +196,8 @@ public class GraphView extends JPanel {
         Hashtable<String, Object> style = new Hashtable<String, Object>();
         style.put(mxConstants.STYLE_NOLABEL, "1");
         style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_IMAGE);
-        style.put(mxConstants.STYLE_IMAGE, "file:src/resources/" + picName);
+        
+        style.put(mxConstants.STYLE_IMAGE, getClass().getClassLoader().getResource(picName));
         style.put(mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_BOTTOM);
         return style;
     }
