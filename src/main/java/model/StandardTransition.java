@@ -7,8 +7,8 @@ public final class StandardTransition extends Transition<State> {
         // TODO Auto-generated constructor stub
     }
 
-    private Guard guard;
-    private Event event;
+    private Guard guard = null;
+    private Event event = null ;
 
     public Guard getGuard() {
         return guard;
