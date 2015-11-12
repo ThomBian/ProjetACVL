@@ -1,8 +1,8 @@
 package model;
 
-import java.util.*;
-
 import controller.visitor.Visitor;
+
+import java.util.*;
 
 public final class CompositeState extends NamedState {
 

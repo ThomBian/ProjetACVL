@@ -14,33 +14,31 @@ public final class StandardTransition extends Transition<State> {
         return guard;
     }
 
-	public void setGuard(Guard guard) {
-		this.guard = guard;
-	}
-	
-	public Event getEvent() {
-		return event;
-	}
-	
-	public void setEvent(Event event) {
-		this.event = event;
-	}
-	
-	public String toString(){
-		if(this.getEvent() != null){
-			if (getGuard() != null) {
-				return getAction().getName() + " / " + getEvent().getName()
-						+ " / " + getGuard().getCondition();
-			} else {
-				return getAction().getName() + " / " + getEvent().getName();
-			}
-		} else if (getGuard() != null) {
-				return getAction().getName() + " / " + getGuard().getCondition();
-		}
-		else {
-			return getAction().getName();
-		}
-	}
+    public void setGuard(Guard guard) {
+        this.guard = guard;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
+    }
+
+    public String toString() {
+        if (this.getEvent() != null) {
+            if (getGuard() != null) {
+                return getAction().getName() + " / " + getEvent().getName() + " / " + getGuard().getCondition();
+            } else {
+                return getAction().getName() + " / " + getEvent().getName();
+            }
+        } else if (getGuard() != null) {
+            return getAction().getName() + " / " + getGuard().getCondition();
+        } else {
+            return getAction().getName();
+        }
+    }
 
     @Override
     public boolean isStandardTransition() {
@@ -51,11 +49,9 @@ public final class StandardTransition extends Transition<State> {
         if (t.action != null && this.action != null) {
             if (t.action.getName().equals(this.action.getName())) {
                 if (t.guard != null && this.guard != null) {
-                    if (t.guard.getCondition()
-                            .equals(this.guard.getCondition()))
+                    if (t.guard.getCondition().equals(this.guard.getCondition()))
                         return true;
-                } else if (t.guard == null && this.guard != null ||
-                           t.guard != null && this.guard == null) {
+                } else if (t.guard == null && this.guard != null || t.guard != null && this.guard == null) {
                     return false;
                 } else {
                     return true;

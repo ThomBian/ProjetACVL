@@ -1,6 +1,8 @@
 package controller;
 import controller.visitor.ValidVisitor;
-import model.*;
+import model.FinalState;
+import model.InitialState;
+import model.State;
 import model.error.DiagramError;
 
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ public class DiagramValidator {
     public boolean validate(boolean displayErrors) {
         areStatesValid();
         areAllStatesReachable();
-//        areCompositeValid();
+        //        areCompositeValid();
         if (displayErrors)
             Diagram.getInstance().getView().displayValidationWindow(errors);
         errors.clear();
@@ -37,8 +39,7 @@ public class DiagramValidator {
         }
         for (State s : Diagram.getInstance().getAllStates()) {
             if (!s.isReach()) {
-                this.addError(new DiagramError(
-                        "State unreachable : " + s.toString()));
+                this.addError(new DiagramError("State unreachable : " + s.toString()));
                 isValid = false;
             }
         }
@@ -60,28 +61,22 @@ public class DiagramValidator {
             }
         }
         if (nbInitialState == 0 || nbInitialState > 1) {
-            this.addError(new DiagramError("Diagram must contain one and " +
-                                           "only one initial state..."));
+            this.addError(new DiagramError("Diagram must contain one and " + "only one initial state..."));
             isValid = false;
         }
 
         if (nbFinalState > 1) {
-            this.addError(new DiagramError("Diagram should contain one and " +
-                                           "only one final state..."));
+            this.addError(new DiagramError("Diagram should contain one and " + "only one final state..."));
             isValid = false;
         }
     }
-/**
-    private void areCompositeValid() {
-        for (State s : Diagram.getInstance().getAllStates()){
-            if (s.isCompositeState()){
-                InitialState init = ((CompositeState) s).getInitState();
-                if(init != null){
 
-                }
-            }
-        }
-    }**/
+    /**
+     * private void areCompositeValid() { for (State s : Diagram.getInstance().getAllStates()){ if
+     * (s.isCompositeState()){ InitialState init = ((CompositeState) s).getInitState(); if(init != null){
+     * <p/>
+     * } } } }
+     **/
 
     private void areStatesValid() {
         for (State s : Diagram.getInstance().getAllStates()) {

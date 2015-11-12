@@ -4,17 +4,16 @@ import model.State;
 import view.GraphView;
 
 /**
- * 
- * @author ncouret
+ * @param <T>
  *
- * @param <T> 
+ * @author ncouret
  */
 interface IStateFactory<T extends State> {
-	
-	/**
-	 * 
-	 * @param graph
-	 * @return
-	 */
-	public T create(GraphView graph);
+
+    /**
+     * @param graph
+     *
+     * @return
+     */
+    public T create(GraphView graph);
 }
