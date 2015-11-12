@@ -1,3 +1,10 @@
 \section{Conception}
 
+
+
+\subsection{Validation d'un diagramme état transition}
+La validation d'un diagramme dépend évidemment du modèle. Ainsi nous considérons que la validation est un controlleur. La classe DiagramValidator contient donc un ensemble de méthode qui vérifient l'ensemble des conditions identifiées par l'équipe. Nous vérifions donc : tous les états sont atteignables, un état n'est pas un puit (on ne peut pas en sortir sauf pour les états finaux), un diagramme contient forcément un état initial et au moins un état final, un diagramme doit être déterministe selon les transitions (2 transitions identiques sortants d'un même état est interdit)... \\
+Nous avons identifié que chaque état a des contraintes de validité qui lui sont propres. Nous avons donc choisi d'utiliser le patron visiteur afin de créer une méthode de validation par type d'état. Ainsi la condition ``un état initial doit avoir seulement une transition sortante'' n'est vérifiée que dans la méthode du visitor qui prend en paramètre un InitialState par exemple. Le code source du ValidVisitor présente l'ensemble des conditions vérfiiées pour chaque type d'état. \\
+De plus, nous souhaitons que l'utilisateur soit au courant des erreurs présentes dans son diagramme. Pour cela nous avons créer une classe DiagramError qui permet notamment de d'avoir une liste d'erreurs dans l'objet DiagramValidator. À chaque erreur détectée, on ajoute un objet DiagramError dans la liste de l'objet DiagramValidator. Une fois le traitement de toutes les conditions accomplies, la liste des erreurs est récupérée par le controleur liée à la vue. Ce dernier se charge alors de transmettre cette liste à la vue qui regarde simplement si la liste est vide (pas d'erreur) ou pas. Dans ce dernier cas, elle affiche dans une popup l'ensemble des erreurs.
+
 \newpage
