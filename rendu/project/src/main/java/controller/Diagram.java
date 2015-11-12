@@ -91,7 +91,7 @@ public class Diagram {
             t.getDestination().getIncomingTransitions().remove(t);
             getLinkedTransitions().remove(t);
         }
-        // TODO remove the transitions below from linkedtran
+
         s.getIncomingTransitions().clear();
         s.getOutgoingTransitions().clear();
     }
@@ -194,7 +194,7 @@ public class Diagram {
     public void addTransitionAndRefreshView(State sourceState, State targetState, mxCell transition) {
         Transition<?> t = addTransitionToModel(sourceState, targetState);
         getLinkedTransitions().put((Transition<State>) t, transition);
-        updateTransitionName((Transition<State>) t, "Default transition");
+        updateTransitionName((Transition<State>) t, "Default transition", true);
     }
 
     @SuppressWarnings("unchecked")
@@ -207,6 +207,7 @@ public class Diagram {
         }
         sourceState.getOutgoingTransitions().add((Transition<State>) t);
         targetState.getIncomingTransitions().add((Transition<State>) t);
+       	updateTransitionName((Transition<State>) t, "Default Transition", false);
         return t;
     }
 
@@ -283,54 +284,52 @@ public class Diagram {
     /*
      * Formats and update Transition's name
      */
-    public void updateTransitionName(Transition<State> transition, String label) {
-        if (transition.isStandardTransition()) {
+    public void updateTransitionName(Transition<State> transition, String label, boolean isRefreshGraph) {
+
+       	
+    	if (transition.isStandardTransition()) {
             String[] parts = label.split(" / ");
             label = parts[0];
+            transition.setAction(new Action(label));
             if (parts.length == 1) {
                 ((StandardTransition) transition).setEvent(null);
                 ((StandardTransition) transition).setGuard(null);
             }
             if (parts.length == 2) {
                 if (parts[1].startsWith("[")) {
-                    updateGuard((StandardTransition) transition, parts[1]);
+                    updateGuard((StandardTransition) transition, parts[1], isRefreshGraph);
                     ((StandardTransition) transition).setEvent(null);
                 } else {
-                    updateEvent((StandardTransition) transition, parts[1]);
+                    updateEvent((StandardTransition) transition, parts[1], isRefreshGraph);
                     ((StandardTransition) transition).setGuard(null);
                 }
             }
             if (parts.length >= 3) {
-                updateEvent((StandardTransition) transition, parts[1]);
-                updateGuard((StandardTransition) transition, parts[2]);
+                updateEvent((StandardTransition) transition, parts[1], isRefreshGraph);
+                updateGuard((StandardTransition) transition, parts[2], isRefreshGraph);
             }
         }
-
-        transition.setAction(new Action(label));
-        mainView.getGraph().updateTransitionLabel(transition);
+    	
+        
+        if(isRefreshGraph)
+        	mainView.getGraph().updateTransitionLabel(transition);
     }
 
     /*
      * Formats and update Event
      */
-    private void updateEvent(StandardTransition transition, String label) {
-        System.out.println("updateEvent de " + label);
+    private void updateEvent(StandardTransition transition, String label, boolean isRefreshGraph) {
         if (!(label.isEmpty())) {
             String newstr = "(";
             if (!(label.startsWith("(")))
                 label = newstr.concat(label);
-            System.out.println("etat label : " + label);
             if (!(label.endsWith(")")))
                 label = label.concat(")");
-            System.out.println("etat label : " + label);
             if (transition.getEvent() != null)
                 transition.getEvent().setName(label);
             else {
                 transition.setEvent(new Event(label));
             }
-            System.out.println("etat label : " + label);
-            System.out.println("transition.getEvent.getName : " + transition.getEvent().getName());
-            mainView.getGraph().updateTransitionLabel(transition);
         } else {
             transition.setEvent(null);
         }
@@ -339,7 +338,7 @@ public class Diagram {
     /*
      * Formats and update Guard
      */
-    private void updateGuard(StandardTransition transition, String label) {
+    private void updateGuard(StandardTransition transition, String label, boolean isRefreshGraph) {
         if (!(label.isEmpty())) {
             String newstr = "[";
             if (!(label.startsWith("[")))
@@ -351,7 +350,6 @@ public class Diagram {
             else {
                 transition.setGuard(new Guard(label));
             }
-            mainView.getGraph().updateTransitionLabel(transition);
         } else {
             transition.setGuard(null);
         }

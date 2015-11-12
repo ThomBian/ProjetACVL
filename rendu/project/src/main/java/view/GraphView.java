@@ -82,18 +82,21 @@ public class GraphView extends JPanel {
 
         graph.addListener(mxEvent.LABEL_CHANGED, new mxEventSource.mxIEventListener() {
             public void invoke(Object sender, mxEventObject evt) {
-                mxCell cell = (mxCell) evt.getProperty("cell");
-                String label = (String) evt.getProperty("label");
-                Diagram d = Diagram.getInstance();
-                if (cell.isVertex()) {
-                    NamedState state = (NamedState) getStateFromMxCell(cell);
-                    List<State> states = d.getAllStates();
-                    d.updateStateName(state, label, states);
-                } else {
-                    Transition<State> transition = getTransitionFromMxCell(cell);
-                    d.updateTransitionName(transition, label);
-                    updateTransitionLabel(transition);
-                }
+            	
+            	if(getGraph().isReactToUpdateLabelEvent()){
+            		 mxCell cell = (mxCell) evt.getProperty("cell");
+                     String label = (String) evt.getProperty("label");
+                     Diagram d = Diagram.getInstance();
+                     if (cell.isVertex()) {
+                         NamedState state = (NamedState) getStateFromMxCell(cell);
+                         List<State> states = d.getAllStates();
+                         d.updateStateName(state, label, states);
+                     } else {
+                         Transition<State> transition = getTransitionFromMxCell(cell);
+                         d.updateTransitionName(transition, label, true);
+                     }
+            	}
+               
             }
         });
 
@@ -333,7 +336,9 @@ public class GraphView extends JPanel {
     }
 
     public void updateTransitionLabel(Transition<State> transition) {
+    	graph.setReactToUpdateLabelEvent(false);
         getLinkedTransitions().get(transition).setValue(transition.toString());
+        graph.setReactToUpdateLabelEvent(true);
     }
 
     public Map<State, mxCell> getTmpStates() {

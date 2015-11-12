@@ -11,7 +11,7 @@ import model.State;
 public class CustomMxGraph extends mxGraph {
 
     private boolean reactToDeleteEvent = true;
-
+    private boolean reactToUpdateLabelEvent = true;
     // Make all edges unmovable
     @Override
     public boolean isCellMovable(Object cell) {
@@ -101,8 +101,16 @@ public class CustomMxGraph extends mxGraph {
     }
 
     ;
+    
+    public boolean isReactToUpdateLabelEvent() {
+		return reactToUpdateLabelEvent;
+	}
 
-    @Override
+	public void setReactToUpdateLabelEvent(boolean reactToUpdateLabelEvent) {
+		this.reactToUpdateLabelEvent = reactToUpdateLabelEvent;
+	}
+
+	@Override
     public void cellLabelChanged(Object cell, Object value, boolean autoSize) {
         model.beginUpdate();
         try {

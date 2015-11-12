@@ -16,7 +16,7 @@ public abstract class Transition<T extends State> {
         this.source = source;
     }
 
-    protected Action action;
+    protected Action action = null;
 
     public State getDestination() {
         return destination;
