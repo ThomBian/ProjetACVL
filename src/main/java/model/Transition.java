@@ -43,7 +43,8 @@ public abstract class Transition<T extends State> {
     }
 
     public String toString() {
-        return getAction().getName();
+    	if(getAction() == null) return "Default Transition";
+    	else return getAction().getName();
     }
 
     public void destroy() {
