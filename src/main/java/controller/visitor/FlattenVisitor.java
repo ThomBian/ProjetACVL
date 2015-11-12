@@ -55,7 +55,7 @@ public class FlattenVisitor implements Visitor {
                                 .toArray()[0];
                 newDest = transition.getDestination();
             }
-            // TODO transform initial transition into standard transition if needed
+            
 
             c.getIncomingTransitions().remove(t);
             t.setDestination(newDest);

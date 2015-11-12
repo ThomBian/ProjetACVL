@@ -71,13 +71,6 @@ public class DiagramValidator {
         }
     }
 
-    /**
-     * private void areCompositeValid() { for (State s : Diagram.getInstance().getAllStates()){ if
-     * (s.isCompositeState()){ InitialState init = ((CompositeState) s).getInitState(); if(init != null){
-     * <p/>
-     * } } } }
-     **/
-
     private void areStatesValid() {
         for (State s : Diagram.getInstance().getAllStates()) {
             s.apply(validVisitor);
