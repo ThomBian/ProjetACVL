@@ -98,7 +98,7 @@ public class Diagram {
 		return validator.validate(display);
 	}
 
-	private void removeTransitionFromState(State s){
+	private void removeTransitionsFromState(State s){
 		for(Transition<State> t : s.getIncomingTransitions()){
 			t.getSource().getOutgoingTransitions().remove(t);
 			getLinkedTransitions().remove(t);
@@ -107,14 +107,15 @@ public class Diagram {
 			t.getDestination().getIncomingTransitions().remove(t);
 			getLinkedTransitions().remove(t);
 		}
+		// TODO remove the transitions below from linkedtran
 		s.getIncomingTransitions().clear();
 		s.getOutgoingTransitions().clear();
 	}
 
-    public Map<State, mxCell> getLinkedStates(){
+    private Map<State, mxCell> getLinkedStates(){
     	return mainView.getGraph().getLinkedStates();
     }
-    public Map<Transition<State>, mxCell> getLinkedTransitions(){
+    private Map<Transition<State>, mxCell> getLinkedTransitions(){
     	return mainView.getGraph().getLinkedTransitions();
     }
 	/*
@@ -126,8 +127,7 @@ public class Diagram {
 		// remove transitions linked to this state
 		List<State> sonsAndFather = s.getAllStates();
 		for(State son : sonsAndFather){
-			
-			removeTransitionFromState(son);
+			removeTransitionsFromState(son);
 			if(removeOldPosition)
 				mainView.getGraph().getLinkedStates().remove(son);
 		}
@@ -148,9 +148,6 @@ public class Diagram {
 			}catch(Exception e){
 				
 			}
-			
-			
-			
 			mainView = new MainView();
 			mainView.getFrame().setVisible(true);
 		} catch (Exception e) {
@@ -197,7 +194,6 @@ public class Diagram {
 		return true;
 	}
 
-
 	private String changeName(String name) {
 		int number = 2;
 		while (true) {
@@ -208,35 +204,27 @@ public class Diagram {
 		}
 	}
 
-	// TODO Do not pass mxCell object as parameter in this method, this IS NOT MODULAR
 	@SuppressWarnings("unchecked")
-	public void addTransitionToModel(State sourceState, State targetState, mxCell transition) {
-		Transition<?> t;
-		if(sourceState.isInitialState()){
-			t = TransitionFactory.createInitialTransition((InitialState) sourceState, targetState, transition);
-		}else{
-			t = TransitionFactory.createStandardTransition(sourceState, targetState, transition);
-		}
-			
-		sourceState.getOutgoingTransitions().add((Transition<State>) t);
-		targetState.getIncomingTransitions().add((Transition<State>) t);
-		
+	public void addTransitionAndRefreshView(State sourceState, State targetState, mxCell transition) {
+		Transition<?> t = addTransitionToModel(sourceState, targetState);
 		getLinkedTransitions().put((Transition<State>) t, transition);
 		updateTransitionName((Transition<State>) t,"Default transition");
 	}
-	
 	@SuppressWarnings("unchecked")
-	public void addTransition(State sourceState, State targetState) {
+	private Transition<?> addTransitionToModel(State sourceState, State targetState){
 		Transition<? extends State> t;
 		if(sourceState.isInitialState()){
 			t = TransitionFactory.createInitialTransition((InitialState) sourceState, targetState, null);
 		}else{
 			t = TransitionFactory.createStandardTransition(sourceState, targetState, null, new Guard("Default Guard"));
 		}
-		
 		sourceState.getOutgoingTransitions().add((Transition<State>) t);
 		targetState.getIncomingTransitions().add((Transition<State>) t);
-		
+		return t;
+	}
+	
+	public void addTransition(State sourceState, State targetState) {
+		addTransitionToModel(sourceState, targetState);
 	}
 	
 	/*
@@ -288,7 +276,7 @@ public class Diagram {
 		return states;
 	}
 	
-	public Set<Transition<State>> getAllTransitions(){
+	private Set<Transition<State>> getAllTransitions(){
 		Set<Transition<State>> transitions = new HashSet<Transition<State>>();
 		for(State s : directSons){
 			transitions.addAll(s.getAllTransitions());
@@ -302,16 +290,14 @@ public class Diagram {
 			label = changeName(label);
 		}
 		state.setName(label);
-		mxCell newCell = getLinkedStates().get(state);
-		newCell.setValue(label);
-		mainView.getGraph().getGraph().refresh();
+		mainView.getGraph().updateStateLabel(state);
 	}
 
 	/*
 	 * Formats and update Transition's name
 	 */
 	public void updateTransitionName(Transition<State> transition, String label) {
-		if (transition instanceof StandardTransition) {
+		if (transition.isStandardTransition()) {
 			String[] parts = label.split(" / ");
 			label= parts[0];
 			if (parts.length == 1) {
@@ -335,16 +321,14 @@ public class Diagram {
 		}
 		
 		transition.setAction(new Action(label));
-		mxCell newCell = getLinkedTransitions().get(transition);
-		newCell.setValue(transition.toString());
-		mainView.getGraph().getGraph().refresh();
+		mainView.getGraph().updateTransitionLabel(transition);
 	}
 	
 
 	/*
 	 * Formats and update Event
 	 */
-	public void updateEvent(StandardTransition transition, String label) {
+	private void updateEvent(StandardTransition transition, String label) {
 		System.out.println("updateEvent de " + label);
 		if (!(label.isEmpty())){
 			String newstr = "(";
@@ -361,9 +345,7 @@ public class Diagram {
 			}
 			System.out.println("etat label : " + label);
 			System.out.println("transition.getEvent.getName : " + transition.getEvent().getName());
-			mxCell newCell = getLinkedTransitions().get(transition);
-			newCell.setValue(transition.toString());
-			mainView.getGraph().getGraph().refresh();
+			mainView.getGraph().updateTransitionLabel(transition);
 		} else {
 			transition.setEvent(null);
 		}
@@ -372,7 +354,7 @@ public class Diagram {
 	/*
 	 * Formats and update Guard
 	 */
-	public void updateGuard(StandardTransition transition, String label) {
+	private void updateGuard(StandardTransition transition, String label) {
 		if (!(label.isEmpty())){
 			String newstr = "[";
 			if(!(label.startsWith("[")))
@@ -384,16 +366,14 @@ public class Diagram {
 			else {
 				transition.setGuard(new Guard(label));
 			}
-			mxCell newCell = getLinkedTransitions().get(transition);
-			newCell.setValue(transition.toString());
-			mainView.getGraph().getGraph().refresh();
+			mainView.getGraph().updateTransitionLabel(transition);
 		} else {
 			transition.setGuard(null);
 		}
 	}
 	
 	/*
-	 * Refresh the graph from data modal (erase all existing graphical components)
+	 * Refresh the graph from data model (erase all existing graphical components)
 	 */
 	public void  refreshGraph(){
 		CustomMxGraph graph = mainView.getGraph().getGraph();
