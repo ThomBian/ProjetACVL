@@ -329,6 +329,7 @@ public class GraphView extends JPanel {
         mxCell edge = (mxCell) getGraph()
                 .createEdge(getGraph().getDefaultParent(), null, t.toString(), sourceCell, destCell, Style.EDGE);
         edge = (mxCell) getGraph().addEdge(edge, getGraph().getDefaultParent(), sourceCell, destCell, null);
+        getLinkedTransitions().put(t, edge);
     }
 
     public void updateStateLabel(NamedState namedState) {
