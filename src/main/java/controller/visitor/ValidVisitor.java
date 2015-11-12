@@ -25,9 +25,9 @@ public class ValidVisitor implements Visitor {
             }
         } else {
             boolean isValid = true;
-            for (Transition t : transitions) {
+            for (Transition<State> t : transitions) {
                 if (t.isStandardTransition()) {
-                    for (Transition t1 : transitions) {
+                    for (Transition<State> t1 : transitions) {
                         if (t1 != t && t1.isStandardTransition()) {
                             isValid &= !((StandardTransition) t)
                                     .isDefinedTheSameAs(
@@ -72,8 +72,8 @@ public class ValidVisitor implements Visitor {
             Diagram.getInstance().getValidator().setValid(false);
         } else {
             if (init.getOutgoingTransitions().size() == 1) {
-                Transition t =
-                        (Transition) init.getOutgoingTransitions().toArray()[0];
+				Transition<State> t =
+                        init.getOutgoingTransitions().iterator().next();
                 // si l'état pointé par l'état initial n'est pas dans les
                 // fils de
                 // son parent alors il pointe vers un etat hors de la boite
