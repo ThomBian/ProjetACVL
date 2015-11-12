@@ -6,7 +6,7 @@ public class CreateInitialState implements Command {
 
 	@Override
 	public void execute() {
-		Diagram.getInstance().createInitialState();		
+		Diagram.getInstance().createInitialState();
 	}
 
 }

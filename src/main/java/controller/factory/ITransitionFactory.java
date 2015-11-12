@@ -3,8 +3,6 @@
  */
 package controller.factory;
 
-import com.mxgraph.model.mxCell;
-
 import model.Action;
 import model.Event;
 import model.Guard;
@@ -24,7 +22,7 @@ interface ITransitionFactory<T extends Transition<S>, S extends State> {
 	 * @param graphic
 	 * @return
 	 */
-	public T create(S source, State destination, mxCell graphic);
+	public T create(S source, State destination);
 	
 	/**
 	 * 
@@ -34,7 +32,7 @@ interface ITransitionFactory<T extends Transition<S>, S extends State> {
 	 * @param action
 	 * @return
 	 */
-	public T create(S source, State destination, mxCell graphic, Action action);
+	public T create(S source, State destination, Action action);
 	
 	/**
 	 * 
@@ -44,7 +42,7 @@ interface ITransitionFactory<T extends Transition<S>, S extends State> {
 	 * @param event
 	 * @return
 	 */
-	public T create(S source, State destination, mxCell graphic, Event event);
+	public T create(S source, State destination, Event event);
 	
 	/**
 	 * 
@@ -54,7 +52,7 @@ interface ITransitionFactory<T extends Transition<S>, S extends State> {
 	 * @param guard
 	 * @return
 	 */
-	public T create(S source, State destination, mxCell graphic, Guard guard);
+	public T create(S source, State destination, Guard guard);
 	
 	/**
 	 * 
@@ -65,7 +63,7 @@ interface ITransitionFactory<T extends Transition<S>, S extends State> {
 	 * @param event
 	 * @return
 	 */
-	public T create(S source, State destination, mxCell graphic, Action action, Event event);
+	public T create(S source, State destination, Action action, Event event);
 	
 	/**
 	 * 
@@ -76,7 +74,7 @@ interface ITransitionFactory<T extends Transition<S>, S extends State> {
 	 * @param guard
 	 * @return
 	 */
-	public T create(S source, State destination, mxCell graphic, Action action, Guard guard);
+	public T create(S source, State destination, Action action, Guard guard);
 	
 	/**
 	 * 
@@ -87,7 +85,7 @@ interface ITransitionFactory<T extends Transition<S>, S extends State> {
 	 * @param guard
 	 * @return
 	 */
-	public T create(S source, State destination, mxCell graphic, Event event, Guard guard);
+	public T create(S source, State destination, Event event, Guard guard);
 	
 	/**
 	 * 
@@ -99,6 +97,6 @@ interface ITransitionFactory<T extends Transition<S>, S extends State> {
 	 * @param guard
 	 * @return
 	 */
-	public T create(S source, State destination, mxCell graphic, Action action, Event event, Guard guard);
+	public T create(S source, State destination, Action action, Event event, Guard guard);
 
 }
